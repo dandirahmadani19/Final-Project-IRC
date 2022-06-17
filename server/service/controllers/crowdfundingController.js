@@ -31,9 +31,9 @@ class CrowdFundingController {
     }
   }
 
-  static async targetQuantity(req, res, next) {
+  static async joincrowdfunding(req, res, next) {
+    const t = await sequelize.transaction()
     try {
-      const t = await sequelize.transaction()
       const { id } = req.params
       const { quantityToBuy, totalPrice, paymentStatus } = req.body
       const { targetQuantity, initialQuantity, currentQuantity } = await CrowdFunding.findByPk(id)
@@ -83,6 +83,7 @@ class CrowdFundingController {
       //update currentQuantity
       //push notif ke admincms
       //GW MAU KASIH PUSH NOTIF KE YANG JOIN
+
       res.status(200).json({
         message: "success join crowdfunding"
       })

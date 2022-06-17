@@ -7,7 +7,6 @@ const quantity = require("./hitTargetQuanty")
 
 router.use('/user', users);
 router.use('/payment', payment);
-router.use('/quantity',quantity)
 router.use('/crowdFund', crowdfund);
 
 module.exports = router;
