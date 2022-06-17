@@ -39,7 +39,6 @@ class CrowdFundingController {
       const { targetQuantity, currentQuantity } = await CrowdFunding.findByPk(id)
       let updatequantity;
       const sumQty = targetQuantity - currentQuantity
-
       if (+quantityToBuy > sumQty) {
         throw { name: "QTY_EXCEEDED" }
       }
