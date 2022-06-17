@@ -68,11 +68,10 @@ const DATA = [
   },
 ];
 
-const HomeScreen = (props) => {
-  console.log(props);
+const HomeScreen = ({ navigation }) => {
   const handleOnPress = (id) => {
     console.log(id);
-    navigation.navigate("DetailScreen", { id });
+    navigation.navigate("Detail", { id });
   };
   const renderItem = ({ item }) => (
     <CardCrowdFunding
@@ -83,26 +82,6 @@ const HomeScreen = (props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          backgroundColor: "#fff",
-          padding: 10,
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Ionicons name="menu" size={30} />
-        <Text
-          style={{
-            marginStart: 10,
-            fontSize: 18,
-            fontWeight: "700",
-          }}
-        >
-          Crowd Funding List
-        </Text>
-      </View>
       <FlatList
         data={DATA}
         renderItem={renderItem}
@@ -116,7 +95,6 @@ const HomeScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
     backgroundColor: "#e2e8f0",
   },
 });

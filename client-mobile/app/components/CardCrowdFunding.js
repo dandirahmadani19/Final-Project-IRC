@@ -56,6 +56,7 @@ export default function CardCrowdFunding({ data, onPress }) {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            paddingHorizontal: 10,
           }}
         >
           <View>
@@ -132,7 +133,7 @@ export default function CardCrowdFunding({ data, onPress }) {
               </Text>
             </View>
           </View>
-          <View>
+          {/* <View>
             <Text
               style={{
                 color: "#94a3b8",
@@ -168,7 +169,7 @@ export default function CardCrowdFunding({ data, onPress }) {
                 People
               </Text>
             </View>
-          </View>
+          </View> */}
           <View>
             <Text
               style={{
@@ -177,7 +178,7 @@ export default function CardCrowdFunding({ data, onPress }) {
                 marginBottom: 5,
               }}
             >
-              Until
+              Expired Day
             </Text>
             <View
               style={{
