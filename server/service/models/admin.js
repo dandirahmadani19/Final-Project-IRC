@@ -1,5 +1,6 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
+const { passwordEncryptor } = require('../helpers/helperBcrypt');
 module.exports = (sequelize, DataTypes) => {
   class Admin extends Model {
     static associate(models) {
@@ -16,8 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Admin",
+      modelName: 'Admin',
     }
   );
+  Admin.beforeCreate((instance, option) => {
+    instance.password = passwordEncryptor(instance.password);
+  });
   return Admin;
 };
