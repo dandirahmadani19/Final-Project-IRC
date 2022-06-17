@@ -1,5 +1,7 @@
 'use strict';
 
+const { passwordEncryptor } = require('../helpers/helperBcrypt');
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     /**
@@ -17,7 +19,7 @@ module.exports = {
         {
           username: 'admin',
           email: 'admin@mail.com',
-          password: 'admin123',
+          password: passwordEncryptor('admin123'),
           phoneNumber: '081234567890',
           address: 'Jl. Kebon Kacang',
           createdAt: new Date(),
