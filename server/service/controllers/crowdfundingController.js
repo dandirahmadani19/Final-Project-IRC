@@ -1,4 +1,4 @@
-const { CrowdFunding } = require('../models');
+const { CrowdFunding } = require("../models");
 
 class CrowdFundingController {
   static async create(req, res, next) {
@@ -14,7 +14,16 @@ class CrowdFundingController {
         imageProduct,
       } = req.body;
 
-      const newCrowdfunding = 
+      const newCrowdfunding = CrowdFunding.create({
+        productName,
+        targetQuantity,
+        initialProductPrice,
+        initialQuantity,
+        expiredDay,
+        manufactureName,
+        linkProduct,
+        imageProduct,
+      });
     } catch (err) {
       console.log(err);
       next(err);
