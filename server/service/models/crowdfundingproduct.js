@@ -1,10 +1,10 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class CrowdFundingProduct extends Model {
     static associate(models) {
-      CrowdFundingProduct.belongsToMany(models.CrowdFunding);
-      CrowdFundingProduct.belongsToMany(models.User);
+      CrowdFundingProduct.belongsTo(models.CrowdFunding);
+      CrowdFundingProduct.belongsTo(models.User);
     }
   }
   CrowdFundingProduct.init(
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "CrowdFundingProduct",
+      modelName: 'CrowdFundingProduct',
     }
   );
   return CrowdFundingProduct;

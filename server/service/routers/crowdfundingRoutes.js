@@ -1,5 +1,5 @@
-const routesCrowdFunding = require("express").Router();
+const routesCrowdFunding = require('express').Router();
 
-routesCrowdFunding.post("/add");
+routesCrowdFunding.post('/add');
 
 module.exports = routesCrowdFunding;
