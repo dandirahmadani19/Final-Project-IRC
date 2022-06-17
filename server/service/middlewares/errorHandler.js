@@ -9,7 +9,11 @@ const errorsHandler = (err, req, res, next) => {
       code = 400;
       msg = 'Email has been registered';
       break;
-    case 'JsonWebTokenError':
+    case "QTY_EXCEEDED":
+      code = 400;
+      msg = "QTY_EXCEEDED";
+    break;
+    case "JsonWebTokenError":
       code = 401;
       msg = 'Error authentication, must login first';
       break;

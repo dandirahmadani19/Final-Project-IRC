@@ -13,6 +13,6 @@ app.get('/', (req, res) => {
   res.send('Final Project IRC');
 });
 
-// app.use(errorsHandler);
+app.use(errorsHandler);
 
 module.exports = app;
