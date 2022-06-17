@@ -1,3 +1,4 @@
+const e = require("express");
 const { CrowdFunding, CrowdFundingProduct, sequelize } = require("../models");
 
 
@@ -26,7 +27,6 @@ class CrowdFundingController {
         imageProduct,
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
@@ -35,47 +35,60 @@ class CrowdFundingController {
     try {
       const t = await sequelize.transaction()
       const { id } = req.params
-      const {quantityToBuy, totalPrice, paymentStatus } = req.body
-      const { currentQuantity, targetQuantity } = await CrowdFunding.findByPk(id)
-      const sumQty = targetQuantity - currentQuantity 
-      if (+quantityToBuy > sumQty) {
-        throw {name :  "QTY_EXCEEDED"}
+      const { quantityToBuy, totalPrice, paymentStatus } = req.body
+      const { targetQuantity, initialQuantity, currentQuantity } = await CrowdFunding.findByPk(id)
+      let sumQty;
+      let updatequantity;
+      if (currentQuantity === 0) {
+        sumQty = targetQuantity - (initialQuantity + currentQuantity)
+      } else {
+        sumQty = targetQuantity - currentQuantity
       }
-      //update currentQuantity
+
+      if (+quantityToBuy > sumQty) {
+        throw { name: "QTY_EXCEEDED" }
+      }
       const createQty = await CrowdFundingProduct.create({
-        CrowdFundingId : id,
-        UserId : 1,
+        CrowdFundingId: id,
+        UserId: 1,
         quantityToBuy,
         totalPrice,
         paymentStatus
-      }, {transaction : t})
-      
+      }, { transaction: t })
+      if (currentQuantity === 0) {
+        updatequantity = initialQuantity + createQty.quantityToBuy
+      } else {
+        updatequantity = currentQuantity + createQty.quantityToBuy
+      }
       const nUpdated = await CrowdFunding.update({
-        currentQuantity: currentQuantity + (+quantityToBuy)
+        currentQuantity: updatequantity
       }, {
         where: {
-          id: id
+          id
         }
-      }, {transaction : t})
-      const { currentQuantity: nowQuantity, targetQuantity : target } = await CrowdFunding.findByPk(id)
-      if(nowQuantity === target) {
+      }, { transaction: t })
+
+      const { currentQuantity: nowQuantity, targetQuantity: target, initialQuantity: initial } = await CrowdFunding.findByPk(id)
+      if (nowQuantity === target) {
         await CrowdFunding.update({
           status: "Success"
-        },{
+        }, {
           where: {
             id
           }
-        }, {transaction : t})
+        }, { transaction: t })
       }
       await t.commit()
+
+      //update currentQuantity
       //push notif ke admincms
       //GW MAU KASIH PUSH NOTIF KE YANG JOIN
       res.status(200).json({
         message: "success join crowdfunding"
       })
     } catch (err) {
-      t.rollback()
       next(err)
+      t.rollback()
     }
 
   }
