@@ -36,15 +36,9 @@ class CrowdFundingController {
     try {
       const { id } = req.params
       const { quantityToBuy, totalPrice, paymentStatus } = req.body
-      const { targetQuantity, initialQuantity, currentQuantity } = await CrowdFunding.findByPk(id)
-      let sumQty;
+      const { targetQuantity, currentQuantity } = await CrowdFunding.findByPk(id)
       let updatequantity;
-      if (currentQuantity === 0) {
-        sumQty = targetQuantity - (initialQuantity + currentQuantity)
-      } else {
-        sumQty = targetQuantity - currentQuantity
-      }
-
+      const sumQty = targetQuantity - currentQuantity
       if (+quantityToBuy > sumQty) {
         throw { name: "QTY_EXCEEDED" }
       }
@@ -55,13 +49,9 @@ class CrowdFundingController {
         totalPrice,
         paymentStatus
       }, { transaction: t })
-      if (currentQuantity === 0) {
-        updatequantity = initialQuantity + createQty.quantityToBuy
-      } else {
-        updatequantity = currentQuantity + createQty.quantityToBuy
-      }
+      
       const nUpdated = await CrowdFunding.update({
-        currentQuantity: updatequantity
+        currentQuantity: createQty.quantityToBuy + currentQuantity
       }, {
         where: {
           id
