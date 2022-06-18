@@ -34,9 +34,9 @@ const finalPrice = (typeProduct, priceProduct) => {
       PPh = 0;
       break;
     default:
-      if ((freeOnBoard / toUsd) > 3 && (freeOnBoard / toUsd) <= 1500) {
+      if (freeOnBoard / toUsd > 3 && freeOnBoard / toUsd <= 1500) {
         beaMasuk = 7.5 / 100;
-      } else if ((freeOnBoard / toUsd) > 1500) {
+      } else if (freeOnBoard / toUsd > 1500) {
         beaMasuk = 7.5 / 100;
         PPh = 10 / 100; // range nya cukup luas tergantung jenis barang
         PPnBM = 75 / 100; // range 20-75%
@@ -51,6 +51,6 @@ const finalPrice = (typeProduct, priceProduct) => {
   return importValue + ppnValue + pphValue + ppnbmValue;
 };
 
-console.log(finalPrice('tas', 15000000))
+console.log(finalPrice("tas", 50000));
 
-module.exports = finalPrice
+module.exports = finalPrice;
