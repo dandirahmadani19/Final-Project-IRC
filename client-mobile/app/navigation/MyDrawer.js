@@ -7,6 +7,8 @@ import HomeScreen from "../screens/HomeScreen";
 import TopUpBalance from "../screens/TopUpBalance";
 import SubmitCrowFunding from "../screens/SubmitCrowFunding";
 import LoginScreen from "../screens/LoginScreen";
+import HistoryJoin from "../screens/HistoryJoin";
+import HistorySubmit from "../screens/HistorySubmit";
 import { isLogin } from "../../query/global";
 
 const Drawer = createDrawerNavigator();
@@ -52,6 +54,16 @@ export default function MyDrawer() {
         }}
       />
       <Drawer.Screen
+        name="TopUpBalance"
+        component={TopUpBalance}
+        options={{
+          title: "Top Up Balance",
+          drawerItemStyle: {
+            display: isLogin() ? "flex" : "none",
+          },
+        }}
+      />
+      <Drawer.Screen
         name="SubmitCrowdFunding"
         component={SubmitCrowFunding}
         options={{
@@ -62,15 +74,26 @@ export default function MyDrawer() {
         }}
       />
       <Drawer.Screen
-        name="TopUpBalance"
-        component={TopUpBalance}
+        name="HistorySubmit"
+        component={HistorySubmit}
         options={{
-          title: "Top Up Balance",
+          title: "History Submit CF",
           drawerItemStyle: {
             display: isLogin() ? "flex" : "none",
           },
         }}
       />
+      <Drawer.Screen
+        name="HistoryJoin"
+        component={HistoryJoin}
+        options={{
+          title: "History Join CF",
+          drawerItemStyle: {
+            display: isLogin() ? "flex" : "none",
+          },
+        }}
+      />
+
       <Drawer.Screen
         name="LoginSreenDrawer"
         component={LoginScreen}
