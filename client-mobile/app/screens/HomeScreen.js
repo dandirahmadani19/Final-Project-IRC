@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import moment from "moment";
 
 const DATA = [
   {
@@ -18,9 +19,13 @@ const DATA = [
     productName:
       "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
     userAmount: 4,
-    currentQuantity: 1200,
-    targetQuantity: 5000,
+    currentQuantity: 300,
+    targetQuantity: 203,
     daysToGo: 6,
+    userName: "Dandi Rahmadani",
+    productPrice: 120000,
+    startDate: "2022-06-17T16:14:16.940Z",
+    expiredDay: 30,
   },
   {
     id: 2,
@@ -32,6 +37,10 @@ const DATA = [
     currentQuantity: 1200,
     targetQuantity: 5000,
     daysToGo: 6,
+    userName: "James Bond",
+    productPrice: 120000,
+    startDate: "2022-06-17T16:14:16.940Z",
+    expiredDay: 18,
   },
   {
     id: 3,
@@ -43,6 +52,10 @@ const DATA = [
     currentQuantity: 1200,
     targetQuantity: 5000,
     daysToGo: 6,
+    userName: "James Bond",
+    productPrice: 120000,
+    startDate: "2022-06-17T16:14:16.940Z",
+    expiredDay: 14,
   },
   {
     id: 4,
@@ -54,29 +67,37 @@ const DATA = [
     currentQuantity: 1200,
     targetQuantity: 5000,
     daysToGo: 6,
+    userName: "James Bond",
+    productPrice: 120000,
+    startDate: "2022-06-17T16:14:16.940Z",
+    expiredDay: 23,
   },
   {
     id: 5,
     imageProduct:
-      "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
+      "https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg",
     productName:
       "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
     userAmount: 4,
-    currentQuantity: 1200,
+    currentQuantity: 3119,
     targetQuantity: 5000,
     daysToGo: 6,
+    userName: "James Bond",
+    productPrice: 120000,
+    startDate: "2022-06-07T16:14:16.940Z",
+    expiredDay: 10,
   },
 ];
 
 const HomeScreen = ({ navigation }) => {
-  const handleOnPress = (id) => {
+  const handleOnPress = (id, data) => {
     console.log(id);
-    navigation.navigate("Detail", { id });
+    navigation.navigate("Detail", { id, data });
   };
   const renderItem = ({ item }) => (
     <CardCrowdFunding
       data={item}
-      onPress={(e, id = item.id) => handleOnPress(id)}
+      onPress={(e, id = item.id, data = item) => handleOnPress(id, data)}
     />
   );
 
