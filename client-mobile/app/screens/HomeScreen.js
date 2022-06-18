@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -10,6 +10,7 @@ import {
 import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
+import { isLogin } from "../../query/global";
 
 const DATA = [
   {
@@ -90,8 +91,11 @@ const DATA = [
 ];
 
 const HomeScreen = ({ navigation }) => {
+  //   console.log(isLogin());
+  useEffect(() => {
+    console.log(isLogin());
+  }, [isLogin()]);
   const handleOnPress = (id, data) => {
-    console.log(id);
     navigation.navigate("Detail", { id, data });
   };
   const renderItem = ({ item }) => (
