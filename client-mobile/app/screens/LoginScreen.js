@@ -18,12 +18,11 @@ import { isLogin } from "../../query/global";
 export default function LoginScreen({ navigation, route }) {
   const [login, { loading, error, data }] = useMutation(LOGIN);
   const [flag, setFlag] = useState(0);
-
+  console.log(navigation);
   const [dataLogin, setDataLogin] = useState({
     email: "",
     password: "",
   });
-
   async function saveAccessToken(key, value) {
     await SecureStore.setItemAsync(key, value);
   }
@@ -44,7 +43,11 @@ export default function LoginScreen({ navigation, route }) {
     } else {
       saveAccessToken("access_token", data.login.access_token);
       isLogin(true);
-      navigation.dispatch(StackActions.popToTop());
+      if (route.name === "LoginScreen") {
+        navigation.replace("Home");
+      } else {
+        navigation.jumpTo("HomeScreen");
+      }
     }
   }
 

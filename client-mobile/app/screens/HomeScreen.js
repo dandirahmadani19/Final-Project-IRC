@@ -25,6 +25,7 @@ const DATA = [
     daysToGo: 6,
     userName: "Dandi Rahmadani",
     productPrice: 120000,
+    categoryProduct: "Produk Tekstil",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 30,
   },
@@ -40,6 +41,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Tas",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 18,
   },
@@ -55,6 +57,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Sepatu",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 14,
   },
@@ -70,6 +73,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Buku Ilmu Pengetahuan",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 23,
   },
@@ -85,16 +89,13 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Produk Tekstil",
     startDate: "2022-06-07T16:14:16.940Z",
     expiredDay: 10,
   },
 ];
 
 const HomeScreen = ({ navigation }) => {
-  //   console.log(isLogin());
-  useEffect(() => {
-    console.log(isLogin());
-  }, [isLogin()]);
   const handleOnPress = (id, data) => {
     navigation.navigate("Detail", { id, data });
   };

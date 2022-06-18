@@ -5,10 +5,10 @@ import { Form, FormItem } from "react-native-form-component";
 export default function SubmitCrowFunding() {
   const [dataSubmit, setDataSubmit] = useState({
     productName: "",
-    targetQuantity: 0,
-    initialProductPrice: 0,
-    initialQuantity: 0,
-    expiredDay: 0,
+    targetQuantity: null,
+    initialProductPrice: null,
+    initialQuantity: null,
+    expiredDay: null,
     manufactureName: "",
     linkProduct: "",
     imageProduct: "",
