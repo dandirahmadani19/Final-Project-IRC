@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { Text, View, Image } from "react-native";
 import NumberFormat from "react-number-format";
 import React from "react";
 import {
@@ -8,6 +8,7 @@ import {
 } from "@react-navigation/drawer";
 import * as SecureStore from "expo-secure-store";
 import { isLogin } from "../../query/global";
+import { ActivityIndicator } from "react-native";
 
 export default function CustomDrawerContent(props) {
   return (
@@ -18,7 +19,7 @@ export default function CustomDrawerContent(props) {
           height: isLogin() ? 200 : 120,
           marginBottom: -25,
           paddingTop: 50,
-          paddingHorizontal: 10,
+          paddingHorizontal: 15,
         }}
       >
         {isLogin() && (
@@ -70,7 +71,7 @@ export default function CustomDrawerContent(props) {
                 marginBottom: 5,
               }}
             >
-              Balance
+              Your Balance
             </Text>
             <NumberFormat
               value={1200000}
@@ -95,8 +96,8 @@ export default function CustomDrawerContent(props) {
           <Text
             style={{
               color: "#fff",
-              fontSize: 19,
-              fontWeight: "800",
+              fontSize: 18,
+              fontWeight: "700",
             }}
           >
             Import Require Community
