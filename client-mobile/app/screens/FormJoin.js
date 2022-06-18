@@ -3,9 +3,11 @@ import React from "react";
 import { Form, FormItem } from "react-native-form-component";
 import { useState } from "react";
 
-export default function FormJoin() {
+export default function FormJoin({ route }) {
+  const idCrowdFunding = route.params.data.id;
+
   const [quantity, setQuantity] = useState("");
-  const handleSubmit = () => {};
+
   return (
     <View
       style={{

@@ -1,6 +1,6 @@
-const { tokenMakerFromPayload } = require('../helpers/helperJwt');
-const { User, Admin } = require('../models');
-const { comparePassowrd } = require('../helpers/helperBcrypt');
+const { tokenMakerFromPayload } = require("../helpers/helperJwt");
+const { User, Admin } = require("../models");
+const { comparePassowrd } = require("../helpers/helperBcrypt");
 
 class UserController {
   static async getAll(req, res, next) {
@@ -22,7 +22,7 @@ class UserController {
         },
       });
       if (findUser) {
-        throw { name: 'EMAIL_ALREADY_EXIST' };
+        throw { name: "EMAIL_ALREADY_EXIST" };
       }
       const user = await User.create({
         firstName,
@@ -39,7 +39,7 @@ class UserController {
         email: user.email,
         phoneNumber: user.phoneNumber,
         address: user.address,
-        message: 'User created successfully',
+        message: "User created successfully",
       });
     } catch (error) {
       next(error);
@@ -55,10 +55,10 @@ class UserController {
         },
       });
       if (!user) {
-        throw { name: 'USER_NOT_FOUND' };
+        throw { name: "USER_NOT_FOUND" };
       }
       if (!comparePassowrd(password, user.password)) {
-        throw { name: 'PASSWORD_NOT_MATCH' };
+        throw { name: "PASSWORD_NOT_MATCH" };
       }
       const payload = {
         id: user.id,
@@ -87,10 +87,10 @@ class UserController {
         },
       });
       if (!admin) {
-        throw { name: 'ADMIN_NOT_FOUND' };
+        throw { name: "ADMIN_NOT_FOUND" };
       }
       if (!comparePassowrd(password, admin.password)) {
-        throw { name: 'PASSWORD_NOT_MATCH' };
+        throw { name: "PASSWORD_NOT_MATCH" };
       }
       const payload = {
         id: admin.id,
@@ -117,7 +117,7 @@ class UserController {
         },
       });
       if (findAdmin) {
-        throw { name: 'EMAIL_ALREADY_EXIST' };
+        throw { name: "EMAIL_ALREADY_EXIST" };
       }
       const admin = await Admin.create({
         username,
@@ -132,7 +132,7 @@ class UserController {
         email: admin.email,
         phoneNumber: admin.phoneNumber,
         address: admin.address,
-        message: 'Admin created successfully',
+        message: "Admin created successfully",
       });
     } catch (error) {
       next(error);

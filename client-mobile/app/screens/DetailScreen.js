@@ -6,14 +6,16 @@ import {
   View,
   TouchableHighlight,
   ProgressBarAndroid,
+  Alert,
 } from "react-native";
 import React from "react";
 import { Entypo, FontAwesome5 } from "@expo/vector-icons/";
 import NumberFormat from "react-number-format";
 import moment from "moment";
+import * as SecureStore from "expo-secure-store";
 
 export default function DetailScreen({ route, navigation }) {
-  const id = route.params.id;
+  //   const id = route.params.id;
   const data = route.params.data;
 
   //   const data = {
@@ -30,6 +32,18 @@ export default function DetailScreen({ route, navigation }) {
   //     startDate: "2022-06-07T16:14:16.940Z",
   //     expiredDay: 11,
   //   };
+
+  async function isLogin(key) {
+    try {
+      let result = await SecureStore.getItemAsync(key);
+      if (result) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getDaysToGo = () => {
     const endDate = moment(data.startDate)
@@ -54,8 +68,17 @@ export default function DetailScreen({ route, navigation }) {
     return true;
   };
 
-  const handleOnPress = (e) => {
-    navigation.navigate("FormJoin", { data });
+  const handleOnPress = async () => {
+    try {
+      if (await isLogin("access_token")) {
+        navigation.navigate("FormJoin", { data });
+      } else {
+        Alert.alert("Warning", "Please Login First !!");
+        navigation.navigate("LoginScreen", { data });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <ScrollView>
