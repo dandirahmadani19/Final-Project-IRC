@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./app/screens/HomeScreen";
 import DetailScreen from "./app/screens/DetailScreen";
+import FormJoin from "./app/screens/FormJoin";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -44,6 +45,13 @@ export default function App() {
           }}
         />
         <Stack.Screen name="Detail" component={DetailScreen} />
+        <Stack.Screen
+          name="FormJoin"
+          component={FormJoin}
+          options={{
+            title: "Form Join",
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

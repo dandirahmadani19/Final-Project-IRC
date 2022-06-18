@@ -7,8 +7,27 @@ import {
   TouchableHighlight,
 } from "react-native";
 import React from "react";
+import NumberFormat from "react-number-format";
+import moment from "moment";
 
 export default function CardCrowdFunding({ data, onPress }) {
+  const getDaysToGo = () => {
+    const endDate = moment(data.startDate)
+      .add(data.expiredDay, "days")
+      .format("YYYYMMDD");
+    return moment(endDate).endOf("day").fromNow();
+  };
+
+  const isEndDate = () => {
+    const endDate = new Date(
+      moment(data.startDate).add(data.expiredDay, "days").format("YYYY-MM-DD")
+    );
+    if (moment(new Date()).isBefore(endDate)) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <TouchableHighlight
       onPress={onPress}
@@ -30,7 +49,7 @@ export default function CardCrowdFunding({ data, onPress }) {
           }}
           style={{
             width: "100%",
-            height: 250,
+            height: 280,
             resizeMode: "cover",
           }}
         />
@@ -39,17 +58,78 @@ export default function CardCrowdFunding({ data, onPress }) {
             fontSize: 15,
             fontWeight: "700",
             textAlign: "justify",
-            marginVertical: 10,
+            marginTop: 10,
           }}
         >
           {data.productName}
         </Text>
-        <ProgressBarAndroid
-          styleAttr="Horizontal"
-          indeterminate={false}
-          progress={0.5}
-          color="#15803d"
-        />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "flex-end",
+            marginTop: 5,
+            marginBottom: 10,
+          }}
+        >
+          <NumberFormat
+            value={data.productPrice}
+            displayType="text"
+            thousandSeparator={true}
+            prefix="Rp "
+            renderText={(value) => (
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "700",
+                  color: "#64748b",
+                  marginEnd: 5,
+                }}
+              >
+                {value}
+              </Text>
+            )}
+          />
+          <Text
+            style={{
+              fontSize: 11,
+              marginBottom: 4,
+              color: "#64748b",
+            }}
+          >
+            / Pcs
+          </Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <ProgressBarAndroid
+            styleAttr="Horizontal"
+            indeterminate={false}
+            progress={data.currentQuantity / data.targetQuantity}
+            color="#15803d"
+            style={{
+              flex: 1,
+              marginEnd: 10,
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "700",
+              color: "#15803d",
+            }}
+          >
+            {(data.currentQuantity * 100) % data.targetQuantity === 0
+              ? (data.currentQuantity * 100) / data.targetQuantity
+              : ((data.currentQuantity * 100) / data.targetQuantity).toFixed(2)}
+            %
+          </Text>
+        </View>
+
         <View
           style={{
             marginVertical: 10,
@@ -133,43 +213,6 @@ export default function CardCrowdFunding({ data, onPress }) {
               </Text>
             </View>
           </View>
-          {/* <View>
-            <Text
-              style={{
-                color: "#94a3b8",
-                fontSize: 11,
-                marginBottom: 5,
-              }}
-            >
-              User Join
-            </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "900",
-                  color: "#15803d",
-                  marginEnd: 5,
-                }}
-              >
-                {data.userAmount}
-              </Text>
-              <Text
-                style={{
-                  color: "#94a3b8",
-                  fontSize: 11,
-                }}
-              >
-                People
-              </Text>
-            </View>
-          </View> */}
           <View>
             <Text
               style={{
@@ -178,7 +221,7 @@ export default function CardCrowdFunding({ data, onPress }) {
                 marginBottom: 5,
               }}
             >
-              Expired Day
+              {isEndDate() ? "Has Finished " : "Will End "}
             </Text>
             <View
               style={{
@@ -195,15 +238,7 @@ export default function CardCrowdFunding({ data, onPress }) {
                   marginEnd: 5,
                 }}
               >
-                {data.daysToGo}
-              </Text>
-              <Text
-                style={{
-                  color: "#94a3b8",
-                  fontSize: 11,
-                }}
-              >
-                Days To Go
+                {getDaysToGo()}
               </Text>
             </View>
           </View>
