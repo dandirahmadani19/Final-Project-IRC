@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { ApolloProvider } from "@apollo/client";
 import client from "./config/apolloClient";
@@ -36,7 +37,7 @@ export default function App() {
             name="FormJoin"
             component={FormJoin}
             options={{
-              title: "Form Join",
+              title: 'Form Join',
             }}
           />
           <Stack.Screen

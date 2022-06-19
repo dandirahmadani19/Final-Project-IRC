@@ -17,7 +17,6 @@ import { isLogin } from "../../query/global";
 
 export default function DetailScreen({ route, navigation }) {
   const data = route.params.data;
-
   const getDaysToGo = () => {
     const endDate = moment(data.startDate)
       .add(data.expiredDay, "days")
@@ -53,7 +52,7 @@ export default function DetailScreen({ route, navigation }) {
     <ScrollView>
       <Image
         source={{
-          uri: data.imageProduct,
+          uri: data.productImage,
         }}
         style={{
           width: "100%",
@@ -115,7 +114,7 @@ export default function DetailScreen({ route, navigation }) {
                 color: "#64748b",
               }}
             >
-              / pcs
+              {data.finalProductPrice} / pcs
             </Text>
           </View>
           <View
@@ -179,7 +178,7 @@ export default function DetailScreen({ route, navigation }) {
                   fontWeight: "700",
                 }}
               >
-                {data.userName}
+                {data.User.firstName} {data.User.lastName}
               </Text>
             </View>
           </View>
@@ -384,7 +383,7 @@ export default function DetailScreen({ route, navigation }) {
                   marginEnd: 5,
                 }}
               >
-                {data.userAmount}
+                {data.CrowdFundingProducts.length + 1}
               </Text>
               <Text
                 style={{
