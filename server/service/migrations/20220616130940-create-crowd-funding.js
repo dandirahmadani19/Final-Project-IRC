@@ -53,7 +53,6 @@ module.exports = {
       },
       productImage: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       initialQuantity: {
         type: Sequelize.INTEGER,
@@ -61,7 +60,6 @@ module.exports = {
       },
       expiredDay: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
       createdAt: {
         allowNull: false,
