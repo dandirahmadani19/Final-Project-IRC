@@ -1,5 +1,5 @@
-const routesCrowdFunding = require('express').Router();
-const Controller = require("../controllers/crowdfundingController")
+const routesCrowdFunding = require("express").Router();
+const Controller = require("../controllers/crowdfundingController");
 
 
 routesCrowdFunding.get('/', Controller.getAllCrowdFunding);
