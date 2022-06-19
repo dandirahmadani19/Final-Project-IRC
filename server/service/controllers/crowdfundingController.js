@@ -86,7 +86,7 @@ class CrowdFundingController {
 
   static async expiredTime(req, res, next) {
     try {
-      CronJob.schedule('35 11 * * *', async () => {
+      CronJob.schedule('25 14 * * *', async () => {
         try {
           const data = await CrowdFunding.findAll({})
           const result = data.map(item => {
@@ -94,7 +94,6 @@ class CrowdFundingController {
               const datadate = expiredDate(item.expiredDay, item.startDate)
               const dateNow = new Date().toISOString().split('T')[0]
               if (datadate === dateNow) {
-                console.log("expired pak");
                 CrowdFunding.update({
                   status: "Failed",
                 }, { where: { id: item.id } })
