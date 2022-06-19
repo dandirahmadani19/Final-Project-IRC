@@ -27,7 +27,6 @@ export default function CardCrowdFunding({ data, onPress }) {
     }
     return true;
   };
-
   return (
     <TouchableHighlight
       onPress={onPress}
@@ -45,7 +44,7 @@ export default function CardCrowdFunding({ data, onPress }) {
       >
         <Image
           source={{
-            uri: data.imageProduct,
+            uri: data.productImage,
           }}
           style={{
             width: "100%",
@@ -84,7 +83,7 @@ export default function CardCrowdFunding({ data, onPress }) {
               }}
             >
               <NumberFormat
-                value={data.productPrice}
+                value={data.finalProductPrice}
                 displayType="text"
                 thousandSeparator={true}
                 prefix="Rp "

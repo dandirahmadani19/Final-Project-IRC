@@ -1,9 +1,10 @@
 const { ApolloServer } = require("apollo-server");
 
 const { typeDefUser, resolverUser } = require("./schemas/user");
+const { typeDefCrowdFunding, resolverCrowdFunding } = require("./schemas/crowdFunding");
 const server = new ApolloServer({
-  typeDefs: [typeDefUser],
-  resolvers: [resolverUser],
+  typeDefs: [typeDefUser ,typeDefCrowdFunding],
+  resolvers: [resolverUser, resolverCrowdFunding],
   csrfPrevention: true,
   cache: "bounded",
 });

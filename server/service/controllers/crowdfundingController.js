@@ -1,14 +1,39 @@
 const e = require("express");
-const {
-  CrowdFunding,
-  CrowdFundingProduct,
-  Balance,
-  sequelize,
-} = require("../models");
+
+const { Op } = require("sequelize");
+const { CrowdFunding, CrowdFundingProduct, sequelize, User, Balance } = require("../models");
+
+
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 
 class CrowdFundingController {
+  static async getAllCrowdFunding(req, res, next) {
+    try {
+      const data = await CrowdFunding.findAll({
+        where: {
+          [Op.or]: [{ status: 'Open' }, { status: 'Failed' }, { status: 'Success' }]
+        },
+        include: [{
+          model: CrowdFundingProduct,
+          attributes: {
+            exclude: ['CrowdFundingId', 'quantityToBuy', 'totalPrice', 'paymentStatus']
+          },
+        },
+        {
+          model: User,
+          attributes: {
+            exclude: ['email', 'password', 'phoneNumber', 'address']
+          }
+        }],
+      })
+      res.status(200).json(data)
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
   static async create(req, res, next) {
     try {
       let code = 200;
@@ -131,7 +156,7 @@ class CrowdFundingController {
 
   static async expiredTime(req, res, next) {
     try {
-      CronJob.schedule("25 14 * * *", async () => {
+      CronJob.schedule("59 23 * * *", async () => {
         try {
           const data = await CrowdFunding.findAll({});
           const result = data.map((item) => {

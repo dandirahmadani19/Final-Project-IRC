@@ -5,97 +5,21 @@ import {
   StyleSheet,
   StatusBar,
   View,
-  Text,
+  Text
 } from "react-native";
 import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
 import { isLogin } from "../../query/global";
-
-const DATA = [
-  {
-    id: 1,
-    imageProduct:
-      "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-    productName:
-      "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-    userAmount: 4,
-    currentQuantity: 300,
-    targetQuantity: 203,
-    daysToGo: 6,
-    userName: "Dandi Rahmadani",
-    productPrice: 120000,
-    categoryProduct: "Produk Tekstil",
-    startDate: "2022-06-17T16:14:16.940Z",
-    expiredDay: 30,
-  },
-  {
-    id: 2,
-    imageProduct:
-      "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-    productName:
-      "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-    userAmount: 4,
-    currentQuantity: 1200,
-    targetQuantity: 5000,
-    daysToGo: 6,
-    userName: "James Bond",
-    productPrice: 120000,
-    categoryProduct: "Tas",
-    startDate: "2022-06-17T16:14:16.940Z",
-    expiredDay: 18,
-  },
-  {
-    id: 3,
-    imageProduct:
-      "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-    productName:
-      "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-    userAmount: 4,
-    currentQuantity: 1200,
-    targetQuantity: 5000,
-    daysToGo: 6,
-    userName: "James Bond",
-    productPrice: 120000,
-    categoryProduct: "Sepatu",
-    startDate: "2022-06-17T16:14:16.940Z",
-    expiredDay: 14,
-  },
-  {
-    id: 4,
-    imageProduct:
-      "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-    productName:
-      "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-    userAmount: 4,
-    currentQuantity: 1200,
-    targetQuantity: 5000,
-    daysToGo: 6,
-    userName: "James Bond",
-    productPrice: 120000,
-    categoryProduct: "Buku Ilmu Pengetahuan",
-    startDate: "2022-06-17T16:14:16.940Z",
-    expiredDay: 23,
-  },
-  {
-    id: 5,
-    imageProduct:
-      "https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg",
-    productName:
-      "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-    userAmount: 4,
-    currentQuantity: 3119,
-    targetQuantity: 5000,
-    daysToGo: 6,
-    userName: "James Bond",
-    productPrice: 120000,
-    categoryProduct: "Produk Tekstil",
-    startDate: "2022-06-07T16:14:16.940Z",
-    expiredDay: 10,
-  },
-];
+import { useQuery } from "@apollo/client";
+import { GET_CROWDFUNDING } from "../../query/crowdFunding";
 
 const HomeScreen = ({ navigation }) => {
+  const { loading, error, data } = useQuery(GET_CROWDFUNDING);
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error!</Text>;
+  const DATA = data.getCrowdFunfing
   const handleOnPress = (id, data) => {
     navigation.navigate("Detail", { id, data });
   };
