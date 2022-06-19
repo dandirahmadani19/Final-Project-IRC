@@ -4,7 +4,7 @@ import {
   View,
   Image,
   ProgressBarAndroid,
-  TouchableHighlight,
+  TouchableOpacity,
 } from "react-native";
 import React from "react";
 import NumberFormat from "react-number-format";
@@ -29,11 +29,7 @@ export default function CardCrowdFunding({ data, onPress }) {
   };
 
   return (
-    <TouchableHighlight
-      onPress={onPress}
-      underlayColor="#cbd5e1"
-      activeOpacity={0.9}
-    >
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
       <View
         style={{
           backgroundColor: "#fff",
@@ -275,7 +271,7 @@ export default function CardCrowdFunding({ data, onPress }) {
           </View>
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 }
 
