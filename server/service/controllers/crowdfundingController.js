@@ -1,11 +1,20 @@
 const e = require("express");
-const { CrowdFunding, CrowdFundingProduct, sequelize } = require("../models");
+const {
+  CrowdFunding,
+  CrowdFundingProduct,
+  Balance,
+  sequelize,
+} = require("../models");
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 
 class CrowdFundingController {
   static async create(req, res, next) {
     try {
+      let code = 200;
+      let message = "";
+      let data = {};
+
       const inputDataCrowdFunding = {
         UserId: req.body.UserId,
         productName: req.body.productName,
@@ -18,11 +27,34 @@ class CrowdFundingController {
         status: "pending",
       };
 
-      const newCrowdFunding = await CrowdFunding.create(inputDataCrowdFunding);
+      const dataBalance = await Balance.findOne({
+        where: {
+          UserId: req.body.UserId,
+        },
+      });
 
-      res.status(200).json({
-        message: "success create crowdfunding",
-        data: newCrowdFunding,
+      if (dataBalance) {
+        const { initialProductPrice } = req.body;
+        const minimumBalance = initialProductPrice * 0.2;
+        if (dataBalance.amount < minimumBalance) {
+          code = 400;
+          message = "Balance is not enough";
+        } else {
+          const newCrowdFunding = await CrowdFunding.create(
+            inputDataCrowdFunding
+          );
+          code = 201;
+          message = "CrowdFunding created";
+          data = newCrowdFunding;
+        }
+      } else {
+        code = 400;
+        message = "Balance is not enough";
+      }
+
+      res.status(code).json({
+        message: message,
+        data: data,
       });
     } catch (err) {
       next(err);
