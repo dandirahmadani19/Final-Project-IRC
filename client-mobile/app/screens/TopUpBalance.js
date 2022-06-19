@@ -4,15 +4,16 @@ import { Form, FormItem } from 'react-native-form-component';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
 
+const baseUrl = 'https://16f4-139-194-253-225.ap.ngrok.io';
+
 export default function TopUpBalance() {
   const [amount, setAmount] = useState();
   const [openWebView, setOpenWebView] = useState(false);
   const [url, setUrl] = useState();
-  // const webview = null;
   const handleTopUp = () => {
     console.log(amount);
     axios
-      .post('https://c0c0-149-113-153-48.ap.ngrok.io/payment', {
+      .post(`${baseUrl}/payment`, {
         addAmount: amount,
       })
       .then((res) => {
@@ -25,36 +26,30 @@ export default function TopUpBalance() {
       });
     // disini handle paymentnya
   };
-  //note promise handle berjalan 2 kali
-  //munkin penyebab setOpenView tidak di trigger
   //payment controller dalam posisi hardcode jangan lupa
   //
   const handleWebViewNavigationStateChange = (e) => {
     if (e.url.includes('&status_code=200&transaction_status=capture')) {
       // push notif sukses
       axios
-        .post('https://c0c0-149-113-153-48.ap.ngrok.io/payment/success', {
-          addAmount: Number(amount),
+        .post(`${baseUrl}/payment/success`, {
+          addAmount: amount,
         })
         .then((res) => {
           console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
-        })
-        .finally(() => {
-          e.stop;
-          setOpenWebView(false);
-          setAmount('');
-          // kembali ke home
         });
+      setAmount('');
+      setOpenWebView(false);
     }
     if (e.url.includes('error')) {
       // push notif error
-
       setOpenWebView(false);
     }
   };
+
   if (openWebView) {
     return (
       <WebView

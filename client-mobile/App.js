@@ -1,13 +1,13 @@
-import * as React from "react";
-import { ApolloProvider } from "@apollo/client";
-import client from "./config/apolloClient";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DetailScreen from "./app/screens/DetailScreen";
-import FormJoin from "./app/screens/FormJoin";
-import LoginScreen from "./app/screens/LoginScreen";
-import RegisterScreen from "./app/screens/RegisterScreen";
-import MyDrawer from "./app/navigation/MyDrawer";
+import * as React from 'react';
+import { ApolloProvider } from '@apollo/client';
+import client from './config/apolloClient';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import DetailScreen from './app/screens/DetailScreen';
+import FormJoin from './app/screens/FormJoin';
+import LoginScreen from './app/screens/LoginScreen';
+import RegisterScreen from './app/screens/RegisterScreen';
+import MyDrawer from './app/navigation/MyDrawer';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +28,7 @@ export default function App() {
             name="FormJoin"
             component={FormJoin}
             options={{
-              title: "Form Join",
+              title: 'Form Join',
             }}
           />
           <Stack.Screen
