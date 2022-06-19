@@ -1,6 +1,7 @@
 const e = require("express");
 const { CrowdFunding, CrowdFundingProduct, sequelize } = require("../models");
-
+const expiredDate = require("../helpers/expiredDate");
+const CronJob = require('node-cron')
 
 class CrowdFundingController {
   static async create(req, res, next) {
@@ -37,7 +38,6 @@ class CrowdFundingController {
       const { id } = req.params
       const { quantityToBuy, totalPrice, paymentStatus } = req.body
       const { targetQuantity, currentQuantity } = await CrowdFunding.findByPk(id)
-      let updatequantity;
       const sumQty = targetQuantity - currentQuantity
       if (+quantityToBuy > sumQty) {
         throw { name: "QTY_EXCEEDED" }
@@ -49,7 +49,7 @@ class CrowdFundingController {
         totalPrice,
         paymentStatus
       }, { transaction: t })
-      
+
       const nUpdated = await CrowdFunding.update({
         currentQuantity: createQty.quantityToBuy + currentQuantity
       }, {
@@ -82,6 +82,33 @@ class CrowdFundingController {
       t.rollback()
     }
 
+  }
+
+  static async expiredTime(req, res, next) {
+    try {
+      CronJob.schedule('35 11 * * *', async () => {
+        try {
+          const data = await CrowdFunding.findAll({})
+          const result = data.map(item => {
+            if (item.expiredDay > 0 && item.status === "Open" && item.startDate !== null) {
+              const datadate = expiredDate(item.expiredDay, item.startDate)
+              const dateNow = new Date().toISOString().split('T')[0]
+              if (datadate === dateNow) {
+                console.log("expired pak");
+                CrowdFunding.update({
+                  status: "failed",
+                }, { where: { id: item.id } })
+              }
+
+            }
+          })
+        } catch (error) {
+          console.log(error);
+        }
+      })
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
