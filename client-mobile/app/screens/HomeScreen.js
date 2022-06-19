@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -10,6 +10,7 @@ import {
 import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
+import { isLogin } from "../../query/global";
 
 const DATA = [
   {
@@ -24,6 +25,7 @@ const DATA = [
     daysToGo: 6,
     userName: "Dandi Rahmadani",
     productPrice: 120000,
+    categoryProduct: "Produk Tekstil",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 30,
   },
@@ -39,6 +41,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Tas",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 18,
   },
@@ -54,6 +57,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Sepatu",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 14,
   },
@@ -69,6 +73,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Buku Ilmu Pengetahuan",
     startDate: "2022-06-17T16:14:16.940Z",
     expiredDay: 23,
   },
@@ -84,6 +89,7 @@ const DATA = [
     daysToGo: 6,
     userName: "James Bond",
     productPrice: 120000,
+    categoryProduct: "Produk Tekstil",
     startDate: "2022-06-07T16:14:16.940Z",
     expiredDay: 10,
   },
@@ -91,7 +97,6 @@ const DATA = [
 
 const HomeScreen = ({ navigation }) => {
   const handleOnPress = (id, data) => {
-    console.log(id);
     navigation.navigate("Detail", { id, data });
   };
   const renderItem = ({ item }) => (

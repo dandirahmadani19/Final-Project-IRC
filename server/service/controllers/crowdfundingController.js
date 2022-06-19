@@ -96,7 +96,7 @@ class CrowdFundingController {
               if (datadate === dateNow) {
                 console.log("expired pak");
                 CrowdFunding.update({
-                  status: "failed",
+                  status: "Failed",
                 }, { where: { id: item.id } })
               }
 

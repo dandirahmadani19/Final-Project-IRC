@@ -6,30 +6,17 @@ import {
   View,
   TouchableHighlight,
   ProgressBarAndroid,
+  Alert,
 } from "react-native";
 import React from "react";
 import { Entypo, FontAwesome5 } from "@expo/vector-icons/";
 import NumberFormat from "react-number-format";
 import moment from "moment";
+import * as SecureStore from "expo-secure-store";
+import { isLogin } from "../../query/global";
 
 export default function DetailScreen({ route, navigation }) {
-  const id = route.params.id;
   const data = route.params.data;
-
-  //   const data = {
-  //     id: 1,
-  //     imageProduct:
-  //       "https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg",
-  //     productName:
-  //       "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-  //     userAmount: 4,
-  //     currentQuantity: 20,
-  //     targetQuantity: 203,
-  //     userName: "James Bond",
-  //     productPrice: 120000,
-  //     startDate: "2022-06-07T16:14:16.940Z",
-  //     expiredDay: 11,
-  //   };
 
   const getDaysToGo = () => {
     const endDate = moment(data.startDate)
@@ -54,8 +41,13 @@ export default function DetailScreen({ route, navigation }) {
     return true;
   };
 
-  const handleOnPress = (e) => {
-    navigation.navigate("FormJoin", { data });
+  const handleOnPress = () => {
+    if (isLogin()) {
+      navigation.navigate("FormJoin", { data });
+    } else {
+      Alert.alert("Warning", "Please Login First !!");
+      navigation.navigate("LoginScreen", { data });
+    }
   };
   return (
     <ScrollView>
@@ -86,40 +78,62 @@ export default function DetailScreen({ route, navigation }) {
         </Text>
         <View
           style={{
-            display: "flex",
             flexDirection: "row",
-            alignItems: "flex-end",
+            justifyContent: "space-between",
             marginTop: 5,
-            marginBottom: 10,
+            marginBottom: 20,
           }}
         >
-          <NumberFormat
-            value={data.productPrice}
-            displayType="text"
-            thousandSeparator={true}
-            prefix="Rp. "
-            renderText={(value) => (
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "700",
-                  color: "#15803d",
-                  marginEnd: 5,
-                }}
-              >
-                {value}
-              </Text>
-            )}
-          />
-          <Text
+          <View
             style={{
-              fontSize: 11,
-              marginBottom: 4,
-              color: "#64748b",
+              flexDirection: "row",
+              alignItems: "flex-end",
             }}
           >
-            / pcs
-          </Text>
+            <NumberFormat
+              value={data.productPrice}
+              displayType="text"
+              thousandSeparator={true}
+              prefix="Rp. "
+              renderText={(value) => (
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "700",
+                    color: "#15803d",
+                    marginEnd: 5,
+                  }}
+                >
+                  {value}
+                </Text>
+              )}
+            />
+            <Text
+              style={{
+                fontSize: 11,
+                marginBottom: 4,
+                color: "#64748b",
+              }}
+            >
+              / pcs
+            </Text>
+          </View>
+          <View
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              backgroundColor: "#64748b",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 13,
+              }}
+            >
+              {data.categoryProduct}
+            </Text>
+          </View>
         </View>
         <View
           style={{
@@ -174,7 +188,7 @@ export default function DetailScreen({ route, navigation }) {
               style={{
                 paddingHorizontal: 30,
                 paddingVertical: 10,
-                backgroundColor: "#94a3b8",
+                backgroundColor: "#dc2626",
               }}
             >
               <Text

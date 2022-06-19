@@ -10,14 +10,14 @@ class ControllerPayment {
   static async transaction(req, res, next) {
     try {
       // const { id, email } = req.loginfo;
-      // const { addAmount } = req.body;
+      const { addAmount } = req.body;
 
       const transactionCode = `TRX${Math.floor(Math.random() * 1000000)}`;
 
       let parameter = {
         transaction_details: {
           order_id: `${Date.now()}-${transactionCode}`,
-          gross_amount: '100000',
+          gross_amount: addAmount,
         },
       };
 
@@ -44,19 +44,20 @@ class ControllerPayment {
 
   static async addBalance(req, res, next) {
     try {
-      const { id } = req.loginfo; //ambil id dari authentication
+      // const { id } = req.loginfo; //ambil id dari authentication
       const { addAmount } = req.body; //ambil amount dari body
+      console.log(addAmount, '<<<<<<<< addAmount');
 
       // const { userId } = req.params;
       const BalanceCheck = await Balance.findOne({
         where: {
-          UserId: id,
+          UserId: 1,
         },
       });
       if (!BalanceCheck) {
         await Balance.create({
-          UserId: id,
-          amount: 0,
+          UserId: 1,
+          amount: addAmount,
         });
       } else {
         await Balance.update(
@@ -65,7 +66,7 @@ class ControllerPayment {
           },
           {
             where: {
-              UserId: id,
+              UserId: 1,
             },
           }
         );
