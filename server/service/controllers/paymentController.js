@@ -62,7 +62,7 @@ class ControllerPayment {
       } else {
         await Balance.update(
           {
-            amount: BalanceCheck.amount + addAmount,
+            amount: Number(BalanceCheck.amount) + Number(addAmount),
           },
           {
             where: {
