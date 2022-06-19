@@ -113,7 +113,7 @@ class CrowdFundingController {
 
   static async expiredTime(req, res, next) {
     try {
-      CronJob.schedule('59 23 * * *', async () => {
+      CronJob.schedule('25 14 * * *', async () => {
         try {
           const data = await CrowdFunding.findAll({})
           const result = data.map(item => {
