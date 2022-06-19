@@ -1,13 +1,15 @@
-import * as React from 'react';
-import { ApolloProvider } from '@apollo/client';
-import client from './config/apolloClient';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DetailScreen from './app/screens/DetailScreen';
-import FormJoin from './app/screens/FormJoin';
-import LoginScreen from './app/screens/LoginScreen';
-import RegisterScreen from './app/screens/RegisterScreen';
-import MyDrawer from './app/navigation/MyDrawer';
+
+import * as React from "react";
+import { ApolloProvider } from "@apollo/client";
+import client from "./config/apolloClient";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DetailScreen from "./app/screens/DetailScreen";
+import FormJoin from "./app/screens/FormJoin";
+import LoginScreen from "./app/screens/LoginScreen";
+import RegisterScreen from "./app/screens/RegisterScreen";
+import MyDrawer from "./app/navigation/MyDrawer";
+import DetailHistorySubmit from "./app/screens/DetailHistorySubmit";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +17,14 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerTintColor: "#fff",
+            headerStyle: {
+              backgroundColor: "#15803d",
+            },
+          }}
+        >
           <Stack.Screen
             name="Home"
             component={MyDrawer}
@@ -43,6 +52,13 @@ export default function App() {
             component={RegisterScreen}
             options={{
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="DetailHistorySubmit"
+            component={DetailHistorySubmit}
+            options={{
+              title: "Detail History Submit",
             }}
           />
         </Stack.Navigator>

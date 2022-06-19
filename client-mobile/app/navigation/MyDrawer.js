@@ -14,7 +14,6 @@ import { isLogin } from "../../query/global";
 const Drawer = createDrawerNavigator();
 
 export default function MyDrawer() {
-  const [navigate, setNavigate] = React.useState({});
   return (
     <Drawer.Navigator
       useLegacyImplementation
@@ -23,26 +22,15 @@ export default function MyDrawer() {
         drawerActiveTintColor: "#fff",
         drawerActiveBackgroundColor: "#15803d",
         headerTitleStyle: {
-          marginLeft: -15,
-          color: "#fff",
+          marginLeft: -20,
         },
+        headerTintColor: "#fff",
         headerStyle: {
           backgroundColor: "#15803d",
         },
         drawerType: "back",
-        headerLeft: () => (
-          <TouchableOpacity onPress={(e) => navigate.toggleDrawer()}>
-            <Ionicons
-              name="menu"
-              color="#fff"
-              size={30}
-              style={{ marginHorizontal: 10 }}
-            />
-          </TouchableOpacity>
-        ),
       }}
       drawerContent={(props) => {
-        setNavigate(props.navigation);
         return <CustomDrawerContent {...props} />;
       }}
     >
