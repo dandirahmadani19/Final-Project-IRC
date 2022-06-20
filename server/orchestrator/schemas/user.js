@@ -26,7 +26,7 @@ const typeDefUser = gql`
     address: String
     phoneNumber: String
   }
-  
+
   type Mutation {
     login(dataUser: dataUser): User
   }

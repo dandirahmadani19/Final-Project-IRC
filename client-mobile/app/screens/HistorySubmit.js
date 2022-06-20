@@ -86,13 +86,13 @@ export default function HistorySubmit({ navigation }) {
       expiredDay: 30,
     },
   ];
-  const handleOnPress = (data) => {
-    navigation.navigate("DetailHistorySubmit", { data });
+  const handleOnPress = (data, id) => {
+    navigation.navigate("DetailHistorySubmit", { data, id });
   };
   const renderItem = ({ item }) => (
     <CardHistoryCrowdFunding
       data={item}
-      onPress={(e, data = item) => handleOnPress(data)}
+      onPress={(e, data = item) => handleOnPress(data, id)}
     />
   );
   return (
