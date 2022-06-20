@@ -7,4 +7,5 @@ const Controller = require("../controllers/paymentController");
 // router.use(Authentication);
 router.post("/", Controller.transaction);
 router.post("/success", Controller.addBalance);
+
 module.exports = router;
