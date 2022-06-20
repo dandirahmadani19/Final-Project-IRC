@@ -33,7 +33,7 @@ const typeDefCrowdFunding = gql`
   }
 
   type Query {
-    getCrowdFunfing: [crowdFunding]
+    getCrowdFunding: [crowdFunding]
   }
 
   input dataUser {
@@ -52,7 +52,7 @@ const typeDefCrowdFunding = gql`
 
 const resolverCrowdFunding = {
   Query: {
-    getCrowdFunfing: async () => {
+    getCrowdFunding: async () => {
       try {
         const { data } = await axios.get(`${process.env.BASE_URL}/crowdFund`);
         return data;
