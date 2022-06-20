@@ -1,10 +1,16 @@
-import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
-import React, { useState } from "react";
-import { Form, FormItem } from "react-native-form-component";
-import { WebView } from "react-native-webview";
-import axios from "axios";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  AsyncStorage,
+} from 'react-native';
+import React, { useState } from 'react';
+import { Form, FormItem } from 'react-native-form-component';
+import { WebView } from 'react-native-webview';
+import axios from 'axios';
 
-const baseUrl = "https://8f85-114-122-14-122.ap.ngrok.io";
+const baseUrl = 'https://8f85-114-122-14-122.ap.ngrok.io';
 
 export default function TopUpBalance() {
   const [amount, setAmount] = useState();
@@ -29,22 +35,31 @@ export default function TopUpBalance() {
   //payment controller dalam posisi hardcode jangan lupa
   //
   const handleWebViewNavigationStateChange = (e) => {
-    if (e.url.includes("&status_code=200&transaction_status=capture")) {
+    if (e.url.includes('&status_code=200&transaction_status=capture')) {
       // push notif sukses
       axios
-        .post(`${baseUrl}/payment/success`, {
-          addAmount: amount,
-        })
+        .post(
+          `${baseUrl}/payment/success`,
+          {
+            addAmount: amount,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              access_token: AsyncStorage.getItem('access_token'),
+            },
+          }
+        )
         .then((res) => {
           console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
         });
-      setAmount("");
+      setAmount('');
       setOpenWebView(false);
     }
-    if (e.url.includes("error")) {
+    if (e.url.includes('error')) {
       // push notif error
       setOpenWebView(false);
     }
@@ -67,8 +82,8 @@ export default function TopUpBalance() {
       style={{
         paddingHorizontal: 20,
         paddingVertical: 20,
-        backgroundColor: "#fff",
-        height: "100%",
+        backgroundColor: '#fff',
+        height: '100%',
       }}
     >
       <View
@@ -77,13 +92,13 @@ export default function TopUpBalance() {
           paddingVertical: 20,
           marginTop: 20,
           borderRadius: 10,
-          width: "100%",
+          width: '100%',
         }}
       >
         <Form
           onButtonPress={handleTopUp}
           buttonStyle={{
-            backgroundColor: "#15803d",
+            backgroundColor: '#15803d',
             marginTop: 10,
           }}
           buttonText="Top Up"
@@ -106,7 +121,7 @@ export default function TopUpBalance() {
 
 const styles = StyleSheet.create({
   inputStyle: {
-    borderColor: "#000",
+    borderColor: '#000',
     borderWidth: 0.5,
   },
 });

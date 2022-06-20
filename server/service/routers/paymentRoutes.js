@@ -4,7 +4,7 @@ let router = express.Router();
 const Authentication = require('../middlewares/Authentication');
 const Controller = require('../controllers/paymentController');
 
-// router.use(Authentication);
+router.use(Authentication);
 router.post('/', Controller.transaction);
 router.post('/success', Controller.addBalance);
 module.exports = router;

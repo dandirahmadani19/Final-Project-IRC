@@ -1,10 +1,10 @@
-const { User, Balance } = require("../models");
-const midtransClient = require("midtrans-client");
+const { User, Balance } = require('../models');
+const midtransClient = require('midtrans-client');
 // Create Snap API instance
 let snap = new midtransClient.Snap({
   isProduction: false,
-  serverKey: "SB-Mid-server-wbLcGSE8HpMB_os5vYzbrJgT",
-  clientKey: "SB-Mid-client-PWi2oSB5f0ZMGyhH",
+  serverKey: 'SB-Mid-server-wbLcGSE8HpMB_os5vYzbrJgT',
+  clientKey: 'SB-Mid-client-PWi2oSB5f0ZMGyhH',
 });
 class ControllerPayment {
   static async transaction(req, res, next) {
@@ -22,14 +22,14 @@ class ControllerPayment {
 
       const transaction = await snap.createTransaction(parameter);
       if (!transaction) {
-        throw { name: "TRANSACTION_FAILED" };
+        throw { name: 'TRANSACTION_FAILED' };
       }
 
       let transactionToken = transaction.token;
-      console.log("transactionToken:", transactionToken);
+      console.log('transactionToken:', transactionToken);
 
       let transactionRedirectUrl = transaction.redirect_url;
-      console.log("transactionRedirectUrl:", transactionRedirectUrl);
+      console.log('transactionRedirectUrl:', transactionRedirectUrl);
 
       res.status(200).json({
         token: transactionToken,
@@ -43,19 +43,19 @@ class ControllerPayment {
 
   static async addBalance(req, res, next) {
     try {
-      // const { id } = req.loginfo; //ambil id dari authentication
+      const { id } = req.loginfo; //ambil id dari authentication
       const { addAmount } = req.body; //ambil amount dari body
-      console.log(addAmount, "<<<<<<<< addAmount");
+      console.log(addAmount, '<<<<<<<< addAmount');
 
       // const { userId } = req.params;
       const BalanceCheck = await Balance.findOne({
         where: {
-          UserId: 1,
+          UserId: id,
         },
       });
       if (!BalanceCheck) {
         await Balance.create({
-          UserId: 1,
+          UserId: id,
           amount: addAmount,
         });
       } else {
@@ -65,11 +65,14 @@ class ControllerPayment {
           },
           {
             where: {
-              UserId: 1,
+              UserId: id,
             },
           }
         );
       }
+      res.status(200).json({
+        message: 'Topup Success',
+      });
     } catch (error) {
       console.log(error);
       next(error);
