@@ -8,6 +8,6 @@ router.get(
   "/check-balance/:totalPrice",
   authentication,
   Controller.getBalanceByUserId
-); //test
+);//test
 
 module.exports = router;

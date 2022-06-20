@@ -4,7 +4,7 @@ class NotificationController {
   static async postToken(req,res,next) {
     try {
       const UserId = req.loginfo.id
-      const { expoToken} = req.body
+      const { expoToken } = req.body
       const respon = await ExpoToken.setToken(UserId,expoToken)
 
       res.status(201).json(respon)
