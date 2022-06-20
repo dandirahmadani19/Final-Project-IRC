@@ -5,13 +5,13 @@ const authentication = require("../middlewares/Authentication");
 
 routesCrowdFunding.get("/", Controller.getAllCrowdFunding);
 
-routesCrowdFunding.post("/add"), authentication, Controller.createCrowdFunding;
-routesCrowdFunding.put("/verif/:id"),
+routesCrowdFunding.post("/add", authentication, Controller.createCrowdFunding);
+routesCrowdFunding.patch("/verif/:id", Controller.verifCrowdFunding);
+routesCrowdFunding.patch(
+  "/approve/:id",
   authentication,
-  Controller.verifCrowdFunding;
-routesCrowdFunding.patch("/approve/:id"),
-  authentication,
-  Controller.approvalCrowdFunding;
+  Controller.approvalCrowdFunding
+);
 
 routesCrowdFunding.get(
   "/crowdfundingproduct",
