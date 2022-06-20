@@ -42,6 +42,7 @@ class CrowdFundingController {
             },
           },
         ],
+        order: [["startDate", "DESC"]],
       });
       res.status(200).json(data);
     } catch (error) {

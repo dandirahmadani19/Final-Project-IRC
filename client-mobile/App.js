@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { ApolloProvider } from "@apollo/client";
 import client from "./config/apolloClient";
@@ -10,8 +9,18 @@ import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import MyDrawer from "./app/navigation/MyDrawer";
 import DetailHistorySubmit from "./app/screens/DetailHistorySubmit";
+import * as SecureStore from "expo-secure-store";
+import { isLogin } from "./query/global";
 
 const Stack = createNativeStackNavigator();
+
+SecureStore.getItemAsync("access_token").then((result) => {
+  if (result) {
+    isLogin(true);
+  } else {
+    isLogin(false);
+  }
+});
 
 export default function App() {
   return (
@@ -37,7 +46,7 @@ export default function App() {
             name="FormJoin"
             component={FormJoin}
             options={{
-              title: 'Form Join',
+              title: "Form Join",
             }}
           />
           <Stack.Screen
