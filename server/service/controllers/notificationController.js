@@ -1,14 +1,14 @@
 const ExpoToken = require('../redisconfig/redismodel')
 
 class NotificationController {
-  static async postToken(req,res) {
+  static async postToken(req,res,next) {
     try {
       const {UserId, expoToken} = req.body
-      const respon = ExpoToken.setToken(UserId,expoToken)
+      const respon = await ExpoToken.setToken(UserId,expoToken)
 
       res.status(201).json(respon)
     } catch (err) {
-      console.log(err)
+      next(err)
     }
   }
 
