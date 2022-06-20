@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server');
-const axios = require('axios');
-require('dotenv').config();
+const { gql } = require("apollo-server");
+const axios = require("axios");
+require("dotenv").config();
 const typeDefPayment = gql`
   type Balance {
     id: ID
@@ -16,6 +16,7 @@ const typeDefPayment = gql`
   }
   input dataBalance {
     amount: Int
+    access_token: String
   }
   type Mutation {
     getUrl(dataBalance: dataBalance): Url
@@ -27,17 +28,16 @@ const resolverPayment = {
   Mutation: {
     getUrl: async (_, { dataBalance }) => {
       try {
-        const { data } = await axios.post(
-          `${process.env.BASE_URL}/payment`,
-          {
-            amount: dataBalance.amount,
-          }
-          //   {
-          //     headers: {
-          //       access_token: AsyncStorage.getItem('access_token'),
-          //     },
-          //   }
-        );
+        const { data } = await axios({
+          method: "POST",
+          url: `${process.env.BASE_URL}/payment`,
+          data: {
+            addAmount: dataBalance.amount,
+          },
+          headers: {
+            access_token: dataBalance.access_token,
+          },
+        });
         return data;
       } catch ({ response }) {
         return response.data;
@@ -45,17 +45,16 @@ const resolverPayment = {
     },
     topupBalance: async (_, { dataBalance }) => {
       try {
-        const { data } = await axios.post(
-          `${process.env.BASE_URL}/payment/success`,
-          {
-            amount: dataBalance.amount,
-          }
-          //   {
-          //     headers: {
-          //       access_token: AsyncStorage.getItem('access_token'),
-          //     },
-          //   }
-        );
+        const { data } = await axios({
+          method: "POST",
+          url: `${process.env.BASE_URL}/payment/success`,
+          data: {
+            addAmount: dataBalance.amount,
+          },
+          headers: {
+            access_token: dataBalance.access_token,
+          },
+        });
         return data;
       } catch ({ response }) {
         return response.data;

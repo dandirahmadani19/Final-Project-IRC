@@ -13,17 +13,20 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { useState, useRef, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import { isLogin } from "./query/global";
+import { access_token, isLogin } from "./query/global";
 import { useNavigation } from "@react-navigation/native";
 import ConfirmationSubmit from "./app/screens/ConfirmationSubmit";
+import TopUpBalance from "./app/screens/TopUpBalance";
 
 const Stack = createNativeStackNavigator();
 
 SecureStore.getItemAsync("access_token").then((result) => {
   if (result) {
     isLogin(true);
+    access_token(result);
   } else {
     isLogin(false);
+    access_token("");
   }
 });
 
@@ -80,6 +83,13 @@ export default function App() {
             component={ConfirmationSubmit}
             options={{
               title: "Confirmation",
+            }}
+          />
+          <Stack.Screen
+            name="TopUp"
+            component={TopUpBalance}
+            options={{
+              title: "Top Up Saldo",
             }}
           />
         </Stack.Navigator>

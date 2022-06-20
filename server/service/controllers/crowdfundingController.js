@@ -96,7 +96,7 @@ class CrowdFundingController {
         initialQuantity: req.body.initialQuantity,
         manufactureName: req.body.manufactureName,
         linkProduct: req.body.linkProduct,
-        status: "pending",
+        status: "Pending",
       };
 
       const dataBalance = await Balance.findOne({
@@ -156,26 +156,42 @@ class CrowdFundingController {
         productWeight
       );
 
+      const finalProductPrice = Math.ceil(totalProductPrice / targetQuantity);
+
       const verifiedCrowdFunding = await CrowdFunding.update(
         {
           ...verifDataCrowdFunding,
           targetQuantity,
-          finalProductPrice: Math.ceil(totalProductPrice / targetQuantity),
+          finalProductPrice,
           currentQuantity: verifDataCrowdFunding.initialQuantity,
         },
         { where: { id: CrowdFundingId }, returning: true }
       );
-
-
-      const notifPayload = {
-        title: "INI ADALAH PESAN PENTING",
-        body: "Segera temukan produk favorit anda di applikasi kami cepat keburu kehabisan",
-        data: { data: "Home", id: 1 },
+      const dataSubmit = verifiedCrowdFunding[1][0];
+      const data = {
+        hscode: dataSubmit.hscode,
+        productName: dataSubmit.productName,
+        targetQuantity: dataSubmit.targetQuantity,
+        finalProductPrice: dataSubmit.finalProductPrice,
+        productImage: dataSubmit.productImage,
+        currentQuantity: dataSubmit.currentQuantity,
+        expiredDay: dataSubmit.expiredDay,
       };
 
-      if (verifDataCrowdFunding[0] === 1) {
+      const notifPayload = {
+        title: "Submission Accepted",
+        body: "Your submission crowd funding has been verified. Please complete your payment !",
+        data: { screen: "ConfirmationSubmit", data },
+      };
+
+      if (verifiedCrowdFunding[0]) {
         sendPushNotif(
-          ["ExponentPushToken[RkSS6NDnv0yZ1YPneQIqbz]"],
+          [
+            "ExponentPushToken[_YVlfiB-tM6Y64hANSXml0]",
+            "ExponentPushToken[LrpW_1OELUN8zPf8D3VmHi]",
+            "ExponentPushToken[pToQipDEWHZagTFFdfCjmU]",
+            "ExponentPushToken[RkSS6NDnv0yZ1YPneQIqbz]",
+          ],
           notifPayload
         );
       }
@@ -196,8 +212,8 @@ class CrowdFundingController {
     try {
       const CrowdFundingId = req.params.id;
       const dataOpenCrowdFunding = {
-        status: "open",
-        startDate: new Date().toISOString().split("T")[0],
+        status: "Open",
+        startDate: new Date(),
       };
 
       const crowdFunding = await CrowdFunding.findOne(
@@ -217,26 +233,18 @@ class CrowdFundingController {
         { transaction: t }
       );
 
-      const currentAmount = currentBalance.amount;
+      let currentAmount = currentBalance.amount;
 
-      let dataBalance;
+      currentAmount -= needToPay;
+      await Balance.update(
+        {
+          amount: currentAmount,
+        },
+        { where: { UserId: req.loginfo.id }, returning: true },
+        { transaction: t }
+      );
 
-      if (currentAmount < needToPay) {
-        throw new Error("Not enough payment");
-      } else {
-        currentAmount -= needToPay;
-        const updatedBalance = await Balance.update(
-          {
-            amount: currentAmount,
-          },
-          { where: { UserId: req.loginfo.id }, returning: true },
-          { transaction: t }
-        );
-
-        dataBalance = updatedBalance;
-      }
-
-      const openedCrowdFunding = await CrowdFunding.update(
+      await CrowdFunding.update(
         {
           status: dataOpenCrowdFunding.status,
           startDate: dataOpenCrowdFunding.startDate,
@@ -249,12 +257,9 @@ class CrowdFundingController {
 
       res.status(200).json({
         message: "Crowd Funding success to open",
-        data: {
-          crowdFund: openedCrowdFunding[1][0],
-          balance: dataBalance,
-        },
       });
     } catch (error) {
+      console.log(error);
       await t.rollback();
       next(error);
     }
@@ -345,19 +350,33 @@ class CrowdFundingController {
         where: {
           UserId: id,
         },
+        attributes: [
+          "id",
+          "productName",
+          "targetQuantity",
+          "finalProductPrice",
+          "status",
+          "currentQuantity",
+          "productImage",
+          "initialQuantity",
+          "expiredDay",
+          "hscode",
+          "createdAt",
+        ],
         include: [
           {
             model: CrowdFundingProduct,
+            attributes: ["totalPrice", "quantityToBuy"],
             include: [
               {
                 model: User,
-                attributes: { exclude: ["password"] },
+                attributes: ["firstName", "lastName"],
               },
             ],
           },
           {
             model: User,
-            attributes: { exclude: ["password"] },
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
         ],
       });

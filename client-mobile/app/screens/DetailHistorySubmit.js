@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import NumberFormat from "react-number-format";
+import moment from "moment";
 
 export default function DetailHistorySubmit({ route }) {
   const data = route.params.data;
-  const id = route.params.id;
-  console.log(id);
+  console.log(data);
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View style={styles.container}>
@@ -21,8 +21,12 @@ export default function DetailHistorySubmit({ route }) {
           <Text style={styles.textRightSide}>
             {data.firstName} {data.lastName}
           </Text>
-          <Text style={styles.textRightSide}>Wednesday, 23th June 2022</Text>
-          <Text style={styles.textRightSide}>{data.userAmount} People</Text>
+          <Text style={styles.textRightSide}>
+            {moment(data.createdAt).format("dddd Do MMMM YYYY")}
+          </Text>
+          <Text style={styles.textRightSide}>
+            {data.CrowdFundingProducts.length + 1} People
+          </Text>
         </View>
       </View>
       <View style={styles.container}>
@@ -34,7 +38,7 @@ export default function DetailHistorySubmit({ route }) {
           }}
         >
           <Image
-            source={{ uri: data.imageProduct }}
+            source={{ uri: data.productImage }}
             style={{
               width: 80,
               height: 80,

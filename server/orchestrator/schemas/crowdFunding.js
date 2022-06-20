@@ -17,6 +17,7 @@ const typeDefCrowdFunding = gql`
     productImage: String
     initialQuantity: Int
     expiredDay: Int
+    createdAt: String
     hscode: String
     CrowdFundingProducts: [crowdProduct]
     User: UserCrowd
@@ -31,13 +32,20 @@ const typeDefCrowdFunding = gql`
     message: String
   }
 
+  type IsEnough {
+    isEnough: Boolean
+  }
+
   type crowdProduct {
     id: ID
     UserId: Int
+    User: UserCrowd
   }
 
   type Query {
     getCrowdFunding: [crowdFunding]
+    checkBalance(totalPrice: Int, access_token: String): IsEnough
+    getHistorySubmitCrowdFunding(access_token: String): [crowdFunding]
   }
 
   input dataSubmitCrowFunding {
@@ -51,6 +59,7 @@ const typeDefCrowdFunding = gql`
 
   type Mutation {
     submitCrowdFunding(dataSubmitCrowFunding: dataSubmitCrowFunding): Message
+    userApproveCrowdFunding(idCrowdFunding: Int, access_token: String): Message
   }
 `;
 
@@ -59,6 +68,35 @@ const resolverCrowdFunding = {
     getCrowdFunding: async () => {
       try {
         const { data } = await axios.get(`${process.env.BASE_URL}/crowdFund`);
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    checkBalance: async (_, { totalPrice, access_token }) => {
+      try {
+        const { data } = await axios({
+          method: "GET",
+          url: `${process.env.BASE_URL}/balance/check-balance/${totalPrice}`,
+          headers: {
+            access_token: access_token,
+          },
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    getHistorySubmitCrowdFunding: async (_, { access_token }) => {
+      console.log(access_token);
+      try {
+        const { data } = await axios({
+          method: "GET",
+          url: `${process.env.BASE_URL}/crowdFund/all-history-by-user-submit`,
+          headers: {
+            access_token: access_token,
+          },
+        });
         return data;
       } catch ({ response }) {
         return response.data;
@@ -81,6 +119,20 @@ const resolverCrowdFunding = {
           },
           headers: {
             access_token: dataSubmitCrowFunding.access_token,
+          },
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    userApproveCrowdFunding: async (_, { idCrowdFunding, access_token }) => {
+      try {
+        const { data } = await axios({
+          method: "PATCH",
+          url: `${process.env.BASE_URL}/crowdFund/approve/${idCrowdFunding}`,
+          headers: {
+            access_token: access_token,
           },
         });
         return data;

@@ -51,12 +51,11 @@ const HomeScreen = ({ navigation }) => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        const { data, id } = response.notification.request.content.data;
-        console.log(response.notification.request.content.data);
+        const { screen, dataToSend } =
+          response.notification.request.content.data;
 
-        if (data) {
-          console.log(data);
-          navigation.navigate(data, { id });
+        if (screen) {
+          navigation.navigate(screen, { dataToSend });
         }
       });
 
