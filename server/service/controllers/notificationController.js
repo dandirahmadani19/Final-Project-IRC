@@ -19,7 +19,7 @@ class NotificationController {
       if (token.length === 0) {
         throw new Error("TOKEN_NOT_FOUND")
       }
-      res.status(200).json(token)
+      res.status(200).json(...token)
     } catch (err) {
       console.log(err)
     }
