@@ -10,9 +10,11 @@ import RegisterScreen from "./app/screens/RegisterScreen";
 import MyDrawer from "./app/navigation/MyDrawer";
 import DetailHistorySubmit from "./app/screens/DetailHistorySubmit";
 import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import { useState, useRef, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { isLogin } from "./query/global";
+import { useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,44 +26,7 @@ SecureStore.getItemAsync("access_token").then((result) => {
   }
 });
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
 export default function App() {
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  useEffect(() => {
-    //nge get token dan nge set token
-    /* registerForPushNotificationsAsync().then(token => setExpoPushToken(token)); */
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        const { data } = response.notification.request.content.data;
-        if (data) {
-          navigation.navigate(data);
-        }
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
