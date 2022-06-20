@@ -19,9 +19,13 @@ routesCrowdFunding.get(
 );
 routesCrowdFunding.post("/join/:id", Controller.joincrowdfunding);
 // routesCrowdFunding.post('/add');
-routesCrowdFunding.get("/all-history", Controller.getAllHistoryCrowdFunding);
 routesCrowdFunding.get(
-  "/all-history-by-user",
+  "/all-history-by-user-submit",
+  authentication,
+  Controller.getAllHistoryCrowdFunding
+);
+routesCrowdFunding.get(
+  "/all-history-by-user-join",
   authentication,
   Controller.getAllHistoryCrowdFundingById
 );
