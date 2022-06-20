@@ -15,7 +15,7 @@ const typeDefUser = gql`
   }
 
   type Query {
-    getUser: User
+    getUserLogin: User
   }
 
   input dataUser {
