@@ -1,5 +1,5 @@
-const { payloadReaderFromToken } = require('../helpers/helperJwt');
-const { User } = require('../models');
+const { payloadReaderFromToken } = require("../helpers/helperJwt");
+const { User } = require("../models");
 
 const authentication = async (req, res, next) => {
   try {
@@ -9,14 +9,13 @@ const authentication = async (req, res, next) => {
 
     const findTheUser = await User.findByPk(payload.id);
     if (!findTheUser) {
-      throw { name: 'Unauthorized' };
+      throw { name: "Unauthorized" };
     } else {
       req.loginfo = {
         id: findTheUser.id,
-        username: findTheUser.username,
+        username: findTheUser.firstName,
         email: findTheUser.email,
       };
-      console.log(req.loginfo);
     }
     next();
   } catch (error) {

@@ -1,5 +1,3 @@
-const e = require("express");
-
 const { Op } = require("sequelize");
 const {
   CrowdFunding,
@@ -8,7 +6,6 @@ const {
   User,
   Balance,
 } = require("../models");
-
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 const finalPrice = require("../helpers/helperFinalPrice");
@@ -44,9 +41,41 @@ class CrowdFundingController {
           },
         ],
       });
+      //CRON JOB
+      CronJob.schedule(
+        "59 23 * * *",
+        async () => {
+          try {
+            const dataJob = await CrowdFunding.findAll({});
+            const result = dataJob.map((item) => {
+              if (
+                item.expiredDay > 0 &&
+                item.status === "Open" &&
+                item.startDate !== null
+              ) {
+                const datadate = expiredDate(item.expiredDay, item.startDate);
+                const dateNow = new Date().toISOString().split("T")[0];
+                if (datadate === dateNow) {
+                  CrowdFunding.update(
+                    {
+                      status: "Failed",
+                    },
+                    { where: { id: item.id } }
+                  );
+                }
+              }
+            });
+          } catch (error) {
+            next(error);
+          }
+        },
+        {
+          scheduled: true,
+          timezone: "Asia/Jakarta",
+        }
+      );
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -230,34 +259,82 @@ class CrowdFundingController {
     }
   }
 
-  static async expiredTime(req, res, next) {
+  // GET DATA DARI TABEL CROWDFUNDING PRODUCT
+  static async getAllCrowdFundingProduct(req, res, next) {
     try {
-      CronJob.schedule("59 23 * * *", async () => {
-        try {
-          const data = await CrowdFunding.findAll({});
-          const result = data.map((item) => {
-            if (
-              item.expiredDay > 0 &&
-              item.status === "Open" &&
-              item.startDate !== null
-            ) {
-              const datadate = expiredDate(item.expiredDay, item.startDate);
-              const dateNow = new Date().toISOString().split("T")[0];
-              if (datadate === dateNow) {
-                CrowdFunding.update(
-                  {
-                    status: "Failed",
-                  },
-                  { where: { id: item.id } }
-                );
-              }
-            }
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      });
+      const data = await CrowdFundingProduct.findAll({});
+      res.status(200).json(data);
     } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getAllHistoryCrowdFunding(req, res, next) {
+    try {
+      const data = await CrowdFunding.findAll({
+        include: [
+          {
+            model: CrowdFundingProduct,
+            as: "crowdFundingProducts",
+            include: [
+              {
+                model: User,
+                as: "user",
+                attributes: { exclude: ["password"] },
+              },
+            ],
+          },
+          {
+            model: User,
+            as: "user",
+            attributes: { exclude: ["password"] },
+          },
+        ],
+      });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  static async getAllHistoryCrowdFundingById(req, res, next) {
+    try {
+      const id = req.loginfo.id;
+      const data = await CrowdFundingProduct.findOne({
+        where: {
+          UserId: id,
+        },
+        include: [
+          {
+            model: CrowdFunding,
+            as: "crowdFunding",
+            include: [
+              {
+                model: User,
+                as: "user",
+                attributes: { exclude: ["password"] },
+              },
+              {
+                model: CrowdFundingProduct,
+                as: "crowdFundingProducts",
+                include: [
+                  {
+                    model: User,
+                    as: "user",
+                    attributes: { exclude: ["password"] },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      res.status(200).json(data);
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   }

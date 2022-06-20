@@ -5,9 +5,14 @@ const { comparePassowrd } = require("../helpers/helperBcrypt");
 class UserController {
   static async getAll(req, res, next) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({
+        attributes: [{
+          exclude: ['password']
+        }],
+      });
       res.status(200).json(users);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -134,6 +139,27 @@ class UserController {
         address: admin.address,
         message: "Admin created successfully",
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getUserById(req, res, next) {
+    try {
+      const { id, username, email } = req.loginfo;
+      const user = await User.findOne({
+        where :{
+          id,
+          email
+        },
+        attributes : {
+          exclude : ['password']
+        }
+      })
+      if(!user){
+        throw { name : "USER_NOT_FOUND" }
+      }
+      res.status(200).json(user)
     } catch (error) {
       next(error);
     }

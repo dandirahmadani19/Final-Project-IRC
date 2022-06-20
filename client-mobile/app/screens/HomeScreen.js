@@ -16,10 +16,10 @@ import { GET_CROWDFUNDING } from "../../query/crowdFunding";
 
 const HomeScreen = ({ navigation }) => {
   const { loading, error, data } = useQuery(GET_CROWDFUNDING);
-  console.log(data);
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error!</Text>;
-  const DATA = data.getCrowdFunfing;
+  
+  const DATA = data.getCrowdFunding;
   const handleOnPress = (id, data) => {
     navigation.navigate("Detail", { id, data });
   };
