@@ -45,7 +45,7 @@ export default function CardCrowdFunding({ data, onPress }) {
           style={{
             width: "100%",
             height: 280,
-            resizeMode: "cover",
+            resizeMode: "contain",
           }}
         />
         <View
