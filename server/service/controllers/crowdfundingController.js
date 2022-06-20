@@ -234,10 +234,10 @@ class CrowdFundingController {
 
       res.status(200).json({
         message: "Crowd Funding success to open",
-        data: 
-          { 
-            crowdFund: openedCrowdFunding[1][0], balance: dataBalance 
-          },
+        data: {
+          crowdFund: openedCrowdFunding[1][0],
+          balance: dataBalance,
+        },
       });
     } catch (error) {
       await t.rollback();
@@ -325,22 +325,23 @@ class CrowdFundingController {
 
   static async getAllHistoryCrowdFunding(req, res, next) {
     try {
+      const id = req.loginfo.id;
       const data = await CrowdFunding.findAll({
+        where: {
+          UserId: id,
+        },
         include: [
           {
             model: CrowdFundingProduct,
-            as: "crowdFundingProducts",
             include: [
               {
                 model: User,
-                as: "user",
                 attributes: { exclude: ["password"] },
               },
             ],
           },
           {
             model: User,
-            as: "user",
             attributes: { exclude: ["password"] },
           },
         ],
