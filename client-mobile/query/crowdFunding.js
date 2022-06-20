@@ -1,8 +1,8 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_CROWDFUNDING = gql`
-  query GetCrowdFunfing {
-  getCrowdFunfing {
+  query GetCrowdFunding {
+  getCrowdFunding {
     id
     productName
     UserId
@@ -10,22 +10,22 @@ export const GET_CROWDFUNDING = gql`
     initialProductPrice
     finalProductPrice
     manufactureName
-    status
     linkProduct
+    status
     currentQuantity
     startDate
     productImage
     initialQuantity
     expiredDay
-    categoryProduct
+    hscode
     CrowdFundingProducts {
-      id
       UserId
+      id
     }
     User {
-      id
-      firstName
       lastName
+      firstName
+      id
     }
   }
 }

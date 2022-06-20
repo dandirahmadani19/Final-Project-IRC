@@ -11,7 +11,6 @@ class ControllerPayment {
     try {
       // const { id, email } = req.loginfo;
       const { addAmount } = req.body;
-
       const transactionCode = `TRX${Math.floor(Math.random() * 1000000)}`;
 
       let parameter = {
@@ -37,40 +36,42 @@ class ControllerPayment {
         redirect_url: transactionRedirectUrl,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
 
   static async addBalance(req, res, next) {
     try {
-      // const { id } = req.loginfo; //ambil id dari authentication
+      const { id } = req.loginfo; //ambil id dari authentication
       const { addAmount } = req.body; //ambil amount dari body
       console.log(addAmount, '<<<<<<<< addAmount');
 
       // const { userId } = req.params;
       const BalanceCheck = await Balance.findOne({
         where: {
-          UserId: 1,
+          UserId: id,
         },
       });
       if (!BalanceCheck) {
-        await Balance.create({
-          UserId: 1,
+        let balanceCreate = await Balance.create({
+          UserId: id,
           amount: addAmount,
         });
       } else {
-        await Balance.update(
+        let balanceUpdate = await Balance.update(
           {
             amount: Number(BalanceCheck.amount) + Number(addAmount),
           },
           {
             where: {
-              UserId: 1,
+              UserId: id,
             },
           }
         );
       }
+      res.status(200).json({
+        message: 'Topup Success',
+      });
     } catch (error) {
       console.log(error);
       next(error);

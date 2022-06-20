@@ -1,29 +1,52 @@
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  TouchableHighlight,
+  AsyncStorage,
+} from 'react-native';
 import React, { useState } from 'react';
 import { Form, FormItem } from 'react-native-form-component';
 import { WebView } from 'react-native-webview';
-import axios from 'axios';
+import { useMutation } from '@apollo/client';
+import { GETURL, TOPUPBALANCE } from '../../query/payment';
+// import axios from 'axios';
 
-const baseUrl = 'https://16f4-139-194-253-225.ap.ngrok.io';
+// const baseUrl = 'https://8f85-114-122-14-122.ap.ngrok.io';
+
+//pindahkan ke graphql
 
 export default function TopUpBalance() {
   const [amount, setAmount] = useState();
   const [openWebView, setOpenWebView] = useState(false);
   const [url, setUrl] = useState();
+  const [geturl, { loadingGetURl, errorGetUrl, dataGetUrl }] =
+    useMutation(GETURL);
+  const [topup, { loadingTopup, errorTopup, dataTopup }] =
+    useMutation(TOPUPBALANCE);
   const handleTopUp = () => {
     console.log(amount);
-    axios
-      .post(`${baseUrl}/payment`, {
-        addAmount: amount,
-      })
-      .then((res) => {
-        console.log(res.data.redirect_url);
-        setUrl(res.data.redirect_url);
-        setOpenWebView(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (!amount) {
+      Alert.alert('Warning', 'Amount Is Required');
+    } else {
+      geturl({ variables: { dataBalance: { amount } } });
+      console.log(dataGetUrl);
+      setUrl(dataGetUrl.getUrl.redirect_url);
+      setOpenWebView(true);
+    }
+    // axios
+    //   .post(`${baseUrl}/payment`, {
+    //     addAmount: amount,
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data.redirect_url);
+    //     setUrl(res.data.redirect_url);
+    //     setOpenWebView(true);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
     // disini handle paymentnya
   };
   //payment controller dalam posisi hardcode jangan lupa
@@ -31,16 +54,27 @@ export default function TopUpBalance() {
   const handleWebViewNavigationStateChange = (e) => {
     if (e.url.includes('&status_code=200&transaction_status=capture')) {
       // push notif sukses
-      axios
-        .post(`${baseUrl}/payment/success`, {
-          addAmount: amount,
-        })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      Alert.alert('success', 'Topup Success');
+      // axios
+      //   .post(
+      //     `${baseUrl}/payment/success`,
+      //     {
+      //       addAmount: amount,
+      //     },
+      //     {
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //         // access_token: AsyncStorage.getItem('access_token'),
+      //       },
+      //     }
+      //   )
+      //   .then((res) => {
+      //     console.log(res.data);
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+      TOPUPBALANCE({ variables: { dataBalance: { amount } } });
       setAmount('');
       setOpenWebView(false);
     }

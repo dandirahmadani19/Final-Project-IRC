@@ -1,13 +1,18 @@
 const { tokenMakerFromPayload } = require("../helpers/helperJwt");
-const { User, Admin } = require("../models");
+const { User, Admin, Balance } = require("../models");
 const { comparePassowrd } = require("../helpers/helperBcrypt");
 
 class UserController {
   static async getAll(req, res, next) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({
+        attributes: [{
+          exclude: ['password']
+        }],
+      });
       res.status(200).json(users);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -32,7 +37,7 @@ class UserController {
         phoneNumber,
         address,
       });
-      res.status(200).json({
+      res.status(201).json({
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -80,7 +85,6 @@ class UserController {
   static async adminLogin(req, res, next) {
     try {
       const { email, password } = req.body;
-      console.log(email, password);
       const admin = await Admin.findOne({
         where: {
           email,
@@ -126,7 +130,7 @@ class UserController {
         phoneNumber,
         address,
       });
-      res.status(200).json({
+      res.status(201).json({
         id: admin.id,
         username: admin.username,
         email: admin.email,
@@ -134,6 +138,34 @@ class UserController {
         address: admin.address,
         message: "Admin created successfully",
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getUserById(req, res, next) {
+    try {
+      console.log("masuk sini");
+      const { id, username, email } = req.loginfo;
+      const user = await User.findOne({
+        where: {
+          id,
+          email
+        },
+        include: {
+          model: Balance,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'UserId']
+          }
+        },
+        attributes: {
+          exclude: ['password']
+        }
+      })
+      if (!user) {
+        throw { name: "USER_NOT_FOUND" }
+      }
+      res.status(200).json(user)
     } catch (error) {
       next(error);
     }
