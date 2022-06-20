@@ -164,7 +164,7 @@ class CrowdFundingController {
         },
         { where: { id: CrowdFundingId }, returning: true }
       );
-
+      
       res.status(200).json({
         message: "Crowd Funding verified, waiting approval from User",
         data: verifiedCrowdFunding[1][0],

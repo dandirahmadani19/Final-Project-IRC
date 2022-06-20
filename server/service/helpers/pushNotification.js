@@ -17,7 +17,6 @@ const sendPushNotif = (tokens, notifPayload) => {
     for (let chunk of chunks) {
       try {
         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-
         tickets.push(...ticketChunk);
       } catch (error) {
         console.log(error);
