@@ -10,28 +10,44 @@ const typeDefNotification = gql`
 
   input dataToken {
     expoToken: String
+    access_token: String
+  }
+
+  type Response {
+    tokenAssigned: Boolean
   }
 
   type Mutation {
-    postToken(data: dataToken)
+    postToken(data: dataToken): Response
   }
 `
 
 const resolverNotification = {
   Mutation: {
-    postToken: async (_, {dataToken}) => {
+    postToken: async (_, args) => {
       try {
+        const {expoToken,access_token} = args
+        console.log(args)
         const {data} = await axios({
           method : 'POST',
           url : `${process.env.BASE_URL}/notification`,
-          data: dataToken,
+          data: {
+            expoToken
+          },
           Headers : {
-            access_token :  "123"
+            access_token
           }
         })
+
+        return data
       } catch ({response}) {
         return response.data
       }
     }
   }
+}
+
+module.exports = {
+  typeDefNotification,
+  resolverNotification
 }
