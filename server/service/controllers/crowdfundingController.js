@@ -176,6 +176,8 @@ class CrowdFundingController {
   }
 
   static async approvalCrowdFunding(req, res, next) {
+    const t = await sequelize.transaction();
+
     try {
       const CrowdFundingId = req.params.id;
       const dataOpenCrowdFunding = {
@@ -183,18 +185,62 @@ class CrowdFundingController {
         startDate: new Date().toISOString().split("T")[0],
       };
 
+      const crowdFunding = await CrowdFunding.findOne(
+        {
+          where: { id: CrowdFundingId },
+        },
+        { transaction: t }
+      );
+
+      const needToPay =
+        crowdFunding.currentQuantity * crowdFunding.finalProductPrice;
+
+      const currentBalance = await Balance.findOne(
+        {
+          where: { UserId: req.loginfo.id },
+        },
+        { transaction: t }
+      );
+
+      const currentAmount = currentBalance.amount;
+
+      let dataBalance;
+
+      if (currentAmount < needToPay) {
+        throw new Error("Not enough payment");
+      } else {
+        currentAmount -= needToPay;
+        const updatedBalance = await Balance.update(
+          {
+            amount: currentAmount,
+          },
+          { where: { UserId: req.loginfo.id }, returning: true },
+          { transaction: t }
+        );
+
+        dataBalance = updatedBalance;
+      }
+
       const openedCrowdFunding = await CrowdFunding.update(
         {
           status: dataOpenCrowdFunding.status,
           startDate: dataOpenCrowdFunding.startDate,
         },
-        { where: { id: CrowdFundingId }, returning: true }
+        { where: { id: CrowdFundingId }, returning: true },
+        { transaction: t }
       );
+
+      await t.commit();
+
       res.status(200).json({
         message: "Crowd Funding success to open",
-        data: openedCrowdFunding[1][0],
+        data: 
+          { 
+            crowdFund: openedCrowdFunding[1][0], balance: dataBalance 
+          },
       });
     } catch (error) {
+      await t.rollback();
       next(error);
     }
   }
