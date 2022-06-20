@@ -329,18 +329,15 @@ class CrowdFundingController {
         include: [
           {
             model: CrowdFundingProduct,
-            as: "crowdFundingProducts",
             include: [
               {
                 model: User,
-                as: "user",
                 attributes: { exclude: ["password"] },
               },
             ],
           },
           {
             model: User,
-            as: "user",
             attributes: { exclude: ["password"] },
           },
         ],

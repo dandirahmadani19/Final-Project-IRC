@@ -113,8 +113,32 @@ describe("should return data user after login", () => {
       .get("/user/user-login")
       .set("access_token", access_token)
       .expect(200)
+      console.log(res.body);
   })
 })
+
+describe("Auth Test", () => {
+  it("should return Error authentication, must login first", async () => {
+    const res = await request(app).get("/user/user-login").expect(401);
+
+    expect(res.body).toEqual(expect.any(Object));
+    expect(res.body.message).toBe(`Error authentication, must login first`);
+  });
+
+  it("should return invalid Error authentication, must login first", async () => {
+    const res = await request(app)
+      .get("/user/user-login")
+      .send(
+        "accesstoken",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJhZG1pbjEwMDAwQGdtYWlsLmNvbSIsImlhdCI6MTY1MzA5ODI2OX0.rIRu5m9CHIwRVED6UV6TBD-tQ5jvRRSUa6ZOcbFekL0"
+      )
+      .expect(401);
+
+    expect(res.body).toEqual(expect.any(Object));
+    expect(res.body.message).toBe(`Error authentication, must login first`);
+  });
+})
+
 
 afterAll(async () => {
   await User.destroy({

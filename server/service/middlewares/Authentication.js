@@ -3,10 +3,8 @@ const { User } = require("../models");
 
 const authentication = async (req, res, next) => {
   try {
-    // console.log('line 9 <==========');
     const { access_token } = req.headers;
     const payload = payloadReaderFromToken(access_token);
-
     const findTheUser = await User.findByPk(payload.id);
     if (!findTheUser) {
       throw { name: "Unauthorized" };

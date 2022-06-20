@@ -10,6 +10,5 @@ function expiredDate(setDate, data) {
   return dateSet;
 }
 
-console.log(expiredDate(10, "2022-06-19T16:14:16.940Z"));
 
 module.exports = expiredDate;
