@@ -17,6 +17,7 @@ import { isLogin } from "../../query/global";
 
 export default function DetailScreen({ route, navigation }) {
   const data = route.params.data;
+  console.log(data);
   const getDaysToGo = () => {
     const endDate = moment(data.startDate)
       .add(data.expiredDay, "days")
@@ -90,7 +91,7 @@ export default function DetailScreen({ route, navigation }) {
             }}
           >
             <NumberFormat
-              value={data.productPrice}
+              value={data.finalProductPrice}
               displayType="text"
               thousandSeparator={true}
               prefix="Rp. "
@@ -114,7 +115,7 @@ export default function DetailScreen({ route, navigation }) {
                 color: "#64748b",
               }}
             >
-              {data.finalProductPrice} / pcs
+              / pcs
             </Text>
           </View>
           <View
@@ -130,10 +131,11 @@ export default function DetailScreen({ route, navigation }) {
                 fontSize: 13,
               }}
             >
-              {data.categoryProduct}
+              {data.hscode}
             </Text>
           </View>
         </View>
+
         <View
           style={{
             display: "flex",
@@ -406,7 +408,7 @@ export default function DetailScreen({ route, navigation }) {
         >
           <FontAwesome5 name="money-bill-wave" color="#15803d" size={25} />
           <NumberFormat
-            value={data.productPrice * data.currentQuantity}
+            value={data.finalProductPrice * data.currentQuantity}
             displayType="text"
             thousandSeparator={true}
             prefix="Rp. "

@@ -52,7 +52,7 @@ export default function DetailHistorySubmit({ route }) {
           </View>
         </View>
       </View>
-      {data.status !== "pending" && (
+      {data.status !== "Pending" && (
         <View>
           <View style={styles.container}>
             <Text style={styles.headerSection}>Payment Detail</Text>

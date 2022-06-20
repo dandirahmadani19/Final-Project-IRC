@@ -5,7 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   View,
-  Text
+  Text,
 } from "react-native";
 import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -16,10 +16,10 @@ import { GET_CROWDFUNDING } from "../../query/crowdFunding";
 
 const HomeScreen = ({ navigation }) => {
   const { loading, error, data } = useQuery(GET_CROWDFUNDING);
-
+  console.log(data);
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error!</Text>;
-  const DATA = data.getCrowdFunfing
+  const DATA = data.getCrowdFunfing;
   const handleOnPress = (id, data) => {
     navigation.navigate("Detail", { id, data });
   };

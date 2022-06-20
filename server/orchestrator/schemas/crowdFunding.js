@@ -2,7 +2,7 @@ const { gql } = require("apollo-server");
 const axios = require("axios");
 require("dotenv").config();
 const typeDefCrowdFunding = gql`
-  type crowdFunding {  
+  type crowdFunding {
     id: ID
     productName: String
     UserId: Int
@@ -17,17 +17,17 @@ const typeDefCrowdFunding = gql`
     productImage: String
     initialQuantity: Int
     expiredDay: Int
-    categoryProduct: String
+    hscode: String
     CrowdFundingProducts: [crowdProduct]
     User: UserCrowd
   }
-   type UserCrowd{
-     id: ID
-     firstName: String
-     lastName: String
-   }
+  type UserCrowd {
+    id: ID
+    firstName: String
+    lastName: String
+  }
 
-  type crowdProduct{
+  type crowdProduct {
     id: ID
     UserId: Int
   }
@@ -44,7 +44,7 @@ const typeDefCrowdFunding = gql`
     address: String
     phoneNumber: String
   }
-  
+
   type Mutation {
     login(dataUser: dataUser): User
   }
@@ -54,12 +54,9 @@ const resolverCrowdFunding = {
   Query: {
     getCrowdFunfing: async () => {
       try {
-        const { data } = await axios.get(
-          `${process.env.BASE_URL}/crowdFund`,
-        )
+        const { data } = await axios.get(`${process.env.BASE_URL}/crowdFund`);
         console.log(data);
         return data;
-        
       } catch ({ response }) {
         return response.data;
       }

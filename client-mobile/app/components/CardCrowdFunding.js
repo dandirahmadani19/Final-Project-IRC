@@ -119,7 +119,7 @@ export default function CardCrowdFunding({ data, onPress }) {
                   fontSize: 11,
                 }}
               >
-                {data.categoryProduct}
+                {data.hscode}
               </Text>
             </View>
           </View>
