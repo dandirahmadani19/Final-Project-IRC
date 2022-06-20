@@ -18,7 +18,7 @@ import { isLogin } from "../../query/global";
 export default function LoginScreen({ navigation, route }) {
   const [login, { loading, error, data }] = useMutation(LOGIN);
   const [flag, setFlag] = useState(0);
-  console.log(navigation);
+
   const [dataLogin, setDataLogin] = useState({
     email: "",
     password: "",

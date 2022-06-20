@@ -1,5 +1,11 @@
 const { Op } = require("sequelize");
-const { CrowdFunding, CrowdFundingProduct, sequelize, User, Balance } = require("../models/index");
+const {
+  CrowdFunding,
+  CrowdFundingProduct,
+  sequelize,
+  User,
+  Balance,
+} = require("../models");
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 
@@ -8,28 +14,38 @@ class CrowdFundingController {
     try {
       const data = await CrowdFunding.findAll({
         where: {
-          [Op.or]: [{ status: 'Open' }, { status: 'Failed' }, { status: 'Success' }]
+          [Op.or]: [
+            { status: "Open" },
+            { status: "Failed" },
+            { status: "Success" },
+          ],
         },
-        include: [{
-          model: CrowdFundingProduct,
-          attributes: {
-            exclude: ['CrowdFundingId', 'quantityToBuy', 'totalPrice', 'paymentStatus']
+        include: [
+          {
+            model: CrowdFundingProduct,
+            attributes: {
+              exclude: [
+                "CrowdFundingId",
+                "quantityToBuy",
+                "totalPrice",
+                "paymentStatus",
+              ],
+            },
           },
-        },
-        {
-          model: User,
-          attributes: {
-            exclude: ['email', 'password', 'phoneNumber', 'address']
-          }
-        }],
-      })
-      res.status(200).json(data)
+          {
+            model: User,
+            attributes: {
+              exclude: ["email", "password", "phoneNumber", "address"],
+            },
+          },
+        ],
+      });
+      res.status(200).json(data);
     } catch (error) {
       console.log(error);
       next(error);
     }
   }
-
 
   static async create(req, res, next) {
     try {
