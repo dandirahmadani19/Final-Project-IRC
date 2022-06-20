@@ -6,13 +6,13 @@ import moment from "moment";
 export default function CardHistoryCrowdFunding({ data, onPress }) {
   const getColorStatus = (status) => {
     switch (status) {
-      case "open":
+      case "Open":
         return "#2563eb";
-      case "failed":
+      case "Failed":
         return "#dc2626";
-      case "success":
+      case "Success":
         return "#16a34a";
-      case "pending":
+      case "Pending":
         return "#facc15";
     }
   };
@@ -100,7 +100,7 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
                   fontSize: 10,
                 }}
               >
-                {data.status === "pending"
+                {data.status === "Pending"
                   ? moment(data.createdDate).format("Do MMMM YYYY")
                   : moment(data.startDate).format("Do MMMM YYYY")}
               </Text>
