@@ -3,15 +3,15 @@ const Controller = require("../controllers/crowdfundingController");
 
 const authentication = require("../middlewares/Authentication");
 
-routesCrowdFunding.get("/", Controller.getAllCrowdFunding);
+routesCrowdFunding.get("/", Controller.getAllCrowdFunding); //test
 
-routesCrowdFunding.post("/add"), authentication, Controller.createCrowdFunding;
-routesCrowdFunding.put("/verif/:id"),
+routesCrowdFunding.post("/add", authentication, Controller.createCrowdFunding); //test
+routesCrowdFunding.patch("/verif/:id", Controller.verifCrowdFunding); //test
+routesCrowdFunding.patch(
+  "/approve/:id",
   authentication,
-  Controller.verifCrowdFunding;
-routesCrowdFunding.patch("/approve/:id"),
-  authentication,
-  Controller.approvalCrowdFunding;
+  Controller.approvalCrowdFunding
+); //test
 
 routesCrowdFunding.get(
   "/crowdfundingproduct",
@@ -23,7 +23,7 @@ routesCrowdFunding.get(
   "/all-history-by-user-submit",
   authentication,
   Controller.getAllHistoryCrowdFunding
-);
+); //test
 routesCrowdFunding.get(
   "/all-history-by-user-join",
   authentication,

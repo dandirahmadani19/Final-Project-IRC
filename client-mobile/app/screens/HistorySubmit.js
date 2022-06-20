@@ -1,104 +1,54 @@
 import { StyleSheet, Text, View, SafeAreaView, FlatList } from "react-native";
+import { useQuery } from "@apollo/client";
+import { HISTORY_SUBMIT } from "../../query/crowdFunding";
 
 import React from "react";
 import CardHistoryCrowdFunding from "../components/CardHistoryCrowdFunding";
+import * as SecureStore from "expo-secure-store";
+import { access_token } from "../../query/global";
+import { ActivityIndicator } from "react-native";
 
 export default function HistorySubmit({ navigation }) {
-  const DATA = [
-    {
-      id: 1,
-      firstName: "Dandi",
-      lastName: "Rahmadani",
-      imageProduct:
-        "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-      productName:
-        "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-      userAmount: 4,
-      currentQuantity: 300,
-      targetQuantity: 203,
-      initialQuantity: 100,
-      status: "Open",
-      userName: "Dandi Rahmadani",
-      finalProductPrice: 120000,
-      hsCode: "234568",
-      startDate: "2022-06-17T16:14:16.940Z",
-      createdDate: "2022-06-17T16:14:16.940Z",
-      expiredDay: 30,
-    },
-    {
-      id: 2,
-      firstName: "Dandi",
-      lastName: "Rahmadani",
-      imageProduct:
-        "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-      productName:
-        "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-      userAmount: 4,
-      currentQuantity: 300,
-      targetQuantity: 203,
-      initialQuantity: 100,
-      status: "Success",
-      userName: "Dandi Rahmadani",
-      finalProductPrice: 120000,
-      hsCode: "234568",
-      startDate: "2022-06-17T16:14:16.940Z",
-      createdDate: "2022-06-17T16:14:16.940Z",
-      expiredDay: 30,
-    },
-    {
-      id: 3,
-      firstName: "Dandi",
-      lastName: "Rahmadani",
-      imageProduct:
-        "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-      productName:
-        "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-      userAmount: 4,
-      currentQuantity: 300,
-      targetQuantity: 203,
-      initialQuantity: 100,
-      status: "Failed",
-      userName: "Dandi Rahmadani",
-      finalProductPrice: 120000,
-      hsCode: "234568",
-      startDate: "2022-06-17T16:14:16.940Z",
-      createdDate: "2022-06-17T16:14:16.940Z",
-      expiredDay: 30,
-    },
-    {
-      id: 4,
-      firstName: "Dandi",
-      lastName: "Rahmadani",
-      imageProduct:
-        "https://sc04.alicdn.com/kf/H497e737b91c04b35a8336cc2f590742aP.png",
-      productName:
-        "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
-      userAmount: 4,
-      currentQuantity: 300,
-      targetQuantity: 203,
-      initialQuantity: 100,
-      status: "Pending",
-      userName: "Dandi Rahmadani",
-      finalProductPrice: 120000,
-      hsCode: "234568",
-      startDate: "2022-06-17T16:14:16.940Z",
-      createdDate: "2022-06-17T16:14:16.940Z",
-      expiredDay: 30,
-    },
-  ];
+  const { loading, error, data } = useQuery(HISTORY_SUBMIT, {
+    variables: { accessToken: access_token() },
+  });
+
+  if (loading && !data) {
+    return (
+      <View
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <ActivityIndicator size={"large"} color="black" />
+      </View>
+    );
+  }
+
   const handleOnPress = (data) => {
-    navigation.navigate("DetailHistorySubmit", { data });
+    if (data.status === "Pending") {
+      navigation.navigate("ConfirmationSubmit", { data });
+    } else {
+      navigation.navigate("DetailHistorySubmit", { data });
+    }
   };
-  const renderItem = ({ item }) => (
-    <CardHistoryCrowdFunding
-      data={item}
-      onPress={(e, data = item) => handleOnPress(data)}
-    />
-  );
+  const renderItem = ({ item }) => {
+    console.log(item.status);
+
+    return (
+      <CardHistoryCrowdFunding
+        data={item}
+        onPress={(e, data = item) => handleOnPress(data)}
+      />
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
+        data={data?.getHistorySubmitCrowdFunding}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}

@@ -1,4 +1,4 @@
-const { Balance } = require('../models');
+const { Balance } = require("../models");
 
 class BalanceController {
   static async getBalance(req, res) {
@@ -13,15 +13,20 @@ class BalanceController {
   }
   static async getBalanceByUserId(req, res) {
     try {
-      const { userId } = req.params;
-      const balance = await Balance.findOne({
+      const { id } = req.loginfo;
+      const { totalPrice } = req.params;
+      const { amount } = await Balance.findOne({
         where: {
           UserId: id,
         },
+        attributes: ["amount"],
       });
-      res.status(200).json(balance);
+      if (+amount >= +totalPrice) {
+        res.status(200).json({ isEnough: true });
+      } else {
+        res.status(200).json({ isEnough: false });
+      }
     } catch (error) {
-      console.log(error);
       res.status(500).json(error);
     }
   }

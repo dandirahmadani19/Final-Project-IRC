@@ -1,22 +1,79 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import React, { useState } from "react";
 import { Form, FormItem } from "react-native-form-component";
+import { SUBMIT_CROWDFUNDING } from "../../query/crowdFunding";
+import { useMutation } from "@apollo/client";
+import * as SecureStore from "expo-secure-store";
 
-export default function SubmitCrowFunding() {
+export default function SubmitCrowFunding({ navigation }) {
   const [dataSubmit, setDataSubmit] = useState({
     productName: "",
-    targetQuantity: null,
-    initialProductPrice: null,
-    initialQuantity: null,
-    expiredDay: null,
+    initialProductPrice: "",
+    initialQuantity: "",
     manufactureName: "",
     linkProduct: "",
-    imageProduct: "",
   });
-
+  const [submitCrowdFunding, { loading, error, data }] =
+    useMutation(SUBMIT_CROWDFUNDING);
+  console.log(data);
   const handleSubmitCrowdFunding = () => {
-    console.log(dataSubmit);
+    if (
+      !dataSubmit.productName ||
+      !dataSubmit.initialProductPrice ||
+      !dataSubmit.initialQuantity ||
+      !dataSubmit.manufactureName ||
+      !dataSubmit.linkProduct
+    ) {
+      Alert.alert("Warning", "Please Fill All Field");
+    } else {
+      SecureStore.getItemAsync("access_token").then((result) => {
+        if (result) {
+          const newDataSubmit = {
+            initialProductPrice: +dataSubmit.initialProductPrice,
+            initialQuantity: +dataSubmit.initialQuantity,
+            productName: dataSubmit.productName,
+            manufactureName: dataSubmit.manufactureName,
+            linkProduct: dataSubmit.linkProduct,
+            access_token: result,
+          };
+
+          submitCrowdFunding({
+            variables: { dataSubmitCrowFunding: newDataSubmit },
+          });
+        }
+      });
+    }
   };
+
+  if (data) {
+    Alert.alert(
+      "Success",
+      "Your Submission is being accepted and under verification"
+    );
+    navigation.jumpTo("HomeScreen");
+  }
+
+  if (loading && !data) {
+    return (
+      <View
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <ActivityIndicator size={"large"} color="black" />
+      </View>
+    );
+  }
   return (
     <ScrollView
       style={{
@@ -53,18 +110,7 @@ export default function SubmitCrowFunding() {
             errorBorderColor="#dc2626"
             style={styles.inputStyle}
           />
-          <FormItem
-            label="Max. Target Quantity"
-            isRequired
-            value={dataSubmit.targetQuantity}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, targetQuantity: e })
-            }
-            keyboardType="numeric"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
+
           <FormItem
             label="Product Price"
             isRequired
@@ -89,18 +135,7 @@ export default function SubmitCrowFunding() {
             errorBorderColor="#dc2626"
             style={styles.inputStyle}
           />
-          <FormItem
-            label="Max. Crowd Funding Day"
-            isRequired
-            value={dataSubmit.expiredDay}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, expiredDay: e })
-            }
-            keyboardType="numeric"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
+
           <FormItem
             label="Manufacture Name"
             isRequired
@@ -119,18 +154,6 @@ export default function SubmitCrowFunding() {
             value={dataSubmit.linkProduct}
             onChangeText={(e) =>
               setDataSubmit({ ...dataSubmit, linkProduct: e })
-            }
-            keyboardType="default"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
-          <FormItem
-            label="Product Image Url"
-            isRequired
-            value={dataSubmit.imageProduct}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, imageProduct: e })
             }
             keyboardType="default"
             floatingLabel={true}

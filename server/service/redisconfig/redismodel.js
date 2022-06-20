@@ -44,18 +44,35 @@ class ExpoToken {
 
       const expotokens = JSON.parse(await redis.get("expoTokens"));
 
-      if (!expotokens) {
-        await redis.set("expoTokens", JSON.stringify([tokens]));
-        return "ok";
-      } else {
-        expotokens.push(tokens);
-        await redis.set("expoTokens", JSON.stringify(expotokens));
-        return "ok";
+      const newSetTokens = []
+
+      expotokens.forEach(el=>{
+        if(el.UserId != userid) {
+          newSetTokens.push(el)
+        }
+      })
+
+      newSetTokens.push(tokens)
+
+      await redis.set("expoTokens", JSON.stringify(newSetTokens))
+
+      let success = false
+
+      const allTokens = JSON.parse(await redis.get("expoTokens"))
+
+      allTokens.forEach(el=>{
+        if( el.UserId == userid && el.expoToken == token ) {
+          success = true
+        }
+      })
+
+      const status = {
+        tokenAssigned : success
       }
-      //expotokens.push(tokens)
-      //await redis.set("expoTokens",JSON.stringify(tokens))
+
+      return status
     } catch (err) {
-      console.log(err);
+      return err
     }
   }
 
