@@ -166,6 +166,7 @@ class CrowdFundingController {
         { where: { id: CrowdFundingId }, returning: true }
       );
 
+
       const notifPayload = {
         title: "INI ADALAH PESAN PENTING",
         body: "Segera temukan produk favorit anda di applikasi kami cepat keburu kehabisan",
@@ -184,6 +185,7 @@ class CrowdFundingController {
         data: verifiedCrowdFunding[1][0],
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

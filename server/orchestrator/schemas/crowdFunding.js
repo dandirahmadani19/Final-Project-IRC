@@ -27,6 +27,10 @@ const typeDefCrowdFunding = gql`
     lastName: String
   }
 
+  type Message {
+    message: String
+  }
+
   type crowdProduct {
     id: ID
     UserId: Int
@@ -36,17 +40,17 @@ const typeDefCrowdFunding = gql`
     getCrowdFunding: [crowdFunding]
   }
 
-  input dataUser {
-    firstName: String
-    lastName: String
-    email: String!
-    password: String!
-    address: String
-    phoneNumber: String
+  input dataSubmitCrowFunding {
+    productName: String
+    initialProductPrice: Int
+    initialQuantity: Int
+    manufactureName: String
+    linkProduct: String
+    access_token: String
   }
 
   type Mutation {
-    login(dataUser: dataUser): User
+    submitCrowdFunding(dataSubmitCrowFunding: dataSubmitCrowFunding): Message
   }
 `;
 
@@ -55,6 +59,30 @@ const resolverCrowdFunding = {
     getCrowdFunding: async () => {
       try {
         const { data } = await axios.get(`${process.env.BASE_URL}/crowdFund`);
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+  },
+  Mutation: {
+    submitCrowdFunding: async (_, { dataSubmitCrowFunding }) => {
+      console.log(dataSubmitCrowFunding);
+      try {
+        const { data } = await axios({
+          method: "POST",
+          url: `${process.env.BASE_URL}/crowdFund/add`,
+          data: {
+            productName: dataSubmitCrowFunding.productName,
+            initialProductPrice: dataSubmitCrowFunding.initialProductPrice,
+            initialQuantity: dataSubmitCrowFunding.initialQuantity,
+            manufactureName: dataSubmitCrowFunding.manufactureName,
+            linkProduct: dataSubmitCrowFunding.linkProduct,
+          },
+          headers: {
+            access_token: dataSubmitCrowFunding.access_token,
+          },
+        });
         return data;
       } catch ({ response }) {
         return response.data;
