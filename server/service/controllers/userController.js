@@ -1,5 +1,5 @@
 const { tokenMakerFromPayload } = require("../helpers/helperJwt");
-const { User, Admin } = require("../models");
+const { User, Admin, Balance } = require("../models");
 const { comparePassowrd } = require("../helpers/helperBcrypt");
 
 class UserController {
@@ -85,7 +85,6 @@ class UserController {
   static async adminLogin(req, res, next) {
     try {
       const { email, password } = req.body;
-      console.log(email, password);
       const admin = await Admin.findOne({
         where: {
           email,
@@ -131,7 +130,7 @@ class UserController {
         phoneNumber,
         address,
       });
-      res.status(200).json({
+      res.status(201).json({
         id: admin.id,
         username: admin.username,
         email: admin.email,
@@ -146,11 +145,18 @@ class UserController {
 
   static async getUserById(req, res, next) {
     try {
+      console.log("masuk sini");
       const { id, username, email } = req.loginfo;
       const user = await User.findOne({
         where: {
           id,
           email
+        },
+        include: {
+          model: Balance,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'UserId']
+          }
         },
         attributes: {
           exclude: ['password']
