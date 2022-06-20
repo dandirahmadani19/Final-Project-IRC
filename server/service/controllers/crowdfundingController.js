@@ -9,6 +9,7 @@ const {
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 const finalPrice = require("../helpers/helperFinalPrice");
+const { sendPushNotif } = require("../helpers/pushNotification");
 
 class CrowdFundingController {
   static async getAllCrowdFunding(req, res, next) {
@@ -164,12 +165,27 @@ class CrowdFundingController {
         },
         { where: { id: CrowdFundingId }, returning: true }
       );
-      
+
+
+      const notifPayload = {
+        title: "INI ADALAH PESAN PENTING",
+        body: "Segera temukan produk favorit anda di applikasi kami cepat keburu kehabisan",
+        data: { data: "Home", id: 1 },
+      };
+
+      if (verifDataCrowdFunding[0] === 1) {
+        sendPushNotif(
+          ["ExponentPushToken[RkSS6NDnv0yZ1YPneQIqbz]"],
+          notifPayload
+        );
+      }
+
       res.status(200).json({
         message: "Crowd Funding verified, waiting approval from User",
         data: verifiedCrowdFunding[1][0],
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
