@@ -4,6 +4,8 @@ import NumberFormat from "react-number-format";
 
 export default function DetailHistorySubmit({ route }) {
   const data = route.params.data;
+  const id = route.params.id;
+  console.log(id);
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View style={styles.container}>
@@ -52,7 +54,7 @@ export default function DetailHistorySubmit({ route }) {
           </View>
         </View>
       </View>
-      {data.status !== "pending" && (
+      {data.status !== "Pending" && (
         <View>
           <View style={styles.container}>
             <Text style={styles.headerSection}>Payment Detail</Text>

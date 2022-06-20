@@ -1,12 +1,16 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer } = require('apollo-server');
 
-const { typeDefUser, resolverUser } = require("./schemas/user");
-const { typeDefCrowdFunding, resolverCrowdFunding } = require("./schemas/crowdFunding");
+const { typeDefUser, resolverUser } = require('./schemas/user');
+const {
+  typeDefCrowdFunding,
+  resolverCrowdFunding,
+} = require('./schemas/crowdFunding');
+const { typeDefPayment, resolverPayment } = require('./schemas/payment');
 const server = new ApolloServer({
-  typeDefs: [typeDefUser ,typeDefCrowdFunding],
-  resolvers: [resolverUser, resolverCrowdFunding],
+  typeDefs: [typeDefUser, typeDefCrowdFunding, typeDefPayment],
+  resolvers: [resolverUser, resolverCrowdFunding, resolverPayment],
   csrfPrevention: true,
-  cache: "bounded",
+  cache: 'bounded',
 });
 
 server.listen(3002).then(({ url }) => {

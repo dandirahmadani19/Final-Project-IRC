@@ -3,7 +3,7 @@ const errorsHandler = (err, req, res, next) => {
   switch (err.name) {
     case "SequelizeValidationError":
       code = 400;
-      msg = err.errors.map((e) => e.message);
+      msg = err.errors.map((e) => e.message).join(', ');
       break;
     case "SequelizeUniqueConstraintError":
       code = 400;
@@ -13,17 +13,29 @@ const errorsHandler = (err, req, res, next) => {
       code = 400;
       msg = "QTY_EXCEEDED";
       break;
+    case "EMAIL_ALREADY_EXIST":
+      code = 400;
+      msg = "Email has been registered";
+      break;
     case "JsonWebTokenError":
       code = 401;
       msg = "Error authentication, must login first";
       break;
     case "USER_NOT_FOUND":
       code = 401;
-      msg = "Email or Password not found";
+      msg = "Email or Password Wrong";
       break;
     case "PASSWORD_NOT_MATCH":
       code = 401;
-      msg = "Email or Password not found";
+      msg = "Email or Password Wrong";
+      break;
+    case "ADMIN_NOT_FOUND" :
+      code = 401;
+      msg = "Email or Password Wrong";
+      break;
+    case "Unauthorized": 
+      code = 401;
+      msg = "Unauthorized";
       break;
     default:
       code = 500;

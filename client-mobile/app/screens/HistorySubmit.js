@@ -17,7 +17,7 @@ export default function HistorySubmit({ navigation }) {
       currentQuantity: 300,
       targetQuantity: 203,
       initialQuantity: 100,
-      status: "open",
+      status: "Open",
       userName: "Dandi Rahmadani",
       finalProductPrice: 120000,
       hsCode: "234568",
@@ -37,7 +37,7 @@ export default function HistorySubmit({ navigation }) {
       currentQuantity: 300,
       targetQuantity: 203,
       initialQuantity: 100,
-      status: "success",
+      status: "Success",
       userName: "Dandi Rahmadani",
       finalProductPrice: 120000,
       hsCode: "234568",
@@ -57,7 +57,7 @@ export default function HistorySubmit({ navigation }) {
       currentQuantity: 300,
       targetQuantity: 203,
       initialQuantity: 100,
-      status: "failed",
+      status: "Failed",
       userName: "Dandi Rahmadani",
       finalProductPrice: 120000,
       hsCode: "234568",
@@ -77,7 +77,7 @@ export default function HistorySubmit({ navigation }) {
       currentQuantity: 300,
       targetQuantity: 203,
       initialQuantity: 100,
-      status: "pending",
+      status: "Pending",
       userName: "Dandi Rahmadani",
       finalProductPrice: 120000,
       hsCode: "234568",
@@ -86,13 +86,13 @@ export default function HistorySubmit({ navigation }) {
       expiredDay: 30,
     },
   ];
-  const handleOnPress = (data) => {
-    navigation.navigate("DetailHistorySubmit", { data });
+  const handleOnPress = (data, id) => {
+    navigation.navigate("DetailHistorySubmit", { data, id });
   };
   const renderItem = ({ item }) => (
     <CardHistoryCrowdFunding
       data={item}
-      onPress={(e, data = item) => handleOnPress(data)}
+      onPress={(e, data = item) => handleOnPress(data, id)}
     />
   );
   return (
