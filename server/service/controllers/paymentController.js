@@ -54,12 +54,12 @@ class ControllerPayment {
         },
       });
       if (!BalanceCheck) {
-        await Balance.create({
+        let balanceCreate = await Balance.create({
           UserId: id,
           amount: addAmount,
         });
       } else {
-        await Balance.update(
+        let balanceUpdate = await Balance.update(
           {
             amount: Number(BalanceCheck.amount) + Number(addAmount),
           },
