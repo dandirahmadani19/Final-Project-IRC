@@ -11,6 +11,7 @@ const {
 
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
+const finalPrice = require("../helpers/helperFinalPrice");
 
 class CrowdFundingController {
   static async getAllCrowdFunding(req, res, next) {
@@ -50,19 +51,17 @@ class CrowdFundingController {
     }
   }
 
-  static async create(req, res, next) {
+  static async createCrowdFunding(req, res, next) {
     try {
       let code = 200;
       let message = "";
       let data = {};
 
       const inputDataCrowdFunding = {
-        UserId: req.body.UserId,
+        UserId: req.loginfo.id,
         productName: req.body.productName,
-        targetQuantity: req.body.targetQuantity,
         initialProductPrice: req.body.initialProductPrice,
         initialQuantity: req.body.initialQuantity,
-        expiredDay: req.body.expiredDay,
         manufactureName: req.body.manufactureName,
         linkProduct: req.body.linkProduct,
         status: "pending",
@@ -99,6 +98,67 @@ class CrowdFundingController {
       });
     } catch (err) {
       next(err);
+    }
+  }
+
+  static async verifCrowdFunding(req, res, next) {
+    try {
+      const CrowdFundingId = req.params.id
+      const productWeight = req.body.productWeight
+
+      const verifDataCrowdFunding = {
+        productName: req.body.productName,
+        UserId: req.loginfo.id,
+        initialProductPrice: req.body.initialProductPrice,
+        initialQuantity: req.body.initialQuantity,
+        manufactureName: req.body.manufactureName,
+        linkProduct: req.body.linkProduct,
+        status: "pending",
+        productImage: req.body.productImage,
+        hscode: req.body.hscode,
+        expiredDay: req.body.expiredDay,
+        hscode: req.body.hscode
+      }
+
+      const {targetQuantity, totalProductPrice} = finalPrice(verifDataCrowdFunding.initialProductPrice, productWeight)
+
+      const verifiedCrowdFunding = await CrowdFunding.update({
+        ...verifDataCrowdFunding,
+        targetQuantity,
+        finalProductPrice : totalProductPrice / targetQuantity,
+        currentQuantity: verifDataCrowdFunding.initialQuantity
+      }, {where: {id: CrowdFundingId}, returning: true})
+
+      res.status(200).json({
+        message: 'Crowd Funding verified, waiting approval from User',
+        data: verifiedCrowdFunding[1][0]
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async approvalCrowdFunding(req, res, next) {
+    try {
+      const CrowdFundingId = req.params.id
+      const dataOpenCrowdFunding = {
+        status : 'open',
+        startDate : new Date().toISOString().split("T")[0]
+      }
+
+      const openedCrowdFunding = await CrowdFunding.update(
+        {
+          status: dataOpenCrowdFunding.status,
+          startDate: dataOpenCrowdFunding.startDate
+        }, 
+        {where: {id: CrowdFundingId}, returning: true}
+      )
+      res.status(200).json({
+        message: 'Crowd Funding success to open',
+        data: openedCrowdFunding[1][0]
+      })
+    } catch (error) {
+      next(error)
     }
   }
 

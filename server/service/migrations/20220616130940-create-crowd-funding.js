@@ -24,7 +24,6 @@ module.exports = {
       },
       targetQuantity: {
         type: Sequelize.INTEGER,
-        allowNull: false,
       },
       initialProductPrice: {
         type: Sequelize.INTEGER,
