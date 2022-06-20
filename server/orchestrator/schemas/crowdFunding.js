@@ -55,7 +55,6 @@ const resolverCrowdFunding = {
     getCrowdFunfing: async () => {
       try {
         const { data } = await axios.get(`${process.env.BASE_URL}/crowdFund`);
-        console.log(data);
         return data;
       } catch ({ response }) {
         return response.data;
