@@ -37,7 +37,6 @@ class ControllerPayment {
         redirect_url: transactionRedirectUrl,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

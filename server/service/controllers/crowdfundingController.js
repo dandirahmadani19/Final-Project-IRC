@@ -1,9 +1,5 @@
-const e = require("express");
-
 const { Op } = require("sequelize");
-const { CrowdFunding, CrowdFundingProduct, sequelize, User, Balance } = require("../models");
-
-
+const { CrowdFunding, CrowdFundingProduct, sequelize, User, Balance } = require("../models/index");
 const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 
@@ -29,6 +25,7 @@ class CrowdFundingController {
       })
       res.status(200).json(data)
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
