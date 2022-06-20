@@ -40,6 +40,7 @@ class CrowdFundingController {
             },
           },
         ],
+        order: [["startDate", "DESC"]],
       });
       //CRON JOB
       CronJob.schedule(

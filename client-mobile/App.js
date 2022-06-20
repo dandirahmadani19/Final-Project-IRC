@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { ApolloProvider } from "@apollo/client";
 import client from "./config/apolloClient";
@@ -12,7 +11,17 @@ import MyDrawer from "./app/navigation/MyDrawer";
 import DetailHistorySubmit from "./app/screens/DetailHistorySubmit";
 import * as Notifications from 'expo-notifications';
 import {useState,useRef,useEffect} from 'react'
+import * as SecureStore from "expo-secure-store";
+import { isLogin } from "./query/global";
+
 const Stack = createNativeStackNavigator();
+
+SecureStore.getItemAsync("access_token").then((result) => {
+  if (result) {
+    isLogin(true);
+  } else {
+    isLogin(false);
+  }
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -20,6 +29,7 @@ Notifications.setNotificationHandler({
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
+
 });
 
 export default function App() {
@@ -72,7 +82,7 @@ export default function App() {
             name="FormJoin"
             component={FormJoin}
             options={{
-              title: 'Form Join',
+              title: "Form Join",
             }}
           />
           <Stack.Screen
