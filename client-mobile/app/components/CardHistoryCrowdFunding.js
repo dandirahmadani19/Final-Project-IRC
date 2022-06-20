@@ -29,7 +29,7 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
       >
         <Image
           source={{
-            uri: data.imageProduct,
+            uri: data.productImage,
           }}
           style={{
             height: 130,

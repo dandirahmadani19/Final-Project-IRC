@@ -4,6 +4,7 @@ import {
   Text,
   View,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Form, FormItem } from "react-native-form-component";
@@ -11,7 +12,7 @@ import { SUBMIT_CROWDFUNDING } from "../../query/crowdFunding";
 import { useMutation } from "@apollo/client";
 import * as SecureStore from "expo-secure-store";
 
-export default function SubmitCrowFunding() {
+export default function SubmitCrowFunding({ navigation }) {
   const [dataSubmit, setDataSubmit] = useState({
     productName: "",
     initialProductPrice: "",
@@ -21,27 +22,43 @@ export default function SubmitCrowFunding() {
   });
   const [submitCrowdFunding, { loading, error, data }] =
     useMutation(SUBMIT_CROWDFUNDING);
-
+  console.log(data);
   const handleSubmitCrowdFunding = () => {
-    SecureStore.getItemAsync("access_token").then((result) => {
-      if (result) {
-        const newDataSubmit = {
-          initialProductPrice: +dataSubmit.initialProductPrice,
-          initialQuantity: +dataSubmit.initialQuantity,
-          productName: dataSubmit.productName,
-          manufactureName: dataSubmit.manufactureName,
-          linkProduct: dataSubmit.linkProduct,
-          access_token: result,
-        };
+    if (
+      !dataSubmit.productName ||
+      !dataSubmit.initialProductPrice ||
+      !dataSubmit.initialQuantity ||
+      !dataSubmit.manufactureName ||
+      !dataSubmit.linkProduct
+    ) {
+      Alert.alert("Warning", "Please Fill All Field");
+    } else {
+      SecureStore.getItemAsync("access_token").then((result) => {
+        if (result) {
+          const newDataSubmit = {
+            initialProductPrice: +dataSubmit.initialProductPrice,
+            initialQuantity: +dataSubmit.initialQuantity,
+            productName: dataSubmit.productName,
+            manufactureName: dataSubmit.manufactureName,
+            linkProduct: dataSubmit.linkProduct,
+            access_token: result,
+          };
 
-        submitCrowdFunding({
-          variables: { dataSubmitCrowFunding: newDataSubmit },
-        });
-      }
-    });
+          submitCrowdFunding({
+            variables: { dataSubmitCrowFunding: newDataSubmit },
+          });
+        }
+      });
+    }
   };
 
-  console.log(error, data);
+  if (data) {
+    Alert.alert(
+      "Success",
+      "Your Submission is being accepted and under verification"
+    );
+    navigation.jumpTo("HomeScreen");
+  }
 
   if (loading && !data) {
     return (

@@ -5,7 +5,7 @@ const Authentication = require("../middlewares/Authentication");
 const Controller = require("../controllers/paymentController");
 
 // router.use(Authentication);
-router.post("/", Controller.transaction);
-router.post("/success", Controller.addBalance);
+router.post("/", Authentication, Controller.transaction);
+router.post("/success", Authentication, Controller.addBalance);
 
 module.exports = router;
