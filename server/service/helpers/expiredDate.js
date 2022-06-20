@@ -6,9 +6,8 @@ function expiredDate(setDate, data) {
     date.setDate(date.getDate() + berapaHari);
     return date;
   };
-  const dateSet = date.addDays(setday).toISOString().split("T")[0];
+  const dateSet = date.addDays(setday).toLocaleString().split(",")[0]
   return dateSet;
 }
-
 
 module.exports = expiredDate;

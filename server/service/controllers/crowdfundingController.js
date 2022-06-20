@@ -42,9 +42,30 @@ class CrowdFundingController {
         ],
         order: [["startDate", "DESC"]],
       });
+      const dataJob = await CrowdFunding.findAll({});
+      const result = dataJob.map((item) => {
+        if (
+          item.expiredDay > 0 &&
+          item.status === "Open" &&
+          item.startDate !== null
+        ) {
+          const datadate = expiredDate(item.expiredDay, item.startDate);
+          const dateNow = new Date().toLocaleString().split(",")[0]
+          console.log(dateNow);
+          console.log(datadate);
+          if (datadate === dateNow) {
+            CrowdFunding.update(
+              {
+                status: "Failed",
+              },
+              { where: { id: item.id } }
+            );
+          }
+        }
+      });
       //CRON JOB
       CronJob.schedule(
-        "59 23 * * *",
+        "30 00 * * *",
         async () => {
           try {
             const dataJob = await CrowdFunding.findAll({});
@@ -55,7 +76,9 @@ class CrowdFundingController {
                 item.startDate !== null
               ) {
                 const datadate = expiredDate(item.expiredDay, item.startDate);
-                const dateNow = new Date().toISOString().split("T")[0];
+                const dateNow = new Date().toLocaleString().split(",")[0]
+                console.log(dateNow);
+                console.log(datadate);
                 if (datadate === dateNow) {
                   CrowdFunding.update(
                     {
