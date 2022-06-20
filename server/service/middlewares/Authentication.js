@@ -13,10 +13,9 @@ const authentication = async (req, res, next) => {
     } else {
       req.loginfo = {
         id: findTheUser.id,
-        username: findTheUser.username,
+        username: findTheUser.firstName,
         email: findTheUser.email,
       };
-      console.log(req.loginfo);
     }
     next();
   } catch (error) {
