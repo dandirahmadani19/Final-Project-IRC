@@ -37,7 +37,7 @@ class UserController {
         phoneNumber,
         address,
       });
-      res.status(200).json({
+      res.status(201).json({
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -148,16 +148,16 @@ class UserController {
     try {
       const { id, username, email } = req.loginfo;
       const user = await User.findOne({
-        where :{
+        where: {
           id,
           email
         },
-        attributes : {
-          exclude : ['password']
+        attributes: {
+          exclude: ['password']
         }
       })
-      if(!user){
-        throw { name : "USER_NOT_FOUND" }
+      if (!user) {
+        throw { name: "USER_NOT_FOUND" }
       }
       res.status(200).json(user)
     } catch (error) {
