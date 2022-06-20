@@ -34,7 +34,7 @@ const HomeScreen = ({ navigation }) => {
     });
   }, []);
   const { loading, error, data } = useQuery(GET_CROWDFUNDING);
-  
+
   if (loading)
     return (
       <View
@@ -49,7 +49,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
     );
 
-  const DATA = data.getCrowdFunfing;
+  const DATA = data.getCrowdFunding;
 
   const handleOnPress = (id, data) => {
     navigation.navigate("Detail", { id, data });

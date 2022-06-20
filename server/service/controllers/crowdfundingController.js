@@ -77,6 +77,7 @@ class CrowdFundingController {
       );
       res.status(200).json(data);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -240,7 +241,6 @@ class CrowdFundingController {
       });
     } catch (error) {
       await t.rollback();
-
       next(error);
     }
   }
@@ -363,20 +363,16 @@ class CrowdFundingController {
         include: [
           {
             model: CrowdFunding,
-            as: "crowdFunding",
             include: [
               {
                 model: User,
-                as: "user",
                 attributes: { exclude: ["password"] },
               },
               {
                 model: CrowdFundingProduct,
-                as: "crowdFundingProducts",
                 include: [
                   {
                     model: User,
-                    as: "user",
                     attributes: { exclude: ["password"] },
                   },
                 ],
