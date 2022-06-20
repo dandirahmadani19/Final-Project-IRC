@@ -15,6 +15,7 @@ import { useState, useRef, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { isLogin } from "./query/global";
 import { useNavigation } from "@react-navigation/native";
+import ConfirmationSubmit from "./app/screens/ConfirmationSubmit";
 
 const Stack = createNativeStackNavigator();
 
@@ -72,6 +73,13 @@ export default function App() {
             component={DetailHistorySubmit}
             options={{
               title: "Detail History Submit",
+            }}
+          />
+          <Stack.Screen
+            name="ConfirmationSubmit"
+            component={ConfirmationSubmit}
+            options={{
+              title: "Confirmation",
             }}
           />
         </Stack.Navigator>

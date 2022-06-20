@@ -165,11 +165,14 @@ class CrowdFundingController {
         { where: { id: CrowdFundingId }, returning: true }
       );
 
+      console.log(verifiedCrowdFunding);
+
       res.status(200).json({
         message: "Crowd Funding verified, waiting approval from User",
         data: verifiedCrowdFunding[1][0],
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
