@@ -3,14 +3,8 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class CrowdFundingProduct extends Model {
     static associate(models) {
-      CrowdFundingProduct.belongsTo(models.CrowdFunding, {
-        foreignKey: "CrowdFundingId",
-        as: "crowdFunding",
-      });
-      CrowdFundingProduct.belongsTo(models.User, {
-        foreignKey: "UserId",
-        as: "user",
-      });
+      CrowdFundingProduct.belongsTo(models.CrowdFunding);
+      CrowdFundingProduct.belongsTo(models.User);
     }
   }
   CrowdFundingProduct.init(

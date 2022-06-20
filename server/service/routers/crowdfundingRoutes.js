@@ -1,18 +1,17 @@
 const routesCrowdFunding = require("express").Router();
 const Controller = require("../controllers/crowdfundingController");
 
-const authentication = require('../middlewares/Authentication')
+const authentication = require("../middlewares/Authentication");
 
-routesCrowdFunding.get('/', Controller.getAllCrowdFunding);
+routesCrowdFunding.get("/", Controller.getAllCrowdFunding);
 
-routesCrowdFunding.get("/expiredTime", Controller.expiredTime)
-routesCrowdFunding.post('/add'), authentication, Controller.createCrowdFunding;
-routesCrowdFunding.put('/verif/:id'), authentication,Controller.verifCrowdFunding
-routesCrowdFunding.patch('/approve/:id'), authentication, Controller.approvalCrowdFunding 
-
-
-
-
+routesCrowdFunding.post("/add"), authentication, Controller.createCrowdFunding;
+routesCrowdFunding.put("/verif/:id"),
+  authentication,
+  Controller.verifCrowdFunding;
+routesCrowdFunding.patch("/approve/:id"),
+  authentication,
+  Controller.approvalCrowdFunding;
 
 routesCrowdFunding.get(
   "/crowdfundingproduct",
@@ -26,6 +25,5 @@ routesCrowdFunding.get(
   authentication,
   Controller.getAllHistoryCrowdFundingById
 );
-
 
 module.exports = routesCrowdFunding;

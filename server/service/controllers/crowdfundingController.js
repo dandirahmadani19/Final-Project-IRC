@@ -77,6 +77,7 @@ class CrowdFundingController {
       );
       res.status(200).json(data);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -133,8 +134,8 @@ class CrowdFundingController {
 
   static async verifCrowdFunding(req, res, next) {
     try {
-      const CrowdFundingId = req.params.id
-      const productWeight = req.body.productWeight
+      const CrowdFundingId = req.params.id;
+      const productWeight = req.body.productWeight;
 
       const verifDataCrowdFunding = {
         productName: req.body.productName,
@@ -147,48 +148,54 @@ class CrowdFundingController {
         productImage: req.body.productImage,
         hscode: req.body.hscode,
         expiredDay: req.body.expiredDay,
-        hscode: req.body.hscode
-      }
+        hscode: req.body.hscode,
+      };
 
-      const {targetQuantity, totalProductPrice} = finalPrice(verifDataCrowdFunding.initialProductPrice, productWeight)
+      const { targetQuantity, totalProductPrice } = finalPrice(
+        verifDataCrowdFunding.initialProductPrice,
+        productWeight
+      );
 
-      const verifiedCrowdFunding = await CrowdFunding.update({
-        ...verifDataCrowdFunding,
-        targetQuantity,
-        finalProductPrice : totalProductPrice / targetQuantity,
-        currentQuantity: verifDataCrowdFunding.initialQuantity
-      }, {where: {id: CrowdFundingId}, returning: true})
+      const verifiedCrowdFunding = await CrowdFunding.update(
+        {
+          ...verifDataCrowdFunding,
+          targetQuantity,
+          finalProductPrice: totalProductPrice / targetQuantity,
+          currentQuantity: verifDataCrowdFunding.initialQuantity,
+        },
+        { where: { id: CrowdFundingId }, returning: true }
+      );
 
       res.status(200).json({
-        message: 'Crowd Funding verified, waiting approval from User',
-        data: verifiedCrowdFunding[1][0]
-      })
+        message: "Crowd Funding verified, waiting approval from User",
+        data: verifiedCrowdFunding[1][0],
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
   static async approvalCrowdFunding(req, res, next) {
     try {
-      const CrowdFundingId = req.params.id
+      const CrowdFundingId = req.params.id;
       const dataOpenCrowdFunding = {
-        status : 'open',
-        startDate : new Date().toISOString().split("T")[0]
-      }
+        status: "open",
+        startDate: new Date().toISOString().split("T")[0],
+      };
 
       const openedCrowdFunding = await CrowdFunding.update(
         {
           status: dataOpenCrowdFunding.status,
-          startDate: dataOpenCrowdFunding.startDate
-        }, 
-        {where: {id: CrowdFundingId}, returning: true}
-      )
+          startDate: dataOpenCrowdFunding.startDate,
+        },
+        { where: { id: CrowdFundingId }, returning: true }
+      );
       res.status(200).json({
-        message: 'Crowd Funding success to open',
-        data: openedCrowdFunding[1][0]
-      })
+        message: "Crowd Funding success to open",
+        data: openedCrowdFunding[1][0],
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -310,20 +317,16 @@ class CrowdFundingController {
         include: [
           {
             model: CrowdFunding,
-            as: "crowdFunding",
             include: [
               {
                 model: User,
-                as: "user",
                 attributes: { exclude: ["password"] },
               },
               {
                 model: CrowdFundingProduct,
-                as: "crowdFundingProducts",
                 include: [
                   {
                     model: User,
-                    as: "user",
                     attributes: { exclude: ["password"] },
                   },
                 ],

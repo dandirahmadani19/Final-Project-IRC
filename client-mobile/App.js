@@ -9,8 +9,8 @@ import LoginScreen from "./app/screens/LoginScreen";
 import RegisterScreen from "./app/screens/RegisterScreen";
 import MyDrawer from "./app/navigation/MyDrawer";
 import DetailHistorySubmit from "./app/screens/DetailHistorySubmit";
-import * as Notifications from 'expo-notifications';
-import {useState,useRef,useEffect} from 'react'
+import * as Notifications from "expo-notifications";
+import { useState, useRef, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import { isLogin } from "./query/global";
 
@@ -22,6 +22,7 @@ SecureStore.getItemAsync("access_token").then((result) => {
   } else {
     isLogin(false);
   }
+});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,7 +30,6 @@ Notifications.setNotificationHandler({
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
-
 });
 
 export default function App() {
@@ -41,23 +41,26 @@ export default function App() {
     //nge get token dan nge set token
     /* registerForPushNotificationsAsync().then(token => setExpoPushToken(token)); */
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      const {data} = response.notification.request.content.data
-      if(data){
-        navigation.navigate(data)
-      }
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        const { data } = response.notification.request.content.data;
+        if (data) {
+          navigation.navigate(data);
+        }
+      });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
 
   return (
     <ApolloProvider client={client}>
