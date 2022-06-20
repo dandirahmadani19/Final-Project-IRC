@@ -152,7 +152,6 @@ class CrowdFundingController {
         data: data,
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }
@@ -168,7 +167,7 @@ class CrowdFundingController {
         initialQuantity: +req.body.initialQuantity,
         manufactureName: req.body.manufactureName,
         linkProduct: req.body.linkProduct,
-        status: "pending",
+        status: "Pending",
         productImage: req.body.productImage,
         hscode: req.body.hscode,
         expiredDay: +req.body.expiredDay,
@@ -224,7 +223,6 @@ class CrowdFundingController {
         data: verifiedCrowdFunding[1][0],
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
