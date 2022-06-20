@@ -143,6 +143,14 @@ class UserController {
       next(error);
     }
   }
+
+  static async getUserById(req, res, next) {
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
 }
 
 module.exports = UserController;
