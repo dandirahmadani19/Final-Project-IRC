@@ -100,13 +100,13 @@ class CrowdFundingController {
 
       const dataBalance = await Balance.findOne({
         where: {
-          UserId: req.body.UserId,
+          UserId: req.loginfo.id,
         },
       });
 
       if (dataBalance) {
-        const { initialProductPrice } = req.body;
-        const minimumBalance = initialProductPrice * 0.2;
+        const { initialProductPrice, initialQuantity } = req.body;
+        const minimumBalance = initialProductPrice * initialQuantity * 0.2;
         if (dataBalance.amount < minimumBalance) {
           code = 400;
           message = "Balance is not enough";
@@ -128,27 +128,26 @@ class CrowdFundingController {
         data: data,
       });
     } catch (err) {
+      console.log(err);
       next(err);
     }
   }
 
   static async verifCrowdFunding(req, res, next) {
     try {
-      const CrowdFundingId = req.params.id;
-      const productWeight = req.body.productWeight;
+      const CrowdFundingId = +req.params.id;
+      const productWeight = +req.body.productWeight;
 
       const verifDataCrowdFunding = {
         productName: req.body.productName,
-        UserId: req.loginfo.id,
-        initialProductPrice: req.body.initialProductPrice,
-        initialQuantity: req.body.initialQuantity,
+        initialProductPrice: +req.body.initialProductPrice,
+        initialQuantity: +req.body.initialQuantity,
         manufactureName: req.body.manufactureName,
         linkProduct: req.body.linkProduct,
         status: "pending",
         productImage: req.body.productImage,
         hscode: req.body.hscode,
-        expiredDay: req.body.expiredDay,
-        hscode: req.body.hscode,
+        expiredDay: +req.body.expiredDay,
       };
 
       const { targetQuantity, totalProductPrice } = finalPrice(
@@ -160,7 +159,7 @@ class CrowdFundingController {
         {
           ...verifDataCrowdFunding,
           targetQuantity,
-          finalProductPrice: totalProductPrice / targetQuantity,
+          finalProductPrice: Math.ceil(totalProductPrice / targetQuantity),
           currentQuantity: verifDataCrowdFunding.initialQuantity,
         },
         { where: { id: CrowdFundingId }, returning: true }
@@ -234,10 +233,10 @@ class CrowdFundingController {
 
       res.status(200).json({
         message: "Crowd Funding success to open",
-        data: 
-          { 
-            crowdFund: openedCrowdFunding[1][0], balance: dataBalance 
-          },
+        data: {
+          crowdFund: openedCrowdFunding[1][0],
+          balance: dataBalance,
+        },
       });
     } catch (error) {
       await t.rollback();
