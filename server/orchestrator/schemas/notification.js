@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server')
-const axios = require('axios')
-require('dotenv').config();
+const { gql } = require("apollo-server");
+const axios = require("axios");
+require("dotenv").config();
 
 const typeDefNotification = gql`
   type TokenData {
@@ -18,36 +18,34 @@ const typeDefNotification = gql`
   }
 
   type Mutation {
-    postToken(data: dataToken): Response
+    postToken(dataToken: dataToken): Response
   }
-`
+`;
 
 const resolverNotification = {
   Mutation: {
-    postToken: async (_, args) => {
+    postToken: async (_, { dataToken }) => {
       try {
-        const {expoToken,access_token} = args
-        console.log(args)
-        const {data} = await axios({
-          method : 'POST',
-          url : `${process.env.BASE_URL}/notification`,
+        const { expoToken, access_token } = dataToken;
+        const { data } = await axios({
+          method: "POST",
+          url: `${process.env.BASE_URL}/notification`,
           data: {
-            expoToken
+            expoToken,
           },
-          Headers : {
-            access_token
-          }
-        })
-
-        return data
-      } catch ({response}) {
-        return response.data
+          headers: {
+            access_token,
+          },
+        });
+        return data;
+      } catch (err) {
+        return err;
       }
-    }
-  }
-}
+    },
+  },
+};
 
 module.exports = {
   typeDefNotification,
-  resolverNotification
-}
+  resolverNotification,
+};

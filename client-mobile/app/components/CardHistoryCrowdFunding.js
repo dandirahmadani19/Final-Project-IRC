@@ -128,8 +128,8 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
                 }}
               >
                 {data.status === "Pending"
-                  ? moment(data.createdDate).format("Do MMMM YYYY")
-                  : moment(data.startDate).format("Do MMMM YYYY")}
+                  ? moment(new Date(data.createdAt)).format("Do MMMM YYYY")
+                  : moment(new Date(data.startDate)).format("Do MMMM YYYY")}
               </Text>
             </View>
             {/* <View>

@@ -13,13 +13,14 @@ import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
 import { isLogin, access_token, userProfile } from "../../query/global";
-import { useQuery } from "@apollo/client";
-import { GET_CROWDFUNDING } from "../../query/crowdFunding";
+import { useQuery, useMutation } from "@apollo/client";
+import { CHECK_BALANCE, GET_CROWDFUNDING } from "../../query/crowdFunding";
 import client from "../../config/apolloClient";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { registerForPushNotificationsAsync } from "../helpers";
 import { GET_USER_PROFILE } from "../../query/user";
+import { POST_EXPO_TOKEN } from "../../query/notification";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -41,9 +42,8 @@ const HomeScreen = ({ navigation }) => {
   } = useQuery(GET_USER_PROFILE, {
     variables: { accessToken: access_token() },
   });
-  // console.log(access_token());
+  const [postToken, {}] = useMutation(POST_EXPO_TOKEN);
   if (dataUserProfile) {
-    console.log(dataUserProfile);
     userProfile(dataUserProfile.getUserProfile);
   }
   const [notification, setNotification] = useState(false);
@@ -53,7 +53,11 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     //nge get token dan nge set token
     registerForPushNotificationsAsync().then((token) => {
-      console.log(token);
+      postToken({
+        variables: {
+          dataToken: { expoToken: token, access_token: access_token() },
+        },
+      });
       // setExpoPushToken(token);
     });
 
@@ -64,11 +68,10 @@ const HomeScreen = ({ navigation }) => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        const { screen, dataToSend } =
-          response.notification.request.content.data;
+        const { screen, data } = response.notification.request.content.data;
 
         if (screen) {
-          navigation.navigate(screen, { dataToSend });
+          navigation.navigate(screen, { data });
         }
       });
 
@@ -88,6 +91,9 @@ const HomeScreen = ({ navigation }) => {
       client.refetchQueries({
         include: "active",
       });
+      // client.refetchQueries({
+      //   include: [CHECK_BALANCE],
+      // });
       setRefreshing(false);
     });
   }, []);

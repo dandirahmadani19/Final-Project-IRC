@@ -10,23 +10,23 @@ import React from "react";
 import { useQuery } from "@apollo/client";
 import { CHECK_BALANCE } from "../../query/crowdFunding";
 import * as SecureStore from "expo-secure-store";
-import { access_token } from "../../query/global";
+import { access_token, userProfile } from "../../query/global";
 import { useMutation } from "@apollo/client";
 import { USER_APPROVE_CROWDFUNDING } from "../../query/crowdFunding";
 import { ActivityIndicator } from "react-native";
 import moment from "moment";
+import NumberFormat from "react-number-format";
 
 export default function ConfirmationSubmit({ route, navigation }) {
   const data = route.params.data;
-  console.log(data);
   const totalPrice = data.currentQuantity * data.finalProductPrice;
-  const {
-    loading,
-    error,
-    data: isEnough,
-  } = useQuery(CHECK_BALANCE, {
-    variables: { totalPrice: +totalPrice, accessToken: access_token() },
-  });
+  // const {
+  //   loading,
+  //   error,
+  //   data: isEnough,
+  // } = useQuery(CHECK_BALANCE, {
+  //   variables: { totalPrice: +totalPrice, accessToken: access_token() },
+  // });
 
   const [
     userApprove,
@@ -34,7 +34,8 @@ export default function ConfirmationSubmit({ route, navigation }) {
   ] = useMutation(USER_APPROVE_CROWDFUNDING);
 
   const handlePayment = () => {
-    if (isEnough?.checkBalance.isEnough) {
+    const balance = userProfile().Balance?.amount;
+    if (balance >= totalPrice) {
       userApprove({
         variables: { accessToken: access_token(), idCrowdFunding: +data.id },
       });
@@ -54,7 +55,7 @@ export default function ConfirmationSubmit({ route, navigation }) {
     navigation.goBack();
   }
 
-  if (loading || loadingApprove) {
+  if (loadingApprove) {
     return (
       <View
         style={{
@@ -99,7 +100,7 @@ export default function ConfirmationSubmit({ route, navigation }) {
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.textRightSide}>
-              {data.User.firstName} {data.User.lastName}
+              {data.User?.firstName} {data.User?.lastName}
             </Text>
             <Text style={styles.textRightSide}>
               {moment(data.createdAt).format("dddd Do MMMM YYYY")}
@@ -131,7 +132,7 @@ export default function ConfirmationSubmit({ route, navigation }) {
                 {data.productName}
               </Text>
               <Text style={{ fontSize: 11, color: "#64748b" }}>
-                {data.initialQuantity} x IDR {data.finalProductPrice}
+                {data.currentQuantity} x IDR {data.finalProductPrice}
               </Text>
             </View>
           </View>
@@ -156,7 +157,7 @@ export default function ConfirmationSubmit({ route, navigation }) {
                 </View>
                 <View style={{ flex: 1 }}>
                   <NumberFormat
-                    value={2000}
+                    value={data.finalProductPrice}
                     displayType="text"
                     thousandSeparator={true}
                     prefix="IDR "
@@ -164,9 +165,11 @@ export default function ConfirmationSubmit({ route, navigation }) {
                       <Text style={styles.textRightSide}>{value}</Text>
                     )}
                   />
-                  <Text style={styles.textRightSide}>pcs</Text>
+                  <Text style={styles.textRightSide}>
+                    {data.currentQuantity} pcs
+                  </Text>
                   <NumberFormat
-                    value={6000}
+                    value={totalPrice}
                     displayType="text"
                     thousandSeparator={true}
                     prefix="IDR "

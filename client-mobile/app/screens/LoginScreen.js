@@ -6,14 +6,14 @@ import {
   Alert,
 } from "react-native";
 import React, { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { ActivityIndicator } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { StackActions } from "@react-navigation/native";
 
-import { LOGIN } from "../../query/user";
+import { GET_USER_PROFILE, LOGIN } from "../../query/user";
 import { Form, FormItem } from "react-native-form-component";
-import { isLogin } from "../../query/global";
+import { isLogin, userProfile, access_token } from "../../query/global";
 
 export default function LoginScreen({ navigation, route }) {
   const [login, { loading, error, data }] = useMutation(LOGIN);
@@ -42,7 +42,28 @@ export default function LoginScreen({ navigation, route }) {
       Alert.alert("Login Failed", data.login.message);
     } else {
       saveAccessToken("access_token", data.login.access_token);
-      isLogin(true);
+      SecureStore.getItemAsync("access_token").then((result) => {
+        if (result) {
+          isLogin(true);
+          access_token(result);
+          userProfile({
+            firstName: data.login.firstName,
+            lastName: data.login.lastName,
+            email: data.login.email,
+            address: data.login.address,
+            phoneNumber: data.login.phoneNumber,
+            id: data.login.id,
+            Balance: {
+              amount: data?.login.Balance.amount,
+            },
+          });
+        } else {
+          isLogin(false);
+          access_token("");
+        }
+      });
+
+      // isLogin(true);
       if (route.name === "LoginScreen") {
         navigation.replace("Home");
       } else {

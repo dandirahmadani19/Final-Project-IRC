@@ -5,6 +5,15 @@ export const LOGIN = gql`
     login(dataUser: $dataUser) {
       access_token
       message
+      Balance {
+        amount
+      }
+      firstName
+      lastName
+      email
+      address
+      phoneNumber
+      id
     }
   }
 `;

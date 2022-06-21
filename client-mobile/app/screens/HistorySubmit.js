@@ -5,7 +5,7 @@ import { HISTORY_SUBMIT } from "../../query/crowdFunding";
 import React from "react";
 import CardHistoryCrowdFunding from "../components/CardHistoryCrowdFunding";
 import * as SecureStore from "expo-secure-store";
-import { access_token } from "../../query/global";
+import { access_token, userProfile } from "../../query/global";
 import { ActivityIndicator, RefreshControl } from "react-native";
 import client from "../../config/apolloClient";
 
@@ -28,6 +28,8 @@ export default function HistorySubmit({ navigation }) {
   const { loading, error, data } = useQuery(HISTORY_SUBMIT, {
     variables: { accessToken: access_token() },
   });
+  console.log(access_token());
+  console.log(userProfile());
 
   if (loading && !data) {
     return (

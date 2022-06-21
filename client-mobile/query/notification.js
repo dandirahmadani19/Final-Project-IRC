@@ -1,9 +1,9 @@
-import { gql } from '@apollo/client'
+import { gql } from "@apollo/client";
 
 export const POST_EXPO_TOKEN = gql`
-  mutation Mutation($data: dataToken) {
-  postToken(data: $data) {
-    tokenAssigned
+  mutation Mutation($dataToken: dataToken) {
+    postToken(dataToken: $dataToken) {
+      tokenAssigned
+    }
   }
-}
-`
+`;
