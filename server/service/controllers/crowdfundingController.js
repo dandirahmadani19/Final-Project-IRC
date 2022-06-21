@@ -284,16 +284,53 @@ class CrowdFundingController {
       const { id } = req.params;
       const { quantityToBuy, totalPrice } = req.body;
       const { currentQuantity } = await CrowdFunding.findByPk(id);
-      await CrowdFundingProduct.create(
+      const data = await CrowdFundingProduct.findOne(
         {
-          CrowdFundingId: id,
-          UserId: req.loginfo.id,
-          quantityToBuy,
-          totalPrice,
-          paymentStatus: "Success",
+          where: {
+            [Op.and]: [
+              {
+                CrowdFundingId: +id,
+              },
+              {
+                UserId: +req.loginfo.id,
+              },
+            ],
+          },
         },
         { transaction: t }
       );
+
+      if (data) {
+        await CrowdFundingProduct.update(
+          {
+            quantityToBuy: +data.quantityToBuy + +quantityToBuy,
+            totalPrice: +data.totalPrice + +totalPrice,
+          },
+          {
+            where: {
+              [Op.and]: [
+                {
+                  CrowdFundingId: +id,
+                },
+                {
+                  UserId: +req.loginfo.id,
+                },
+              ],
+            },
+          }
+        );
+      } else {
+        await CrowdFundingProduct.create(
+          {
+            CrowdFundingId: id,
+            UserId: req.loginfo.id,
+            quantityToBuy,
+            totalPrice,
+            paymentStatus: "Success",
+          },
+          { transaction: t }
+        );
+      }
 
       const { amount } = await Balance.findOne(
         {
@@ -356,14 +393,24 @@ class CrowdFundingController {
       const tokens = await getRelevantToken(UserId);
 
       const notifPayload = {
-        title: "Submission Accepted",
-        body: "Your submission crowd funding has been verified. Please complete your payment !",
-        data: { screen: "ConfirmationSubmit" },
+        title: "Notification",
+        body: "New User Has Joined",
+        data: { screen: "HistorySubmit", data: {} },
         priority: "high",
       };
 
       sendPushNotif(tokens, notifPayload);
 
+      const tokensSubmit = await getRelevantToken([req.loginfo.id]);
+
+      const notifPayloadSubmit = {
+        title: "Notification",
+        body: "New User Has Joined",
+        data: { screen: "HistoryJoin", data: {} },
+        priority: "high",
+      };
+
+      sendPushNotif(tokensSubmit, notifPayloadSubmit);
       // //update currentQuantity
       // //push notif ke admincms
       // //GW MAU KASIH PUSH NOTIF KE YANG JOIN
@@ -440,7 +487,6 @@ class CrowdFundingController {
         where: {
           UserId: id,
         },
-        attributes: ["UserId"],
         include: [
           {
             model: CrowdFunding,
@@ -457,58 +503,24 @@ class CrowdFundingController {
               "hscode",
               "createdAt",
             ],
-            include: [
-              {
-                model: CrowdFundingProduct,
-                attributes: ["totalPrice", "quantityToBuy"],
-                include: [
-                  {
-                    model: User,
-                    attributes: ["firstName", "lastName"],
-                  },
-                ],
-              },
-            ],
+            include: {
+              model: User,
+              attributes: ["firstName", "lastName"],
+            },
+          },
+          {
+            model: User,
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
         ],
       });
-      data = data.map((item) => {
-        return item.CrowdFunding;
-      });
-
-      // const data = await CrowdFunding.findAll({
-      //   attributes: [
-      //     "id",
-      //     "productName",
-      //     "targetQuantity",
-      //     "finalProductPrice",
-      //     "status",
-      //     "currentQuantity",
-      //     "productImage",
-      //     "initialQuantity",
-      //     "expiredDay",
-      //     "hscode",
-      //     "createdAt",
-      //   ],
-      //   include: [
-      //     {
-      //       model: CrowdFundingProduct,
-      //       where: {
-      //         UserId: id,
-      //       },
-      //       attributes: ["totalPrice", "quantityToBuy"],
-      //       include: [
-      //         {
-      //           model: User,
-      //           attributes: ["firstName", "lastName"],
-      //         },
-      //       ],
-      //     },
-      //   ],
+      // data = data.map((item) => {
+      //   return item.CrowdFunding;
       // });
 
       res.status(200).json(data);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
