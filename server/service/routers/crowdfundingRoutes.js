@@ -15,7 +15,12 @@ routesCrowdFunding.patch(
 routesCrowdFunding.get(
   "/detail/:id",
   Controller.detailCrowdFund
-); //belum test new endpoint 21/6 22.00
+); //belum test new endpoint 21/6 
+
+routesCrowdFunding.get(
+  "/admin",
+  Controller.allCrowdFundAdmin
+); //belum test new endpoint 21/6
 
 routesCrowdFunding.post(
   "/join/:id",
