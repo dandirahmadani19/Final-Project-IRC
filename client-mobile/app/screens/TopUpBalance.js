@@ -31,7 +31,7 @@ export default function TopUpBalance() {
         if (result) {
           geturl({
             variables: {
-              dataBalance: { amount: +amount, access_token: result },
+              dataBalance: { amount: +amount + 3000, access_token: result },
             },
           });
         }

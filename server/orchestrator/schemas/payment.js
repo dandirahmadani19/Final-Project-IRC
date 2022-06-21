@@ -32,7 +32,7 @@ const resolverPayment = {
           method: 'POST',
           url: `${process.env.BASE_URL}/payment`,
           data: {
-            addAmount: dataBalance.amount + 3000,
+            addAmount: dataBalance.amount,
           },
           headers: {
             access_token: dataBalance.access_token,
