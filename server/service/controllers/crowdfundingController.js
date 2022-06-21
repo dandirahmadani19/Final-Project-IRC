@@ -379,7 +379,6 @@ class CrowdFundingController {
     }
   }
 
-  // GET DATA DARI TABEL CROWDFUNDING PRODUCT
   static async detailCrowdFund(req, res, next) {
     try {
       const id = req.params.id;
@@ -397,6 +396,24 @@ class CrowdFundingController {
       res.status(200).json(dataCF);
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async allCrowdFundAdmin(req, res, next) {
+    try {
+      const listCF = await adminCrowdFunding.findAll({
+        attributes: {
+          exclude: [
+            "initialProductPrice",
+            "initialQuantity",
+            "createdAt",
+            "updatedAt",
+          ],
+        },
+      });
+      res.status(200).json(listCF);
+    } catch (error) {
+      next(error)
     }
   }
 
