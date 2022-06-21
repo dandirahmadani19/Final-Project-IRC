@@ -13,9 +13,9 @@ routesCrowdFunding.patch(
 ); //test
 
 routesCrowdFunding.get(
-  "/crowdfundingproduct",
-  Controller.getAllCrowdFundingProduct
-);
+  "/detail/:id",
+  Controller.detailCrowdFund
+); //belum test new endpoint 21/6 22.00
 
 routesCrowdFunding.post(
   "/join/:id",

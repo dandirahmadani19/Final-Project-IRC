@@ -380,10 +380,21 @@ class CrowdFundingController {
   }
 
   // GET DATA DARI TABEL CROWDFUNDING PRODUCT
-  static async getAllCrowdFundingProduct(req, res, next) {
+  static async detailCrowdFund(req, res, next) {
     try {
-      const data = await CrowdFundingProduct.findAll({});
-      res.status(200).json(data);
+      const id = req.params.id;
+      const dataCF = await detailCrowdFunding.findOne({
+        where: { id },
+        attributes: {
+          exclude: [
+            "initialProductPrice",
+            "initialQuantity",
+            "createdAt",
+            "updatedAt",
+          ],
+        },
+      });
+      res.status(200).json(dataCF);
     } catch (error) {
       next(error);
     }
