@@ -6,6 +6,7 @@ let snap = new midtransClient.Snap({
   serverKey: 'SB-Mid-server-wbLcGSE8HpMB_os5vYzbrJgT',
   clientKey: 'SB-Mid-client-PWi2oSB5f0ZMGyhH',
 });
+
 class ControllerPayment {
   static async transaction(req, res, next) {
     try {
