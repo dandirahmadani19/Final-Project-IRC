@@ -16,7 +16,7 @@ class ControllerPayment {
       let parameter = {
         transaction_details: {
           order_id: `${Date.now()}-${transactionCode}`,
-          gross_amount: addAmount,
+          gross_amount: String(addAmount),
         },
       };
 
