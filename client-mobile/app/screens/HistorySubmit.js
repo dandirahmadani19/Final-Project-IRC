@@ -6,9 +6,25 @@ import React from "react";
 import CardHistoryCrowdFunding from "../components/CardHistoryCrowdFunding";
 import * as SecureStore from "expo-secure-store";
 import { access_token } from "../../query/global";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, RefreshControl } from "react-native";
+import client from "../../config/apolloClient";
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 export default function HistorySubmit({ navigation }) {
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => {
+      client.refetchQueries({
+        include: [HISTORY_SUBMIT],
+      });
+      setRefreshing(false);
+    });
+  }, []);
   const { loading, error, data } = useQuery(HISTORY_SUBMIT, {
     variables: { accessToken: access_token() },
   });
@@ -36,8 +52,6 @@ export default function HistorySubmit({ navigation }) {
     }
   };
   const renderItem = ({ item }) => {
-    console.log(item.status);
-
     return (
       <CardHistoryCrowdFunding
         data={item}
@@ -52,6 +66,9 @@ export default function HistorySubmit({ navigation }) {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SafeAreaView>
   );

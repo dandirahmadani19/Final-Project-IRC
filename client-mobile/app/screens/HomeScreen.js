@@ -12,13 +12,14 @@ import {
 import CardCrowdFunding from "../components/CardCrowdFunding";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
-import { isLogin } from "../../query/global";
+import { isLogin, access_token, userProfile } from "../../query/global";
 import { useQuery } from "@apollo/client";
 import { GET_CROWDFUNDING } from "../../query/crowdFunding";
 import client from "../../config/apolloClient";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { registerForPushNotificationsAsync } from "../helpers";
+import { GET_USER_PROFILE } from "../../query/user";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -33,6 +34,18 @@ Notifications.setNotificationHandler({
 });
 
 const HomeScreen = ({ navigation }) => {
+  const {
+    loading: getUserProfileLoading,
+    error: getUserError,
+    data: dataUserProfile,
+  } = useQuery(GET_USER_PROFILE, {
+    variables: { accessToken: access_token() },
+  });
+  // console.log(access_token());
+  if (dataUserProfile) {
+    console.log(dataUserProfile);
+    userProfile(dataUserProfile.getUserProfile);
+  }
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
