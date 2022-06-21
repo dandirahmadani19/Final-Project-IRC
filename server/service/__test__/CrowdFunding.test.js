@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require("../app")
-const { User, CrowdFunding, Balance } = require('../models/index');
+const { User, CrowdFunding, Balance, CrowdFundingProduct } = require('../models/index');
 const { tokenMakerFromPayload } = require("../helpers/helperJwt");
 const { passwordEncryptor } = require("../helpers/helperBcrypt");
 
@@ -15,6 +15,14 @@ beforeAll(async () => {
             password: passwordEncryptor('123456'),
             phoneNumber: '081234567890',
             address: 'Jl. Kebon Kacang',
+        },
+        {
+            firstName: 'jojo',
+            lastName: 'Doe',
+            email: 'jojo@mail.com',
+            password: passwordEncryptor('123456'),
+            phoneNumber: '0812344567890',
+            address: 'Jl. Kebon Kacang Sebelah',
         }
     ])
     await Balance.bulkCreate([
@@ -45,6 +53,7 @@ beforeAll(async () => {
             createdAt: "2022-06-18T16:14:16.940Z",
             updatedAt: "2022-06-18T16:14:16.940Z",
         }
+        
     ])
     access_token = tokenMakerFromPayload({
         id: 1,
@@ -155,6 +164,15 @@ describe("Crowdfunding Test", () => {
         expect(res.body).toStrictEqual(expect.any(Object));;
         expect(res.body.message).toEqual("Internal Server Error");
     });
+    it("should return Success Join Crowdfunding", async () => {
+        const res = await request(app).post(`/crowdFund/join/${1}`)
+        .set("access_token", access_token)
+        .send({quantityToBuy : 10 , totalPrice : 10000 })
+        .expect(200);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.status).toEqual(true);
+        expect(res.body.message).toEqual("success join crowdfunding");
+    });
 })
 
 afterAll(async () => {
@@ -169,6 +187,11 @@ afterAll(async () => {
         restartIdentity: true
     })
     await Balance.destroy({
+        truncate: true,
+        cascade: true,
+        restartIdentity: true
+    })
+    await CrowdFundingProduct.destroy({
         truncate: true,
         cascade: true,
         restartIdentity: true
