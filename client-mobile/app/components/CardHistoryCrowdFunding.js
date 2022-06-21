@@ -4,6 +4,7 @@ import NumberFormat from "react-number-format";
 import moment from "moment";
 
 export default function CardHistoryCrowdFunding({ data, onPress }) {
+  console.log(data);
   const getColorStatus = (status) => {
     switch (status) {
       case "Open":
@@ -27,16 +28,40 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
           backgroundColor: "#fff",
         }}
       >
-        <Image
-          source={{
-            uri: data.productImage,
-          }}
-          style={{
-            height: 130,
-            resizeMode: "contain",
-            width: 120,
-          }}
-        />
+        {data.productImage && (
+          <Image
+            source={{
+              uri: data.productImage,
+            }}
+            style={{
+              height: 130,
+              resizeMode: "contain",
+              width: 120,
+            }}
+          />
+        )}
+        {!data.productImage && (
+          <View
+            style={{
+              height: 130,
+              width: 120,
+              flexDirection: "row",
+              justifiyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#94a3b8",
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                textAlign: "center",
+                width: "100%",
+              }}
+            >
+              Under review by admin
+            </Text>
+          </View>
+        )}
 
         <View
           style={{
@@ -75,15 +100,17 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
                 displayType="text"
                 thousandSeparator={true}
                 prefix="IDR "
-                renderText={(value) => (
-                  <Text
-                    style={{
-                      fontSize: 10,
-                    }}
-                  >
-                    {value}
-                  </Text>
-                )}
+                renderText={(value) => {
+                  return (
+                    <Text
+                      style={{
+                        fontSize: 10,
+                      }}
+                    >
+                      {value ? value : "Under Review"}
+                    </Text>
+                  );
+                }}
               />
             </View>
             <View>

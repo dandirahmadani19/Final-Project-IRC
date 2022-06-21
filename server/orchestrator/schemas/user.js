@@ -12,10 +12,15 @@ const typeDefUser = gql`
     phoneNumber: String
     message: String
     access_token: String
+    Balance: Balance
+  }
+
+  type Balance {
+    amount: Int
   }
 
   type Query {
-    getUserLogin: User
+    getUserProfile(access_token: String): User
   }
 
   input dataUser {
@@ -33,6 +38,23 @@ const typeDefUser = gql`
 `;
 
 const resolverUser = {
+  Query: {
+    getUserProfile: async (_, args) => {
+      console.log(args);
+      try {
+        const { data } = await axios({
+          method: "GET",
+          url: `${process.env.BASE_URL}/user/user-login`,
+          headers: {
+            access_token: args.access_token,
+          },
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+  },
   Mutation: {
     login: async (_, { dataUser }) => {
       try {

@@ -9,6 +9,7 @@ import {
 import * as SecureStore from "expo-secure-store";
 import { isLogin } from "../../query/global";
 import { ActivityIndicator } from "react-native";
+import { userProfile } from "../../query/global";
 
 export default function CustomDrawerContent(props) {
   return (
@@ -44,12 +45,12 @@ export default function CustomDrawerContent(props) {
                 <Text
                   style={{ fontSize: 14, fontWeight: "800", color: "#fff" }}
                 >
-                  Dandi Rahmadani
+                  {userProfile().firstName} {userProfile().lastName}
                 </Text>
                 <Text
                   style={{ fontSize: 11, fontWeight: "300", color: "#cbd5e1" }}
                 >
-                  dandirahmadani@gmail.com
+                  {userProfile().email}
                 </Text>
                 <Text
                   style={{
@@ -59,7 +60,7 @@ export default function CustomDrawerContent(props) {
                     marginTop: 10,
                   }}
                 >
-                  08789809876
+                  {userProfile().phoneNumber}
                 </Text>
               </View>
             </View>
@@ -74,7 +75,7 @@ export default function CustomDrawerContent(props) {
               Your Balance
             </Text>
             <NumberFormat
-              value={1200000}
+              value={userProfile().Balance.amount}
               displayType="text"
               thousandSeparator={true}
               prefix="Rp. "
