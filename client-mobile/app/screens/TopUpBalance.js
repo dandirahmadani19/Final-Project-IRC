@@ -5,15 +5,15 @@ import {
   Alert,
   TouchableHighlight,
   AsyncStorage,
-} from 'react-native';
-import React, { useState } from 'react';
-import { Form, FormItem } from 'react-native-form-component';
-import { WebView } from 'react-native-webview';
-import { useMutation } from '@apollo/client';
-import { GETURL, TOPUPBALANCE } from '../../query/payment';
-import * as SecureStore from 'expo-secure-store';
+} from "react-native";
+import React, { useState } from "react";
+import { Form, FormItem } from "react-native-form-component";
+import { WebView } from "react-native-webview";
+import { useMutation } from "@apollo/client";
+import { GETURL, TOPUPBALANCE } from "../../query/payment";
+import * as SecureStore from "expo-secure-store";
 
-export default function TopUpBalance() {
+export default function TopUpBalance({ navigation }) {
   const [amount, setAmount] = useState();
   const [openWebView, setOpenWebView] = useState(false);
   const [url, setUrl] = useState();
@@ -25,9 +25,9 @@ export default function TopUpBalance() {
     useMutation(TOPUPBALANCE);
   const handleTopUp = () => {
     if (!amount) {
-      Alert.alert('Warning', 'Amount Is Required');
+      Alert.alert("Warning", "Amount Is Required");
     } else {
-      SecureStore.getItemAsync('access_token').then((result) => {
+      SecureStore.getItemAsync("access_token").then((result) => {
         if (result) {
           geturl({
             variables: {
@@ -44,21 +44,22 @@ export default function TopUpBalance() {
   };
 
   const handleWebViewNavigationStateChange = (e) => {
-    if (e.url.includes('&status_code=200&transaction_status=capture')) {
-      Alert.alert('Success', 'Topup Success');
-      SecureStore.getItemAsync('access_token').then((result) => {
+    if (e.url.includes("&status_code=200&transaction_status=capture")) {
+      Alert.alert("Success", "Topup Success");
+      SecureStore.getItemAsync("access_token").then((result) => {
         if (result) {
           topup({
             variables: {
               dataBalance: { amount: +amount, access_token: result },
             },
           });
-          setAmount('');
+          setAmount("");
           setOpenWebView(false);
+          navigation.navigate("JoinSuccess");
         }
       });
     }
-    if (e.url.includes('error')) {
+    if (e.url.includes("error")) {
       setOpenWebView(false);
     }
   };
@@ -80,8 +81,8 @@ export default function TopUpBalance() {
       style={{
         paddingHorizontal: 20,
         paddingVertical: 20,
-        backgroundColor: '#fff',
-        height: '100%',
+        backgroundColor: "#fff",
+        height: "100%",
       }}
     >
       <View
@@ -90,13 +91,13 @@ export default function TopUpBalance() {
           paddingVertical: 20,
           marginTop: 20,
           borderRadius: 10,
-          width: '100%',
+          width: "100%",
         }}
       >
         <Form
           onButtonPress={handleTopUp}
           buttonStyle={{
-            backgroundColor: '#15803d',
+            backgroundColor: "#15803d",
             marginTop: 10,
           }}
           buttonText="Top Up"
@@ -111,6 +112,14 @@ export default function TopUpBalance() {
             errorBorderColor="#dc2626"
             style={styles.inputStyle}
           />
+          <Text
+            style={{
+              fontSize: 13,
+              marginBottom: 20,
+            }}
+          >
+            Note : Biaya Admin Sebesar Rp. 3000
+          </Text>
         </Form>
       </View>
     </View>
@@ -119,7 +128,8 @@ export default function TopUpBalance() {
 
 const styles = StyleSheet.create({
   inputStyle: {
-    borderColor: '#000',
+    borderColor: "#000",
     borderWidth: 0.5,
+    marginBottom: 5,
   },
 });

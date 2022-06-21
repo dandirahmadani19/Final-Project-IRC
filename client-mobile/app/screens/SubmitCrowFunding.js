@@ -47,18 +47,24 @@ export default function SubmitCrowFunding({ navigation }) {
           submitCrowdFunding({
             variables: { dataSubmitCrowFunding: newDataSubmit },
           });
+          setDataSubmit({
+            productName: "",
+            initialProductPrice: "",
+            initialQuantity: "",
+            manufactureName: "",
+            linkProduct: "",
+          });
+          if (data) {
+            Alert.alert(
+              "Success",
+              "Your Submission is being accepted and under verification"
+            );
+            navigation.jumpTo("HomeScreen");
+          }
         }
       });
     }
   };
-
-  if (data) {
-    Alert.alert(
-      "Success",
-      "Your Submission is being accepted and under verification"
-    );
-    navigation.jumpTo("HomeScreen");
-  }
 
   if (loading && !data) {
     return (

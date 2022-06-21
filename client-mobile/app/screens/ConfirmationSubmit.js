@@ -20,14 +20,6 @@ import NumberFormat from "react-number-format";
 export default function ConfirmationSubmit({ route, navigation }) {
   const data = route.params.data;
   const totalPrice = data.currentQuantity * data.finalProductPrice;
-  // const {
-  //   loading,
-  //   error,
-  //   data: isEnough,
-  // } = useQuery(CHECK_BALANCE, {
-  //   variables: { totalPrice: +totalPrice, accessToken: access_token() },
-  // });
-
   const [
     userApprove,
     { loading: loadingApprove, error: errorAprrove, data: message },
@@ -36,24 +28,36 @@ export default function ConfirmationSubmit({ route, navigation }) {
   const handlePayment = () => {
     const balance = userProfile().Balance?.amount;
     if (balance >= totalPrice) {
-      userApprove({
-        variables: { accessToken: access_token(), idCrowdFunding: +data.id },
-      });
+      Alert.alert(
+        "Confirmation ?",
+        "Are you sure you want to make payment ? Your balance will be reduced automatically",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "Make Payment",
+            onPress: () => {
+              userApprove({
+                variables: {
+                  accessToken: access_token(),
+                  idCrowdFunding: +data.id,
+                },
+              });
+              navigation.navigate("LoadingScreen");
+            },
+          },
+        ]
+      );
     } else {
       Alert.alert(
         "Warning",
         "Your saldo is not enough for make this payment, please top up"
       );
-      //   navigation.navigate("TopUp");
     }
   };
-
-  if (
-    message?.userApproveCrowdFunding.message === "Crowd Funding success to open"
-  ) {
-    Alert.alert("Success", "Crowd Funding success to open");
-    navigation.goBack();
-  }
 
   if (loadingApprove) {
     return (

@@ -40,6 +40,10 @@ const typeDefCrowdFunding = gql`
   type crowdProduct {
     id: ID
     UserId: Int
+    totalPrice: Int
+    quantityToBuy: Int
+    createdAt: String
+    CrowdFunding: crowdFunding
     User: UserCrowd
   }
 
@@ -47,6 +51,7 @@ const typeDefCrowdFunding = gql`
     getCrowdFunding: [crowdFunding]
     checkBalance(totalPrice: Int, access_token: String): IsEnough
     getHistorySubmitCrowdFunding(access_token: String): [crowdFunding]
+    getHistoryJoinCrowdFunding(access_token: String): [crowdProduct]
   }
 
   input dataSubmitCrowFunding {
@@ -95,11 +100,25 @@ const resolverCrowdFunding = {
       }
     },
     getHistorySubmitCrowdFunding: async (_, { access_token }) => {
-      console.log(access_token);
       try {
         const { data } = await axios({
           method: "GET",
           url: `${process.env.BASE_URL}/crowdFund/all-history-by-user-submit`,
+          headers: {
+            access_token: access_token,
+          },
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    getHistoryJoinCrowdFunding: async (_, { access_token }) => {
+      console.log(access_token);
+      try {
+        const { data } = await axios({
+          method: "GET",
+          url: `${process.env.BASE_URL}/crowdFund/all-history-by-user-join`,
           headers: {
             access_token: access_token,
           },
@@ -151,6 +170,7 @@ const resolverCrowdFunding = {
       _,
       { idCrowdFunding, access_token, totalPrice, quantityToBuy }
     ) => {
+      console.log({ idCrowdFunding, access_token, totalPrice, quantityToBuy });
       try {
         const { data } = await axios({
           method: "POST",
