@@ -6,9 +6,11 @@ class UserController {
   static async getAll(req, res, next) {
     try {
       const users = await User.findAll({
-        attributes: [{
-          exclude: ['password']
-        }],
+        attributes: [
+          {
+            exclude: ["password"],
+          },
+        ],
       });
       res.status(200).json(users);
     } catch (error) {
@@ -58,6 +60,10 @@ class UserController {
         where: {
           email,
         },
+        include: {
+          model: Balance,
+          attributes: ["amount"],
+        },
       });
       if (!user) {
         throw { name: "USER_NOT_FOUND" };
@@ -76,6 +82,13 @@ class UserController {
       const accesToken = tokenMakerFromPayload(payload);
       res.status(200).json({
         access_token: accesToken,
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+        Balance: user.Balance,
       });
     } catch (error) {
       next(error);
@@ -150,22 +163,22 @@ class UserController {
       const user = await User.findOne({
         where: {
           id,
-          email
+          email,
         },
         include: {
           model: Balance,
           attributes: {
-            exclude: ['createdAt', 'updatedAt', 'UserId']
-          }
+            exclude: ["createdAt", "updatedAt", "UserId"],
+          },
         },
         attributes: {
-          exclude: ['password']
-        }
-      })
+          exclude: ["password"],
+        },
+      });
       if (!user) {
-        throw { name: "USER_NOT_FOUND" }
+        throw { name: "USER_NOT_FOUND" };
       }
-      res.status(200).json(user)
+      res.status(200).json(user);
     } catch (error) {
       next(error);
     }

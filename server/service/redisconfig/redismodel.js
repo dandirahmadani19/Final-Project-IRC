@@ -3,7 +3,7 @@ class ExpoToken {
   static async getTokenByUserId(userid) {
     try {
       const expotokens = JSON.parse(await redis.get("expoTokens"));
-
+      console.log(expotokens);
       let userIdToken = [];
       if (expotokens.length > 0) {
         userIdToken = expotokens.filter((el) => el.UserId == userid);
@@ -44,35 +44,35 @@ class ExpoToken {
 
       const expotokens = JSON.parse(await redis.get("expoTokens"));
 
-      const newSetTokens = []
+      const newSetTokens = [];
 
-      expotokens.forEach(el=>{
-        if(el.UserId != userid) {
-          newSetTokens.push(el)
+      expotokens.forEach((el) => {
+        if (el.UserId != userid) {
+          newSetTokens.push(el);
         }
-      })
+      });
 
-      newSetTokens.push(tokens)
+      newSetTokens.push(tokens);
 
-      await redis.set("expoTokens", JSON.stringify(newSetTokens))
+      await redis.set("expoTokens", JSON.stringify(newSetTokens));
 
-      let success = false
+      let success = false;
 
-      const allTokens = JSON.parse(await redis.get("expoTokens"))
+      const allTokens = JSON.parse(await redis.get("expoTokens"));
 
-      allTokens.forEach(el=>{
-        if( el.UserId == userid && el.expoToken == token ) {
-          success = true
+      allTokens.forEach((el) => {
+        if (el.UserId == userid && el.expoToken == token) {
+          success = true;
         }
-      })
+      });
 
       const status = {
-        tokenAssigned : success
-      }
+        tokenAssigned: success,
+      };
 
-      return status
+      return status;
     } catch (err) {
-      return err
+      return err;
     }
   }
 
@@ -90,7 +90,6 @@ class ExpoToken {
         }
       });
 
-
       //push token baru
       const newData = {
         UserId: +userid,
@@ -99,8 +98,11 @@ class ExpoToken {
 
       newSetTokens.push(newData);
       //set tokens
-      const updatedToken = await redis.set("expoTokens", JSON.stringify(newSetTokens));
-      
+      const updatedToken = await redis.set(
+        "expoTokens",
+        JSON.stringify(newSetTokens)
+      );
+
       const freshSet = JSON.parse(await redis.get("expoTokens"));
       return freshSet;
     } catch (err) {
@@ -124,7 +126,7 @@ class ExpoToken {
 
       return afterDelete;
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 }

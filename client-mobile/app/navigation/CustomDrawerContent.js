@@ -7,7 +7,7 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import * as SecureStore from "expo-secure-store";
-import { isLogin } from "../../query/global";
+import { access_token, isLogin } from "../../query/global";
 import { ActivityIndicator } from "react-native";
 import { userProfile } from "../../query/global";
 
@@ -75,7 +75,7 @@ export default function CustomDrawerContent(props) {
               Your Balance
             </Text>
             <NumberFormat
-              value={userProfile().Balance.amount}
+              value={userProfile().Balance?.amount}
               displayType="text"
               thousandSeparator={true}
               prefix="Rp. "
@@ -112,6 +112,8 @@ export default function CustomDrawerContent(props) {
           onPress={async () => {
             await SecureStore.deleteItemAsync("access_token");
             props.navigation.replace("Home");
+            userProfile({});
+            access_token("");
             isLogin(false);
           }}
           style={{

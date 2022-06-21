@@ -10,6 +10,7 @@ const expiredDate = require("../helpers/expiredDate");
 const CronJob = require("node-cron");
 const finalPrice = require("../helpers/helperFinalPrice");
 const { sendPushNotif } = require("../helpers/pushNotification");
+const { getRelevantToken } = require("../redisconfig/redismodel");
 
 class CrowdFundingController {
   static async getAllCrowdFunding(req, res, next) {
@@ -51,7 +52,7 @@ class CrowdFundingController {
           item.startDate !== null
         ) {
           const datadate = expiredDate(item.expiredDay, item.startDate);
-          const dateNow = new Date().toLocaleString().split(",")[0]
+          const dateNow = new Date().toLocaleString().split(",")[0];
           console.log(dateNow);
           console.log(datadate);
           if (datadate === dateNow) {
@@ -77,7 +78,7 @@ class CrowdFundingController {
                 item.startDate !== null
               ) {
                 const datadate = expiredDate(item.expiredDay, item.startDate);
-                const dateNow = new Date().toLocaleString().split(",")[0]
+                const dateNow = new Date().toLocaleString().split(",")[0];
                 console.log(dateNow);
                 console.log(datadate);
                 if (datadate === dateNow) {
@@ -204,18 +205,11 @@ class CrowdFundingController {
         title: "Submission Accepted",
         body: "Your submission crowd funding has been verified. Please complete your payment !",
         data: { screen: "ConfirmationSubmit", data },
+        priority: "high",
       };
-
+      const expoToken = await getRelevantToken([dataSubmit.UserId]);
       if (verifiedCrowdFunding[0]) {
-        sendPushNotif(
-          [
-            "ExponentPushToken[_YVlfiB-tM6Y64hANSXml0]",
-            "ExponentPushToken[LrpW_1OELUN8zPf8D3VmHi]",
-            "ExponentPushToken[pToQipDEWHZagTFFdfCjmU]",
-            "ExponentPushToken[RkSS6NDnv0yZ1YPneQIqbz]",
-          ],
-          notifPayload
-        );
+        sendPushNotif(expoToken, notifPayload);
       }
 
       res.status(200).json({
@@ -232,10 +226,6 @@ class CrowdFundingController {
 
     try {
       const CrowdFundingId = req.params.id;
-      const dataOpenCrowdFunding = {
-        status: "Open",
-        startDate: new Date(),
-      };
 
       const crowdFunding = await CrowdFunding.findOne(
         {
@@ -257,22 +247,24 @@ class CrowdFundingController {
       let currentAmount = currentBalance.amount;
 
       currentAmount -= needToPay;
-      await Balance.update(
-        {
-          amount: currentAmount,
-        },
-        { where: { UserId: req.loginfo.id }, returning: true },
-        { transaction: t }
-      );
+      if (currentAmount >= 0) {
+        await Balance.update(
+          {
+            amount: currentAmount,
+          },
+          { where: { UserId: req.loginfo.id }, returning: true },
+          { transaction: t }
+        );
 
-      await CrowdFunding.update(
-        {
-          status: dataOpenCrowdFunding.status,
-          startDate: dataOpenCrowdFunding.startDate,
-        },
-        { where: { id: CrowdFundingId }, returning: true },
-        { transaction: t }
-      );
+        await CrowdFunding.update(
+          {
+            status: "Open",
+            startDate: new Date(),
+          },
+          { where: { id: CrowdFundingId }, returning: true },
+          { transaction: t }
+        );
+      }
 
       await t.commit();
 
