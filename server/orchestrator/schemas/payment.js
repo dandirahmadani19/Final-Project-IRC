@@ -1,6 +1,6 @@
-const { gql } = require("apollo-server");
-const axios = require("axios");
-require("dotenv").config();
+const { gql } = require('apollo-server');
+const axios = require('axios');
+require('dotenv').config();
 const typeDefPayment = gql`
   type Balance {
     id: ID
@@ -29,10 +29,10 @@ const resolverPayment = {
     getUrl: async (_, { dataBalance }) => {
       try {
         const { data } = await axios({
-          method: "POST",
+          method: 'POST',
           url: `${process.env.BASE_URL}/payment`,
           data: {
-            addAmount: dataBalance.amount,
+            addAmount: dataBalance.amount + 3000,
           },
           headers: {
             access_token: dataBalance.access_token,
@@ -46,7 +46,7 @@ const resolverPayment = {
     topupBalance: async (_, { dataBalance }) => {
       try {
         const { data } = await axios({
-          method: "POST",
+          method: 'POST',
           url: `${process.env.BASE_URL}/payment/success`,
           data: {
             addAmount: dataBalance.amount,
