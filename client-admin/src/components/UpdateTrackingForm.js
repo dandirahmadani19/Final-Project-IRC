@@ -53,11 +53,12 @@ export default function UpdateTrackingForm() {
 
   function goBack(e){
     e.preventDefault()
-    navigate('/')
+    navigate('/on-progress')
   }
 
   function handleReject(e){
     e.preventDefault()
+    
   }
 
   useEffect(()=>{
@@ -80,7 +81,7 @@ export default function UpdateTrackingForm() {
       onClick={(event)=>{goBack(event)}}
       >Back</button>
       <button
-      class="bg-red-500 hover:bg-red-600 px-6 py-1 rounded-sm text-white"
+      class=" hidden bg-red-500 hover:bg-red-600 px-6 py-1 rounded-sm text-white"
       onClick={(event)=>{handleReject(event)}}
       >Reject</button>
       </div>

@@ -62,6 +62,11 @@ export default function VerifyForm() {
 
   function handleReject(e){
     e.preventDefault()
+    console.log("asd")
+    Swal("Reject This Crowdfunding", {
+      icon:"info",
+      buttons: ["Reject", "No"],
+    });
   }
 
   useEffect(()=>{
