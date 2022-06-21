@@ -21,7 +21,7 @@ export default function TableRow({index,cf}){
       <td class="px-6 py-4">{cf.targetQuantity? cf.targetQuantity:"-"}</td>
       <td class="px-6 py-4">{cf.expiredDay? cf.expiredDay:"-"}</td>
       <td class="px-6 py-4">{cf.status}</td>
-      <td class="px-6 py-4 flex flex-col  my-auto">
+      <div class="px-6 py-4 flex flex-col  my-auto">
         {cf.targetQuantity? <p
         class="bg-green-400 py-1 px-2 text-white rounded-sm"
         >verified</p> : <button
@@ -32,7 +32,7 @@ export default function TableRow({index,cf}){
         </button> 
         
         }
-      </td>
+      </div>
     </tr>
   )
 }
