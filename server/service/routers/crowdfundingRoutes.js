@@ -17,7 +17,11 @@ routesCrowdFunding.get(
   "/crowdfundingproduct",
   Controller.getAllCrowdFundingProduct
 );
-routesCrowdFunding.post("/join/:id", Controller.joincrowdfunding);
+routesCrowdFunding.post(
+  "/join/:id",
+  authentication,
+  Controller.joincrowdfunding
+);
 // routesCrowdFunding.post('/add');
 routesCrowdFunding.get(
   "/all-history-by-user-submit",

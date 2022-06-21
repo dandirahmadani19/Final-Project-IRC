@@ -282,28 +282,45 @@ class CrowdFundingController {
     const t = await sequelize.transaction();
     try {
       const { id } = req.params;
-      const { quantityToBuy, totalPrice, paymentStatus } = req.body;
-      const { targetQuantity, currentQuantity } = await CrowdFunding.findByPk(
-        id
-      );
-      const sumQty = targetQuantity - currentQuantity;
-      if (+quantityToBuy > sumQty) {
-        throw { name: "QTY_EXCEEDED" };
-      }
-      const createQty = await CrowdFundingProduct.create(
+      const { quantityToBuy, totalPrice } = req.body;
+      const { currentQuantity } = await CrowdFunding.findByPk(id);
+      await CrowdFundingProduct.create(
         {
           CrowdFundingId: id,
-          UserId: 1,
+          UserId: req.loginfo.id,
           quantityToBuy,
           totalPrice,
-          paymentStatus,
+          paymentStatus: "Success",
         },
         { transaction: t }
       );
 
-      const nUpdated = await CrowdFunding.update(
+      const { amount } = await Balance.findOne(
         {
-          currentQuantity: createQty.quantityToBuy + currentQuantity,
+          where: {
+            UserId: req.loginfo.id,
+          },
+        },
+        { transaction: t }
+      );
+
+      const newAmount = amount - totalPrice;
+
+      await Balance.update(
+        {
+          amount: newAmount,
+        },
+        {
+          where: {
+            UserId: req.loginfo.id,
+          },
+        },
+        { transaction: t }
+      );
+
+      await CrowdFunding.update(
+        {
+          currentQuantity: +quantityToBuy + +currentQuantity,
         },
         {
           where: {
@@ -313,11 +330,8 @@ class CrowdFundingController {
         { transaction: t }
       );
 
-      const {
-        currentQuantity: nowQuantity,
-        targetQuantity: target,
-        initialQuantity: initial,
-      } = await CrowdFunding.findByPk(id);
+      const { currentQuantity: nowQuantity, targetQuantity: target } =
+        await CrowdFunding.findByPk(id);
       if (nowQuantity === target) {
         await CrowdFunding.update(
           {
@@ -333,14 +347,33 @@ class CrowdFundingController {
       }
       await t.commit();
 
-      //update currentQuantity
-      //push notif ke admincms
-      //GW MAU KASIH PUSH NOTIF KE YANG JOIN
+      const response = await CrowdFundingProduct.findAll({
+        where: { CrowdFundingId: req.params.id },
+        attributes: ["UserId"],
+      });
+
+      const UserId = response.map((e) => e.UserId);
+      const tokens = await getRelevantToken(UserId);
+
+      const notifPayload = {
+        title: "Submission Accepted",
+        body: "Your submission crowd funding has been verified. Please complete your payment !",
+        data: { screen: "ConfirmationSubmit" },
+        priority: "high",
+      };
+
+      sendPushNotif(tokens, notifPayload);
+
+      // //update currentQuantity
+      // //push notif ke admincms
+      // //GW MAU KASIH PUSH NOTIF KE YANG JOIN
 
       res.status(200).json({
+        status: true,
         message: "success join crowdfunding",
       });
     } catch (err) {
+      console.log(err);
       next(err);
       t.rollback();
     }
