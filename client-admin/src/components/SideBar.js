@@ -11,7 +11,7 @@ export default function SideBar(){
 
   function goToHome(e){
     e.preventDefault()
-    navigate('/dashboard')
+    navigate('/')
   }
   return (
     <div class="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r">

@@ -30,7 +30,7 @@ export default function VerifyForm() {
 
   function goBack(e){
     e.preventDefault()
-    navigate('/dashboard')
+    navigate('/')
   }
   return (
     <div class="bg-grey-lighter flex flex-col">

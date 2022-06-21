@@ -10,9 +10,13 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/dashboard" element={<AdminDashboard />}>
+        <Route path="/" element={<AdminDashboard />}>
           <Route path="" index element={<Table/>}/>
           <Route path="verify" element={<VerifyView/>} >
+            <Route path=":id" element={<VerifyForm/>}/>
+          </Route>
+          <Route path="on-progress" index element={<Table/>}/>
+          <Route path="update" element={<VerifyView/>} >
             <Route path=":id" element={<VerifyForm/>}/>
           </Route>
         </Route>
