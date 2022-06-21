@@ -6,15 +6,12 @@ class UserController {
   static async getAll(req, res, next) {
     try {
       const users = await User.findAll({
-        attributes: [
-          {
+        attributes: {
             exclude: ["password"],
-          },
-        ],
+        },
       });
       res.status(200).json(users);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -158,7 +155,6 @@ class UserController {
 
   static async getUserById(req, res, next) {
     try {
-      console.log("masuk sini");
       const { id, username, email } = req.loginfo;
       const user = await User.findOne({
         where: {
