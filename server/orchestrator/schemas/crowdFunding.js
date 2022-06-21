@@ -30,6 +30,7 @@ const typeDefCrowdFunding = gql`
 
   type Message {
     message: String
+    status: Boolean
   }
 
   type IsEnough {
@@ -60,6 +61,12 @@ const typeDefCrowdFunding = gql`
   type Mutation {
     submitCrowdFunding(dataSubmitCrowFunding: dataSubmitCrowFunding): Message
     userApproveCrowdFunding(idCrowdFunding: Int, access_token: String): Message
+    userJoinCrowdFunding(
+      idCrowdFunding: Int
+      quantityToBuy: Int
+      totalPrice: Int
+      access_token: String
+    ): Message
   }
 `;
 
@@ -131,6 +138,27 @@ const resolverCrowdFunding = {
         const { data } = await axios({
           method: "PATCH",
           url: `${process.env.BASE_URL}/crowdFund/approve/${idCrowdFunding}`,
+          headers: {
+            access_token: access_token,
+          },
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    userJoinCrowdFunding: async (
+      _,
+      { idCrowdFunding, access_token, totalPrice, quantityToBuy }
+    ) => {
+      try {
+        const { data } = await axios({
+          method: "POST",
+          url: `${process.env.BASE_URL}/crowdFund/join/${idCrowdFunding}`,
+          data: {
+            quantityToBuy,
+            totalPrice,
+          },
           headers: {
             access_token: access_token,
           },

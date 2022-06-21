@@ -49,6 +49,11 @@ describe("Balance Test", () => {
         expect(res.body).toEqual(expect.any(Object));
         expect(res.body.isEnough).toBe(false);
     });
+    it("should return All data balance", async () => {
+        const res = await request(app).get(`/balance`)
+        .expect(200);
+        expect(res.body).toEqual(expect.any(Array));
+    });
 })
 
 afterAll(async () => {
