@@ -13,8 +13,39 @@ const userData = {
   address: "Bandung",
 };
 
+let access_token;
+beforeAll(async () => {
+  await User.bulkCreate([
+    {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'jhon@mail.com',
+      password: passwordEncryptor('123456'),
+      phoneNumber: '081234567890',
+      address: 'Jl. Kebon Kacang',
+    }
+  ])
+  access_token = tokenMakerFromPayload({
+    id: 1,
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'jhon@mail.com',
+    phoneNumber: '081234567890',
+    address: 'Jl. Kebon Kacang',
+  })
+})
 
 describe("User Client Test", () => {
+  it("should return all data User", async () => {
+    const res = await request(app).get("/user").expect(200);
+    expect(res.body).toEqual(expect.any(Array));
+    expect(res.body[0].firstName).toBe("John");
+    expect(res.body[0].lastName).toBe("Doe");
+    expect(res.body[0].email).toBe("jhon@mail.com");
+    expect(res.body[0].phoneNumber).toBe("081234567890");
+    expect(res.body[0].address).toBe("Jl. Kebon Kacang");
+  });
+
   it("should return successfully created new User", async () => {
     const res = await request(app).post("/user/register").send(userData).expect(201);
     expect(res.body).toEqual(expect.any(Object));
@@ -26,6 +57,7 @@ describe("User Client Test", () => {
     expect(res.body.address).toBe("Bandung");
     expect(res.body.message).toEqual("User created successfully");
   });
+  
 
   it("should return server error when created new User", async () => {
     const res = await request(app).post("/user/register").send(
@@ -85,27 +117,7 @@ describe("User Client Test", () => {
   });
 });
 
-let access_token;
-beforeAll(async () => {
-  await User.bulkCreate([
-    {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'jhon@mail.com',
-      password: passwordEncryptor('123456'),
-      phoneNumber: '081234567890',
-      address: 'Jl. Kebon Kacang',
-    }
-  ])
-  access_token = tokenMakerFromPayload({
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'jhon@mail.com',
-    phoneNumber: '081234567890',
-    address: 'Jl. Kebon Kacang',
-  })
-})
+
 
 describe("should return data user after login", () => {
   it("Get data User after Login", () => {
