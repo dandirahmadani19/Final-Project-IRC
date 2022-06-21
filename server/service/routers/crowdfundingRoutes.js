@@ -4,6 +4,11 @@ const authentication = require("../middlewares/Authentication");
 
 routesCrowdFunding.get("/", Controller.getAllCrowdFunding); //test
 
+routesCrowdFunding.get(
+  "/admin",
+  Controller.allCrowdFundAdmin
+); //belum test new endpoint 21/6
+
 routesCrowdFunding.post("/add", authentication, Controller.createCrowdFunding); //test
 routesCrowdFunding.patch("/verif/:id", Controller.verifCrowdFunding); //test
 routesCrowdFunding.patch(
@@ -17,10 +22,7 @@ routesCrowdFunding.get(
   Controller.detailCrowdFund
 ); //belum test new endpoint 21/6 
 
-routesCrowdFunding.get(
-  "/admin",
-  Controller.allCrowdFundAdmin
-); //belum test new endpoint 21/6
+
 
 routesCrowdFunding.post(
   "/join/:id",

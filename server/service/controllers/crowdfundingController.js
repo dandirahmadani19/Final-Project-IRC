@@ -429,12 +429,10 @@ class CrowdFundingController {
   static async detailCrowdFund(req, res, next) {
     try {
       const id = req.params.id;
-      const dataCF = await detailCrowdFunding.findOne({
+      const dataCF = await CrowdFunding.findOne({
         where: { id },
         attributes: {
           exclude: [
-            "initialProductPrice",
-            "initialQuantity",
             "createdAt",
             "updatedAt",
           ],
@@ -448,7 +446,12 @@ class CrowdFundingController {
 
   static async allCrowdFundAdmin(req, res, next) {
     try {
-      const listCF = await adminCrowdFunding.findAll({
+      const {status} = req.query
+      console.log(status, "asdasd")
+      const listCF = await CrowdFunding.findAll({
+        where:{
+          status : status
+        },
         attributes: {
           exclude: [
             "initialProductPrice",
@@ -460,6 +463,7 @@ class CrowdFundingController {
       });
       res.status(200).json(listCF);
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }
