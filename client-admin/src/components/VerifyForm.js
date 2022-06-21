@@ -2,22 +2,32 @@ import { useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {  useNavigate, useParams } from "react-router-dom";
+import { fetchCrowdFundingById, verifyCrowdFund } from "../store/actions/crowdFundAction";
+import Swal from 'sweetalert'
+
 
 export default function VerifyForm() {
   const {id} = useParams()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [cfObj, setCfObj] =  useState({})
+  const cf = useSelector((state)=>state.crowdfunding.crowdFund)
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: '',
-    categoryId: 0,
-    mainImg: "",
-    Images : {}
+    productName: "",
+    initialProductPrice: "",
+    productWeight: "",
+    initialQuantity: '',
+    categoryId: "",
+    manufactureName: "",
+    Images : {},
+    linkProduct :"",
+    productImage:'',
+    hscode:'',
+    expiredDay:''
   });
 
   function changeVal(e) {
     const {value,name} = e.target
-    console.log(name)
     setFormData({
       ...formData,
       [name] : value
@@ -25,6 +35,23 @@ export default function VerifyForm() {
   }
 
   function submitForm(e){
+    e.preventDefault()
+    console.log(formData)
+    dispatch(verifyCrowdFund(id, formData))
+      .then((res)=>{
+        return res.json()
+      })
+      .then((data)=>{
+        Swal({
+          title: 'Crowdfunding Verified',
+          text : data.message,
+          icon : 'success'
+        })
+        navigate('/')
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
 
   }
 
@@ -32,6 +59,29 @@ export default function VerifyForm() {
     e.preventDefault()
     navigate('/')
   }
+
+  function handleReject(e){
+    e.preventDefault()
+  }
+
+  useEffect(()=>{
+    dispatch(fetchCrowdFundingById(id))
+  },[])
+
+  useEffect(()=>{
+    setCfObj(cf)
+    setFormData({
+      productName: cf.productName,
+      initialProductPrice: cf.initialProductPrice,
+      initialQuantity: cf.initialQuantity,
+      manufactureName: cf.manufactureName,
+      linkProduct :cf.linkProduct,
+      productWeight: "",
+      productImage:'',
+      hscode:'',
+      expiredDay:''
+    })
+  },[cf])
   return (
     <div class="bg-grey-lighter flex flex-col">
       <div class="flex justify-between mb-4 px-2">
@@ -41,6 +91,7 @@ export default function VerifyForm() {
       >Back</button>
       <button
       class="bg-red-500 hover:bg-red-600 px-6 py-1 rounded-sm text-white"
+      onClick={(event)=>{handleReject(event)}}
       >Reject</button>
       </div>
       <div class="container  mx-auto flex-1 flex flex-col items-center justify-center px-2">
@@ -48,7 +99,7 @@ export default function VerifyForm() {
           <h1 class="mb-8 text-3xl text-center">Verify Form Crowdfunding </h1>
           <input
             type="text"
-            value={formData.name}
+            value={formData.productName}
             onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="productName"
@@ -56,15 +107,7 @@ export default function VerifyForm() {
           />
           <input
             type="number"
-            value={formData.name}
-            onChange={(event) => changeVal(event)}
-            class="block border border-grey-light w-full p-1 rounded mb-4"
-            name="productWeight"
-            placeholder="Product Weight"
-          />
-          <input
-            type="number"
-            value={formData.description}
+            value={formData.initialProductPrice}
             onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="initialProductPrice"
@@ -72,7 +115,7 @@ export default function VerifyForm() {
           />
           <input
             type="number"
-            value={formData.price}
+            value={formData.initialQuantity}
             onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="initialQuantity"
@@ -80,40 +123,48 @@ export default function VerifyForm() {
           />
           <input
             type="text"
-            value={formData.mainImg}
+            value={formData.manufactureName}
             onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="manufactureName"
-            placeholder="Name of Manufacturer"
+            placeholder="Manufacturer's name"
           />
           <input
             type="text"
-            value={formData.Images.image1}
-            /* onChange={(event) => changeImg(event)} */
+            value={formData.linkProduct}
+            onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="linkProduct"
             placeholder="Product's link"
           />
           <input
+            type="number"
+            value={formData.productWeight}
+            onChange={(event) => changeVal(event)}
+            class="block border border-grey-light w-full p-1 rounded mb-4"
+            name="productWeight"
+            placeholder="Product Weight"
+          />
+          <input
             type="text"
-            value={formData.Images.image2}
-            /* onChange={(event) => changeImg(event)} */
+            value={formData.productImage}
+            onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="productImage"
             placeholder="Product's Image"
           />
           <input
             type="text"
-            value={formData.Images.image3}
-            /* onChange={(event) => changeImg(event)} */
+            value={formData.hscode}
+            onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="hscode"
             placeholder="hscode"
           />
           <input
             type="number"
-            value={formData.Images.image3}
-            /* onChange={(event) => changeImg(event)} */
+            value={formData.expiredDay}
+            onChange={(event) => changeVal(event)}
             class="block border border-grey-light w-full p-1 rounded mb-4"
             name="expiredDay"
             placeholder="Expired Day"

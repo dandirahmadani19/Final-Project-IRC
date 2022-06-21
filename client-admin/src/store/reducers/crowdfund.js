@@ -1,6 +1,7 @@
 const initialState = {
   crowdFunds : [],
-  crowdFund : {}
+  crowdFund : {},
+  trackingStatus : {}
 }
 
 export default function crowdfundingReducer(state=initialState, action) {
@@ -9,6 +10,8 @@ export default function crowdfundingReducer(state=initialState, action) {
       return {...state,crowdFunds : action.payload};
     case 'setSpesificCrowdFund' :
       return {...state,crowdFund : action.payload}
+    case 'setTrackingStatus' :
+      return {...state,trackingStatus : action.payload}
     default :
       return state
   }

@@ -6,6 +6,8 @@ import AdminDashboard from "./views/DashBoard";
 import Table from "./components/Table";
 import VerifyView from "./views/VerifyView";
 import VerifyForm from "./components/VerifyForm";
+import SuccessTable from "./components/SuccessTable";
+import UpdateTrackingForm from "./components/UpdateTrackingForm";
 function App() {
   return (
     <>
@@ -15,9 +17,9 @@ function App() {
           <Route path="verify" element={<VerifyView/>} >
             <Route path=":id" element={<VerifyForm/>}/>
           </Route>
-          <Route path="on-progress" index element={<Table/>}/>
+          <Route path="on-progress" index element={<SuccessTable/>}/>
           <Route path="update" element={<VerifyView/>} >
-            <Route path=":id" element={<VerifyForm/>}/>
+            <Route path=":id" element={<UpdateTrackingForm/>}/>
           </Route>
         </Route>
         <Route path="/login" index element={<AdminLogin />} />

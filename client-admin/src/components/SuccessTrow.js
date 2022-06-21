@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom"
 
-export default function TableRow({index,cf}){
+export default function SuccessTrow({index,cf}){
   const navigate = useNavigate()
-  function goToVerifyForm(e,id){
+  function goToUpdate(e,id){
     e.preventDefault()
-    navigate(`verify/`+id)
+    navigate(`/update/`+id)
   }
   return(
     <tr class="bg-white border-b text-gray-900 text-center">
@@ -17,21 +17,17 @@ export default function TableRow({index,cf}){
       <td class="px-6 py-4 ">{cf.id}</td>
       <td class="px-6 py-4">{cf.productName}</td>
       <td class="px-6 py-4">{cf.manufactureName}</td>
-      <td class="px-6 py-4">{cf.currentQuantity? cf.currentQuantity:"-"}</td>
-      <td class="px-6 py-4">{cf.targetQuantity? cf.targetQuantity:"-"}</td>
-      <td class="px-6 py-4">{cf.expiredDay? cf.expiredDay:"-"}</td>
+      <td class="px-6 py-4">{cf.currentQuantity}</td>
+      <td class="px-6 py-4">{cf.targetQuantity}</td>
+      <td class="px-6 py-4">{cf.expiredDay}</td>
       <td class="px-6 py-4">{cf.status}</td>
       <td class="px-6 py-4 flex flex-col  my-auto">
-        {cf.targetQuantity? <p
-        class="bg-green-400 py-1 px-2 text-white rounded-sm"
-        >verified</p> : <button
+        <button
           class="font-medium text-white bg-blue-500 py-1 px-3 rounded-sm  hover:bg-blue-700"
-          onClick={(e)=>{ goToVerifyForm(e,cf.id)}}
+          onClick={(e)=>{ goToUpdate(e,cf.id)}}
         >
-          verify
-        </button> 
-        
-        }
+          Update
+        </button>
       </td>
     </tr>
   )
