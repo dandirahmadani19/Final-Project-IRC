@@ -27,7 +27,7 @@ routesCrowdFunding.get(
 routesCrowdFunding.get(
   "/all-history-by-user-join",
   authentication,
-  Controller.getAllHistoryCrowdFundingById
+  Controller.getAllHistoryCrowdFundingByUserJoin
 );
 
 module.exports = routesCrowdFunding;
