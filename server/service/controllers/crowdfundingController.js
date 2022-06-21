@@ -396,32 +396,42 @@ class CrowdFundingController {
 
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
 
-  static async getAllHistoryCrowdFundingById(req, res, next) {
+  static async getAllHistoryCrowdFundingByUserJoin(req, res, next) {
     try {
       const id = req.loginfo.id;
-      const data = await CrowdFundingProduct.findOne({
+      let data = await CrowdFundingProduct.findAll({
         where: {
           UserId: id,
         },
+        attributes: ["UserId"],
         include: [
           {
             model: CrowdFunding,
+            attributes: [
+              "id",
+              "productName",
+              "targetQuantity",
+              "finalProductPrice",
+              "status",
+              "currentQuantity",
+              "productImage",
+              "initialQuantity",
+              "expiredDay",
+              "hscode",
+              "createdAt",
+            ],
             include: [
               {
-                model: User,
-                attributes: { exclude: ["password"] },
-              },
-              {
                 model: CrowdFundingProduct,
+                attributes: ["totalPrice", "quantityToBuy"],
                 include: [
                   {
                     model: User,
-                    attributes: { exclude: ["password"] },
+                    attributes: ["firstName", "lastName"],
                   },
                 ],
               },
@@ -429,10 +439,43 @@ class CrowdFundingController {
           },
         ],
       });
+      data = data.map((item) => {
+        return item.CrowdFunding;
+      });
+
+      // const data = await CrowdFunding.findAll({
+      //   attributes: [
+      //     "id",
+      //     "productName",
+      //     "targetQuantity",
+      //     "finalProductPrice",
+      //     "status",
+      //     "currentQuantity",
+      //     "productImage",
+      //     "initialQuantity",
+      //     "expiredDay",
+      //     "hscode",
+      //     "createdAt",
+      //   ],
+      //   include: [
+      //     {
+      //       model: CrowdFundingProduct,
+      //       where: {
+      //         UserId: id,
+      //       },
+      //       attributes: ["totalPrice", "quantityToBuy"],
+      //       include: [
+      //         {
+      //           model: User,
+      //           attributes: ["firstName", "lastName"],
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // });
 
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
