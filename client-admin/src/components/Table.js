@@ -1,8 +1,10 @@
+import TableRow from "./TableRow";
+
 export default function Table() {
   return (
   <div class="flex-col justify-center">
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <table class="w-full text-sm  text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-600 uppercase bg-orange-400 ">
         <tr>
           <th scope="col" class="px-6 py-3">
             No
@@ -34,6 +36,7 @@ export default function Table() {
         </tr>
       </thead>
       <tbody>
+        <TableRow/>
         {/* {productsLocal.map((el, i) => {
           return <TableRow product={el} index={i + 1} key={el.id} />;
         })} */}

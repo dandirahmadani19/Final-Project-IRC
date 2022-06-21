@@ -9,6 +9,10 @@ export default function SideBar(){
     navigate('/login')
   }
 
+  function goToHome(e){
+    e.preventDefault()
+    navigate('/dashboard')
+  }
   return (
     <div class="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r">
       <h2 class="text-3xl font-semibold text-center text-orange-600">
@@ -19,7 +23,7 @@ export default function SideBar(){
           <ul>
             <li>
               <a
-                class="flex items-center px-4 py-2 text-gray-700 bg-gray-100 rounded-md "
+                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-md "
                 href=""
               >
                 <svg
@@ -38,7 +42,7 @@ export default function SideBar(){
                 </svg>
 
                 <span class="mx-4 font-medium"
-                
+                onClick={(event)=>{goToHome(event)}}
                 >Dashboard</span>
               </a>
             </li>
