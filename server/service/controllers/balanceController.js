@@ -1,4 +1,10 @@
-const { Balance } = require("../models");
+const {
+  Balance,
+  CrowdFunding,
+  CrowdFundingProduct,
+  User,
+  sequelize,
+} = require("../models");
 
 class BalanceController {
   static async getBalance(req, res) {
@@ -28,6 +34,94 @@ class BalanceController {
       }
     } catch (error) {
       res.status(500).json(error);
+    }
+  }
+  static async refundBalance(req, res) {
+    const t = await sequelize.transaction();
+    try {
+      const id = req.params.id;
+      const failedCF = await CrowdFunding.findOne(
+        {
+          where: { id },
+          attributes: [
+            "UserId",
+            "productName",
+            "targetQuantity",
+            "finalProductPrice",
+            "status",
+            "currentQuantity",
+            "initialQuantity",
+            "startDate",
+            "expiredDay",
+            "hscode",
+          ],
+          order: [["UserId", "ASC"]],
+          include: [
+            {
+              model: CrowdFundingProduct,
+              attributes: ["totalPrice", "UserId"],
+            },
+            {
+              model: User,
+              attributes: ["id"],
+              include: [
+                {
+                  model: Balance,
+                  attributes: ["amount"],
+                },
+              ],
+            },
+          ],
+        },
+        { transaction: t }
+      );
+
+      const userJoinCF = failedCF.dataValues.CrowdFundingProducts.map((e) => e.UserId);
+
+      const amountJoinCF = failedCF.dataValues.CrowdFundingProducts.map((e) => e.totalPrice);
+
+      console.log(userJoinCF, amountJoinCF);
+      const preBalance = await Balance.findAll(
+        {
+          where: { id: userJoinCF },
+          attributes: ["amount"],
+          order: [["UserId", "ASC"]],
+        },
+        { transaction: t }
+      );
+
+      const pascaAmountJoinCF = preBalance.map(
+        (e, i) => e.dataValues.amount + amountJoinCF[i]
+      );
+      console.log(pascaAmountJoinCF);
+
+      for (let i = 0; i < userJoinCF.length; i++) {
+        await Balance.update(
+          { amount: preAmountJoinCF[i] },
+          { where: { UserId: userJoinCF[i] } },
+          { transaction: t }
+        );
+      }
+
+      const totalPriceUserWhoSubmit =
+        failedCF.dataValues.initialQuantity *
+        failedCF.dataValues.finalProductPrice;
+      const pascaAmountUserWhoSubmit = failedCF.dataValues.User.Balance.amount;
+
+      await Balance.update(
+        { amount: pascaAmountUserWhoSubmit + totalPriceUserWhoSubmit },
+        { where: { UserId: failedCF.dataValues.UserId } },
+        { transaction: t }
+      );
+
+      await t.commit();
+      res.status(200).json({
+        message: "Successfully refund balance to each user",
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+      t.rollback();
     }
   }
 }
