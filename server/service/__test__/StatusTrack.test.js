@@ -58,7 +58,7 @@ beforeAll(async () => {
 
 describe("Status Tracking Test", () => {
     it("should return Status Tracking created successfully", async () => {
-        const res = await request(app).post("/status")
+        const res = await request(app).post("/status-tracking")
         .send({CrowdFundingId : 1, status: "OnTrack", description: "Stuff"})
         .expect(201);
         expect(res.body).toStrictEqual(expect.any(Object));
@@ -69,7 +69,7 @@ describe("Status Tracking Test", () => {
         expect(res.body.data.description).toStrictEqual(expect.any(String));
     });
     it("should return All Status Tracking", async () => {
-        const res = await request(app).get("/status")
+        const res = await request(app).get("/status-tracking")
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Object));
         expect(res.body.message).toBe("All Status Tracking");
@@ -79,20 +79,20 @@ describe("Status Tracking Test", () => {
         expect(res.body.data[0].description).toStrictEqual(expect.any(String));
     });
     it("should return All Status Tracking", async () => {
-        const res = await request(app).get("/status/1/all-participant")
+        const res = await request(app).get("/status-tracking/1/all-participant")
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Object));
         expect(res.body.message).toBe("All Status Tracking");
         expect(res.body.data).toStrictEqual(expect.any(Array));
     });
     it("should return Internal Server Error", async () => {
-        const res = await request(app).get("/status/2/all-participant")
+        const res = await request(app).get("/status-tracking/2/all-participant")
         .expect(500);
         expect(res.body).toStrictEqual(expect.any(Object));
         expect(res.body.message).toBe("Internal Server Error");
     });
     it("should return Status Tracking", async () => {
-        const res = await request(app).get("/status/1")
+        const res = await request(app).get("/status-tracking/1")
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Object));
         expect(res.body.data).toStrictEqual(expect.any(Array));

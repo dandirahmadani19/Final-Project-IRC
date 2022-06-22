@@ -25,10 +25,6 @@ const errorsHandler = (err, req, res, next) => {
       code = 401;
       msg = "Email or Password Wrong";
       break;
-    case "Unauthorized": 
-      code = 401;
-      msg = "Unauthorized";
-      break;
     default:
       code = 500;
       msg = "Internal Server Error";

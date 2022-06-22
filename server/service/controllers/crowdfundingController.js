@@ -234,8 +234,8 @@ class CrowdFundingController {
         message: "Crowd Funding success to open",
       });
     } catch (error) {
-      await t.rollback();
       next(error);
+      await t.rollback();
     }
   }
 
@@ -397,14 +397,13 @@ class CrowdFundingController {
       });
       res.status(200).json(dataCF);
     } catch (error) {
-      next(error);
+     
     }
   }
 
   static async allCrowdFundAdmin(req, res, next) {
     try {
       const { status } = req.query;
-      console.log(status, "asdasd");
       const listCF = await CrowdFunding.findAll({
 /*         where:{
           status : status
@@ -419,8 +418,9 @@ class CrowdFundingController {
         },
       });
       res.status(200).json(listCF);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      console.log(err, "<<<<<<<<<<<<<<<<<<khgisdhafghsdk");
+      next(err)
     }
   }
 

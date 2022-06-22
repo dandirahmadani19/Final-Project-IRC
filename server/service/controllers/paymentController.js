@@ -22,9 +22,7 @@ class ControllerPayment {
       };
 
       const transaction = await snap.createTransaction(parameter);
-      if (!transaction) {
-        throw { name: 'TRANSACTION_FAILED' };
-      }
+
 
       let transactionToken = transaction.token;
       console.log('transactionToken:', transactionToken);
