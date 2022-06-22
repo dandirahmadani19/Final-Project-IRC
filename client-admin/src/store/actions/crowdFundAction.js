@@ -59,7 +59,9 @@ export function fetchCFtrackingStatusById(id) {
         return res.json()
       })
       .then((data)=>{
-        dispatch(setTrackingStat(...data.data))
+        //console.log(data.data, "dasdasd")
+        const sortTrackingStatus = data.data.sort((b, a) => b.createdAt - a.createdAt)
+        dispatch(setTrackingStat(sortTrackingStatus[sortTrackingStatus.length-1]))
       })
       .catch((err)=>{
         console.log(err)
