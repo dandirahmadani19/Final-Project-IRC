@@ -14,10 +14,11 @@ export default function TableRow({ index, cf }) {
 
   function refund(e, id) {
     e.preventDefault();
-    Swal("Refund Money to Crowdfunding participant ?", {
+    /* Swal("Refund Money to Crowdfunding participant ?", {
       icon: "info",
       buttons: ["Refund", "No"],
-    });
+    }); */
+    
   }
   return (
     <tr class="bg-white border-b text-gray-900 text-center">
