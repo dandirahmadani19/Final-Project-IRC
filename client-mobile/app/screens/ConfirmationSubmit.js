@@ -7,14 +7,12 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { useQuery } from "@apollo/client";
-import { CHECK_BALANCE } from "../../query/crowdFunding";
-import * as SecureStore from "expo-secure-store";
 import { access_token, userProfile } from "../../query/global";
 import { useMutation } from "@apollo/client";
 import {
   USER_APPROVE_CROWDFUNDING,
   GET_CROWDFUNDING,
+  DENY_CROWDFUNDING,
 } from "../../query/crowdFunding";
 import { ActivityIndicator } from "react-native";
 import moment from "moment";
@@ -33,6 +31,9 @@ export default function ConfirmationSubmit({ route, navigation }) {
     userApprove,
     { loading: loadingApprove, error: errorAprrove, data: message },
   ] = useMutation(USER_APPROVE_CROWDFUNDING);
+
+  const [denyCrowdFunding, { loading, error, data: messageDenyCrowdFunding }] =
+    useMutation(DENY_CROWDFUNDING);
 
   const [valueFormattedWithSymbol] = formatCurrency({
     amount: totalPrice,
@@ -76,6 +77,13 @@ export default function ConfirmationSubmit({ route, navigation }) {
         "Your saldo is not enough for make this payment, please top up"
       );
     }
+  };
+
+  const handleDeny = () => {
+    denyCrowdFunding({ variables: { idCrowdFunding: +data.id } });
+    navigation.navigate("LoadingScreen", {
+      title: "Crowd Funding Has Been Deny",
+    });
   };
 
   if (loadingApprove) {
@@ -251,21 +259,43 @@ export default function ConfirmationSubmit({ route, navigation }) {
         </View>
         {/* )} */}
       </View>
-      <TouchableOpacity onPress={handlePayment}>
-        <View
-          style={{
-            backgroundColor: "#16a34a",
-            paddingHorizontal: 50,
-            paddingVertical: 10,
-          }}
-        >
-          <Text
-            style={{ color: "#fff", textAlign: "center", fontWeight: "800" }}
+      <View
+        style={{
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity onPress={handlePayment}>
+          <View
+            style={{
+              backgroundColor: "#16a34a",
+              width: 170,
+              marginEnd: 10,
+              paddingVertical: 10,
+            }}
           >
-            Make Payment
-          </Text>
-        </View>
-      </TouchableOpacity>
+            <Text
+              style={{ color: "#fff", textAlign: "center", fontWeight: "800" }}
+            >
+              Make Payment
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleDeny}>
+          <View
+            style={{
+              backgroundColor: "#dc2626",
+              width: 170,
+              paddingVertical: 10,
+            }}
+          >
+            <Text
+              style={{ color: "#fff", textAlign: "center", fontWeight: "800" }}
+            >
+              Deny
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

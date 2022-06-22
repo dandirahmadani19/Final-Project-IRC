@@ -269,9 +269,10 @@ describe("Crowdfunding Test", () => {
     });
 
     it("should return Successfully refund balance to each user", async () => {
-        const res = await request(app).get(`/balance/refund/${1}`)
+        const res = await request(app).get(`/balance/refund/1`)
         .expect(200);
         expect(res.body).toEqual(expect.any(Object));
+        console.log(res.body);
         expect(res.body.message).toEqual("Successfully refund balance to each user");
     });
 

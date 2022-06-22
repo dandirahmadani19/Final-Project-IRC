@@ -5,6 +5,8 @@ const {
   User,
   sequelize,
 } = require("../models");
+const {getRelevantToken} = require("../redisconfig/redismodel");
+const { sendPushNotif } = require("../helpers/pushNotification");
 
 class BalanceController {
   static async getBalance(req, res) {
@@ -76,9 +78,13 @@ class BalanceController {
         { transaction: t }
       );
 
-      const userJoinCF = failedCF.dataValues.CrowdFundingProducts.map((e) => e.UserId);
+      const userJoinCF = failedCF.dataValues.CrowdFundingProducts.map(
+        (e) => e.UserId
+      );
 
-      const amountJoinCF = failedCF.dataValues.CrowdFundingProducts.map((e) => e.totalPrice);
+      const amountJoinCF = failedCF.dataValues.CrowdFundingProducts.map(
+        (e) => e.totalPrice
+      );
 
       const preBalance = await Balance.findAll(
         {
@@ -106,17 +112,32 @@ class BalanceController {
         failedCF.dataValues.finalProductPrice;
       const pascaAmountUserWhoSubmit = failedCF.dataValues.User.Balance.amount;
 
-      await Balance.update(
+      const update = await Balance.update(
         { amount: pascaAmountUserWhoSubmit + totalPriceUserWhoSubmit },
         { where: { UserId: failedCF.dataValues.UserId } },
         { transaction: t }
       );
+
+      if (update) {
+        userJoinCF.push(failedCF.dataValues.UserId);
+        const tokens = await getRelevantToken(userJoinCF);
+
+        const notifPayload = {
+          title: "Notification",
+          body: "Your balance success to refund, please check now",
+          data: { screen: "Home", data: {} },
+          priority: "high",
+        };
+
+        sendPushNotif(tokens, notifPayload);
+      }
 
       await t.commit();
       res.status(200).json({
         message: "Successfully refund balance to each user",
       });
     } catch (error) {
+      console.log(error);
       res.status(500).json(error);
       t.rollback();
     }

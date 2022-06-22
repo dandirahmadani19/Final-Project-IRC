@@ -18,6 +18,7 @@ const typeDefCrowdFunding = gql`
     initialQuantity: Int
     expiredDay: Int
     createdAt: String
+    updatedAt: String
     hscode: String
     CrowdFundingProducts: [crowdProduct]
     User: UserCrowd
@@ -47,11 +48,20 @@ const typeDefCrowdFunding = gql`
     User: UserCrowd
   }
 
+  type StatusTracking {
+    id: ID
+    status: String
+    description: String
+    createdAt: String
+    message: String
+  }
+
   type Query {
     getCrowdFunding: [crowdFunding]
     checkBalance(totalPrice: Int, access_token: String): IsEnough
     getHistorySubmitCrowdFunding(access_token: String): [crowdFunding]
     getHistoryJoinCrowdFunding(access_token: String): [crowdProduct]
+    getStatusTracking(idCrowdFunding: Int): [StatusTracking]
   }
 
   input dataSubmitCrowFunding {
@@ -125,6 +135,18 @@ const resolverCrowdFunding = {
           },
         });
         return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    getStatusTracking: async (_, { idCrowdFunding }) => {
+      console.log(idCrowdFunding);
+      try {
+        const { data } = await axios({
+          method: "GET",
+          url: `${process.env.BASE_URL}/status-tracking/${idCrowdFunding}`,
+        });
+        return data.data;
       } catch ({ response }) {
         return response.data;
       }

@@ -184,7 +184,7 @@ export default function DetailScreen({ route, navigation }) {
               </Text>
             </View>
           </View>
-          {isEndDate() && (
+          {(data.status === "Failed" || data.status === "Success") && (
             <View
               style={{
                 paddingHorizontal: 30,
@@ -204,7 +204,7 @@ export default function DetailScreen({ route, navigation }) {
               </Text>
             </View>
           )}
-          {!isEndDate() && (
+          {data.status === "Open" && (
             <TouchableHighlight onPress={handleOnPress}>
               <View
                 style={{
@@ -451,8 +451,12 @@ export default function DetailScreen({ route, navigation }) {
             fontFamily: "sans-serif-condensed",
           }}
         >
-          Crowd Funding {isEndDate() ? "Has Finished " : "Will End "}
-          {getDaysToGo()} On {getEndDate()}
+          Crowd Funding{" "}
+          {data.status === "Failed" || data.status === "Success"
+            ? `Has Finished ${moment(new Date(data.updatedAt))
+                .endOf("hour")
+                .fromNow()}`
+            : `Will End ${getDaysToGo()} On ${getEndDate()}`}
         </Text>
       </View>
     </ScrollView>

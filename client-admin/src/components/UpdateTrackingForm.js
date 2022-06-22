@@ -1,55 +1,59 @@
 import { useState } from "react";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import {  useNavigate, useParams } from "react-router-dom";
-import { fetchCFtrackingStatusById, fetchCrowdFundingById, updateStatus, verifyCrowdFund } from "../store/actions/crowdFundAction";
-import Swal from 'sweetalert'
-
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  fetchCFtrackingStatusById,
+  fetchCrowdFundingById,
+  updateStatus,
+  verifyCrowdFund,
+} from "../store/actions/crowdFundAction";
+import Swal from "sweetalert";
 
 export default function UpdateTrackingForm() {
-  const {id} = useParams()
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const [trackingStat, setTrackingStat] =  useState({})
-  const tracking = useSelector((state)=>state.crowdfunding.trackingStatus)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [trackingStat, setTrackingStat] = useState({});
+  const tracking = useSelector((state) => state.crowdfunding.trackingStatus);
   const [formData, setFormData] = useState({
-    status:"",
+    status: "",
     description: "",
   });
 
   function changeVal(e) {
-    const {value,name} = e.target
+    const { value, name } = e.target;
     setFormData({
       ...formData,
-      [name] : value
-    })
+      [name]: value,
+    });
   }
 
-  function submitForm(e){
-    e.preventDefault()
-    console.log(formData)
+  function submitForm(e) {
+    e.preventDefault();
+    console.log(formData);
     const payload = {
       ...formData,
-      CrowdFundingId : id
-    }
-    
+      CrowdFundingId: id,
+    };
+
     dispatch(updateStatus(payload))
+
       .then((res)=>{
         console.log(res, "ini dari form")
         return res.json()
       })
-      .then((data)=>{
+      .then((data) => {
         Swal({
-          title: 'Tracking Status',
-          text : "Tracking Status Updated Successfully",
-          icon : 'success'
-        })
-        console.log(data)
+          title: "Tracking Status",
+          text: "Tracking Status Updated Successfully",
+          icon: "success",
+        });
+        console.log(data);
       })
-      .catch((err)=>{
-        console.log(err)
-      })
-
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function goBack(e){
@@ -57,45 +61,56 @@ export default function UpdateTrackingForm() {
     navigate('/')
   }
 
-  function handleReject(e){
-    e.preventDefault()
-    
+  function handleReject(e) {
+    e.preventDefault();
   }
 
-  useEffect(()=>{
-    dispatch(fetchCFtrackingStatusById(id))
-  },[])
+  useEffect(() => {
+    dispatch(fetchCFtrackingStatusById(id));
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     //console.log(tracking, "ererer")
-    setTrackingStat(tracking)
+    setTrackingStat(tracking);
     //console.log(trackingStat,"asderrr")
     setFormData({
-      status : tracking? tracking.status:"",
-      description: tracking? tracking.description:""
-    })
-  },[tracking])
+      status: tracking ? tracking.status : "",
+      description: tracking ? tracking.description : "",
+    });
+  }, [tracking]);
   return (
     <div class="bg-grey-lighter flex flex-col">
       <div class="flex justify-between mb-4 px-2">
-      <button
-      class="bg-blue-500 hover:bg-blue-700 px-6 py-1 rounded-sm text-white"
-      onClick={(event)=>{goBack(event)}}
-      >Back</button>
-      <button
-      class=" hidden bg-red-500 hover:bg-red-600 px-6 py-1 rounded-sm text-white"
-      onClick={(event)=>{handleReject(event)}}
-      >Reject</button>
+        <button
+          class="bg-blue-500 hover:bg-blue-700 px-6 py-1 rounded-sm text-white"
+          onClick={(event) => {
+            goBack(event);
+          }}
+        >
+          Back
+        </button>
+        <button
+          class=" hidden bg-red-500 hover:bg-red-600 px-6 py-1 rounded-sm text-white"
+          onClick={(event) => {
+            handleReject(event);
+          }}
+        >
+          Reject
+        </button>
       </div>
       <div class="container  mx-auto flex-1 flex flex-col items-center justify-center px-2">
         <form class="bg-white px-8 mx-20 py-8 rounded shadow-md text-black w-full">
-          <h1 class="mb-8 text-3xl text-center">Update Crowdfunding tracking status</h1>
+          <h1 class="mb-8 text-3xl text-center">
+            Update Crowdfunding tracking status
+          </h1>
           <div
             type="text"
             class="border border-grey-light w-full p-1 rounded mb-4 flex justify-center"
           >
-            <p>current status : { trackingStat? trackingStat.status : "unassigned" }</p>
-
+            <p>
+              current status :{" "}
+              {trackingStat ? trackingStat.status : "unassigned"}
+            </p>
           </div>
           <select
             name="status"
@@ -104,10 +119,10 @@ export default function UpdateTrackingForm() {
             onChange={(event) => changeVal(event)}
           >
             <option selected>Tracking Status</option>
-              <option value={"onProcess"}>on process</option>
-              <option value={"onShipping"}>on shipping</option>
-              <option value={"arrived"}>arrived</option>
-              <option value={"onDelivery"}>on delivery</option>
+            <option value={"On Process"}>on process</option>
+            <option value={"On Shipping"}>on shipping</option>
+            <option value={"Arrived"}>arrived</option>
+            <option value={"On Delivery"}>on delivery</option>
           </select>
           <textarea
             type="text"
@@ -120,12 +135,14 @@ export default function UpdateTrackingForm() {
           <button
             type="submit"
             class="w-full text-center py-3 rounded bg-orange-600 text-white hover:bg-orange-800 focus:outline-none my-1"
-            onClick={(event)=>{submitForm(event)}}
+            onClick={(event) => {
+              submitForm(event);
+            }}
           >
             Update
           </button>
         </form>
       </div>
     </div>
-  )
+  );
 }

@@ -14,9 +14,15 @@ export default function DetailHistorySubmit({ route, navigation }) {
         ]}
       >
         <Text style={styles.headerSection}>Crowd Funding {data.status}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("TrackingStatus")}>
-          <Text>See Detail</Text>
-        </TouchableOpacity>
+        {data.status === "Success" && (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("TrackingStatus", { id: data.id })
+            }
+          >
+            <Text>See Detail</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={[styles.container, { flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>

@@ -4,6 +4,16 @@ import NumberFormat from "react-number-format";
 import moment from "moment";
 
 export default function CardHistoryJoin({ data, onPress, route }) {
+  const getColorStatus = (status) => {
+    switch (status) {
+      case "Open":
+        return "#2563eb";
+      case "Failed":
+        return "#dc2626";
+      case "Success":
+        return "#16a34a";
+    }
+  };
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View
@@ -120,6 +130,29 @@ export default function CardHistoryJoin({ data, onPress, route }) {
               </Text>
             </View>
           </View>
+        </View>
+        <View
+          style={{
+            paddingVertical: 4,
+            paddingHorizontal: 9,
+            borderTopLeftRadius: 10,
+            borderBottomRightRadius: 5,
+            backgroundColor: getColorStatus(data.CrowdFunding.status),
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+          }}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              textAlign: "center",
+              fontSize: 12,
+              fontWeight: "700",
+            }}
+          >
+            {data.status === "open" ? "ongoing" : data.CrowdFunding.status}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
