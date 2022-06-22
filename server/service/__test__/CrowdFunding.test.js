@@ -200,11 +200,13 @@ describe("Crowdfunding Test", () => {
         expect(res.body.expiredDay).toBe(10);
         expect(res.body.hscode).toBe("656534");
     });
+
     it("should return All data From CrowdFunding", async () => {
-        const res = await request(app).get(`/crowdFund/admin`)
+        const res = await request(app).get(`/crowdFund/admin?status=Open`)
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Array));;
     });
+
     it("should return all data history join login user", async () => {
         const res = await request(app).get(`/crowdFund/all-history-by-user-join`)
         .set("access_token", access_token)

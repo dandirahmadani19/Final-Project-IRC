@@ -1,11 +1,10 @@
 const routesCrowdFunding = require("express").Router();
 const Controller = require("../controllers/crowdfundingController");
 const authentication = require("../middlewares/Authentication");
-const scheduleCron = require("../middlewares/CronJob")
 
 
 
-routesCrowdFunding.get("/",scheduleCron, Controller.getAllCrowdFunding); //test    
+routesCrowdFunding.get("/", Controller.getAllCrowdFunding); //test    
 
 routesCrowdFunding.post("/add", authentication, Controller.createCrowdFunding); //test 
 routesCrowdFunding.get("/admin",Controller.allCrowdFundAdmin); //test
