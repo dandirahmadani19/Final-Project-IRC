@@ -131,6 +131,7 @@ export default function TopUpBalance({ navigation }) {
             style={{
               fontSize: 13,
               marginBottom: 20,
+              fontStyle: "italic",
             }}
           >
             Note : Biaya Admin Sebesar Rp. 3000
