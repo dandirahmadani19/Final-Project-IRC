@@ -514,6 +514,23 @@ class CrowdFundingController {
       next(error);
     }
   }
+  static async denyCrowdFunding(req, res, next) {
+    try {
+      const id = req.params.id;
+      const data = await CrowdFunding.update({
+        status: "Deny",
+      },
+      {
+      where : {id},
+      returning: true});
+        
+      res.status(200).json({
+        message : "success deny crowdfunding",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = CrowdFundingController;

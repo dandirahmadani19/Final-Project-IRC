@@ -72,6 +72,7 @@ const typeDefCrowdFunding = gql`
       totalPrice: Int
       access_token: String
     ): Message
+    denyCrowdFunding(idCrowdFunding: Int): Message
   }
 `;
 
@@ -188,6 +189,17 @@ const resolverCrowdFunding = {
         return response.data;
       }
     },
+    denyCrowdFunding : async (_, { idCrowdFunding }) => {
+      try {
+        const { data } = await axios({
+          method: "PATCH",
+          url: `${process.env.BASE_URL}/crowdFund/deny/${idCrowdFunding}`,
+        });
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    }
   },
 };
 

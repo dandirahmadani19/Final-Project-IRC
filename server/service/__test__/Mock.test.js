@@ -196,6 +196,18 @@ describe("Crowd Funding End Point Test", () => {
                 console.log(err)
             })
     })
+    it('Should handle error when hit update', async () => {
+        jest.spyOn(CrowdFunding, 'update').mockRejectedValue('Internal Server Error')
+        return request(app)
+            .patch("/crowdFund/deny/1")
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body.message).toBe('Internal Server Error')  
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
     
 })
 
