@@ -14,6 +14,8 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
         return "#16a34a";
       case "Pending":
         return "#facc15";
+      case "Deny":
+        return "#5b21b6";
     }
   };
   return (

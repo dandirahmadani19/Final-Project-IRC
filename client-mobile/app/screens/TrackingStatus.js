@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, ActivityIndicator } from "react-native";
 import React from "react";
 import {
   MaterialCommunityIcons,
@@ -6,29 +6,37 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import moment from "moment";
+import { useQuery } from "@apollo/client";
+import { GET_STATUS_TRACKING } from "../../query/crowdFunding";
+import client from "../../config/apolloClient";
 
-export default function TrackingStatus() {
-  const trackStatus = [
-    {
-      status: "On Delivery",
-      description:
-        "Sudah Dalam Perjalanan kkdmdkffjdkfd fkdfjdkfdf dfdjfkdfjdkfd fdfjdfj",
-    },
-    {
-      status: "Arrived",
-      description: "Sudah Dalam Perjalanan",
-    },
-    {
-      status: "On Shipping",
-      description: "Sudah Dalam Perjalanan",
-      createdAt: "2022-06-22T08:01:49.333Z",
-    },
-    {
-      status: "On Proccess",
-      description: "Sudah Dalam Perjalanan",
-      createdAt: "2022-06-18T08:01:49.333Z",
-    },
-  ];
+export default function TrackingStatus({ route }) {
+  const { loading, error, data } = useQuery(GET_STATUS_TRACKING, {
+    variables: { idCrowdFunding: +route.params.id },
+  });
+
+  client.refetchQueries({
+    include: [GET_STATUS_TRACKING],
+  });
+
+  const trackStatus = data?.getStatusTracking
+    ? data?.getStatusTracking
+    : [{ status: "", description: "" }];
+
+  if (loading && !data) {
+    return (
+      <View
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <ActivityIndicator size={"large"} color="black" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
@@ -51,14 +59,24 @@ export default function TrackingStatus() {
             width: "33%",
           }}
         >
-          <MaterialCommunityIcons
-            name="package-variant"
-            size={50}
-            color="green"
+          <View
             style={{
-              left: -25,
+              left: -33,
+              position: "absolute",
+              backgroundColor: "green",
+              borderRadius: 50,
+              height: 60,
+              width: 60,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
+          >
+            <MaterialCommunityIcons
+              name="package-variant"
+              size={30}
+              color="#fff"
+            />
+          </View>
           <View
             style={{
               height: 22,
@@ -74,7 +92,6 @@ export default function TrackingStatus() {
         <View
           style={{
             borderBottomWidth: 2,
-            // borderLeftWidth: 1,
             borderBottomColor:
               trackStatus[trackStatus.length - 1].status === "On Shipping"
                 ? "green"
@@ -83,18 +100,21 @@ export default function TrackingStatus() {
             width: "33%",
           }}
         >
-          <FontAwesome5
-            name="shipping-fast"
-            size={40}
-            color={
-              trackStatus[trackStatus.length - 1].status === "On Shipping"
-                ? "green"
-                : "#94a3b8"
-            }
+          <View
             style={{
-              left: -20,
+              left: -31,
+              position: "absolute",
+              backgroundColor: "#94a3b8",
+              borderRadius: 50,
+              height: 60,
+              width: 60,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
+          >
+            <FontAwesome5 name="shipping-fast" size={25} color="#fff" />
+          </View>
+
           <View
             style={{
               height: 22,
@@ -113,29 +133,40 @@ export default function TrackingStatus() {
         <View
           style={{
             borderBottomWidth: 2,
-            // borderLeftWidth: 1,
             borderBottomColor: "#94a3b8",
             paddingBottom: 30,
             flexDirection: "row",
             width: "33%",
           }}
         >
-          <FontAwesome5
-            name="plane-arrival"
-            size={40}
-            color="#94a3b8"
+          <View
             style={{
-              left: -20,
+              left: -32,
+              position: "absolute",
+              backgroundColor: "green",
+              borderRadius: 50,
+              height: 60,
+              width: 60,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
-          <MaterialIcons
-            name="delivery-dining"
-            size={54}
-            color="#94a3b8"
+          >
+            <FontAwesome5 name="plane-arrival" size={25} color="#fff" />
+          </View>
+
+          <View
             style={{
-              right: -27,
+              right: -63,
+              backgroundColor: "green",
+              borderRadius: 50,
+              height: 60,
+              width: 60,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
+          >
+            <MaterialIcons name="delivery-dining" size={38} color="#fff" />
+          </View>
 
           <View
             style={{

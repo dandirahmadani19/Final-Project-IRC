@@ -5,8 +5,9 @@ const {
   sequelize,
   User,
   Balance,
+  StatusTracking,
 } = require("../models");
-const {expiredDate, } = require("../helpers/expiredDate");
+const { expiredDate } = require("../helpers/expiredDate");
 const finalPrice = require("../helpers/helperFinalPrice");
 const { sendPushNotif } = require("../helpers/pushNotification");
 const { getRelevantToken } = require("../redisconfig/redismodel");
@@ -328,6 +329,17 @@ class CrowdFundingController {
         { transaction: t }
       );
 
+      const response = await CrowdFundingProduct.findAll({
+        where: { CrowdFundingId: req.params.id },
+        attributes: ["UserId"],
+      });
+
+      const UserId = response.map((e) => e.UserId);
+      const tokens = await getRelevantToken(UserId);
+      const tokensSubmit = await getRelevantToken([req.loginfo.id]);
+      console.log(tokensSubmit);
+      console.log(tokens);
+
       const { currentQuantity: nowQuantity, targetQuantity: target } =
         await CrowdFunding.findByPk(id);
       if (nowQuantity === target) {
@@ -342,40 +354,57 @@ class CrowdFundingController {
           },
           { transaction: t }
         );
+        await StatusTracking.create(
+          {
+            CrowdFundingId: id,
+            status: "On Proccess",
+            description: "Being Processed",
+          },
+          {
+            transaction: t,
+          }
+        );
+        const notifPayload = {
+          title: "Notification",
+          body: "CrowdFunding Has Been Success",
+          data: { screen: "HistoryJoin", data: {} },
+          priority: "high",
+        };
+
+        sendPushNotif(tokens, notifPayload);
+
+        const notifPayloadSubmit = {
+          title: "Notification",
+          body: "CrowdFunding Has Been Success",
+          data: { screen: "HistorySubmit", data: {} },
+          priority: "high",
+        };
+
+        sendPushNotif(tokensSubmit, notifPayloadSubmit);
+      } else {
+        const notifPayload = {
+          title: "Notification",
+          body: "New User Has Joined",
+          data: { screen: "HistoryJoin", data: {} },
+          priority: "high",
+        };
+
+        sendPushNotif(tokens, notifPayload);
+
+        const notifPayloadSubmit = {
+          title: "Notification",
+          body: "New User Has Joined",
+          data: { screen: "HistorySubmit", data: {} },
+          priority: "high",
+        };
+
+        sendPushNotif(tokensSubmit, notifPayloadSubmit);
       }
-      await t.commit();
 
-      const response = await CrowdFundingProduct.findAll({
-        where: { CrowdFundingId: req.params.id },
-        attributes: ["UserId"],
-      });
-
-      const UserId = response.map((e) => e.UserId);
-      const tokens = await getRelevantToken(UserId);
-
-      const notifPayload = {
-        title: "Notification",
-        body: "New User Has Joined",
-        data: { screen: "HistorySubmit", data: {} },
-        priority: "high",
-      };
-
-      sendPushNotif(tokens, notifPayload);
-
-      const tokensSubmit = await getRelevantToken([req.loginfo.id]);
-
-      const notifPayloadSubmit = {
-        title: "Notification",
-        body: "New User Has Joined",
-        data: { screen: "HistoryJoin", data: {} },
-        priority: "high",
-      };
-
-      sendPushNotif(tokensSubmit, notifPayloadSubmit);
       // //update currentQuantity
       // //push notif ke admincms
       // //GW MAU KASIH PUSH NOTIF KE YANG JOIN
-
+      await t.commit();
       res.status(200).json({
         status: true,
         message: "success join crowdfunding",
@@ -406,7 +435,7 @@ class CrowdFundingController {
       const { status } = req.query;
       console.log(status, "asdasd");
       const listCF = await CrowdFunding.findAll({
-/*         where:{
+        /*         where:{
           status : status
         }, */
         attributes: {
