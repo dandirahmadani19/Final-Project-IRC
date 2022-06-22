@@ -6,8 +6,7 @@ const {
   User,
   Balance,
 } = require("../models");
-const expiredDate = require("../helpers/expiredDate");
-const CronJob = require("node-cron");
+const {expiredDate, } = require("../helpers/expiredDate");
 const finalPrice = require("../helpers/helperFinalPrice");
 const { sendPushNotif } = require("../helpers/pushNotification");
 const { getRelevantToken } = require("../redisconfig/redismodel");
@@ -15,6 +14,25 @@ const { getRelevantToken } = require("../redisconfig/redismodel");
 class CrowdFundingController {
   static async getAllCrowdFunding(req, res, next) {
     try {
+      const dataJob = await CrowdFunding.findAll({});
+      const result = dataJob.map((item) => {
+        if (
+          item.expiredDay > 0 &&
+          item.status === "Open" &&
+          item.startDate !== null
+        ) {
+          const datadate = expiredDate(item.expiredDay, item.startDate);
+          const dateNow = new Date().toLocaleString().split(",")[0];
+          if (datadate === dateNow) {
+            CrowdFunding.update(
+              {
+                status: "Failed",
+              },
+              { where: { id: item.id } }
+            );
+          }
+        }
+      });
       const data = await CrowdFunding.findAll({
         where: {
           [Op.or]: [
@@ -44,65 +62,8 @@ class CrowdFundingController {
         ],
         order: [["startDate", "DESC"]],
       });
-      const dataJob = await CrowdFunding.findAll({});
-      const result = dataJob.map((item) => {
-        if (
-          item.expiredDay > 0 &&
-          item.status === "Open" &&
-          item.startDate !== null
-        ) {
-          const datadate = expiredDate(item.expiredDay, item.startDate);
-          const dateNow = new Date().toLocaleString().split(",")[0];
-          console.log(dateNow);
-          console.log(datadate);
-          if (datadate === dateNow) {
-            CrowdFunding.update(
-              {
-                status: "Failed",
-              },
-              { where: { id: item.id } }
-            );
-          }
-        }
-      });
-      //CRON JOB
-      CronJob.schedule(
-        "30 00 * * *",
-        async () => {
-          try {
-            const dataJob = await CrowdFunding.findAll({});
-            const result = dataJob.map((item) => {
-              if (
-                item.expiredDay > 0 &&
-                item.status === "Open" &&
-                item.startDate !== null
-              ) {
-                const datadate = expiredDate(item.expiredDay, item.startDate);
-                const dateNow = new Date().toLocaleString().split(",")[0];
-                console.log(dateNow);
-                console.log(datadate);
-                if (datadate === dateNow) {
-                  CrowdFunding.update(
-                    {
-                      status: "Failed",
-                    },
-                    { where: { id: item.id } }
-                  );
-                }
-              }
-            });
-          } catch (error) {
-            next(error);
-          }
-        },
-        {
-          scheduled: true,
-          timezone: "Asia/Jakarta",
-        }
-      );
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -272,7 +233,6 @@ class CrowdFundingController {
         message: "Crowd Funding success to open",
       });
     } catch (error) {
-      console.log(error);
       await t.rollback();
       next(error);
     }
@@ -420,7 +380,6 @@ class CrowdFundingController {
         message: "success join crowdfunding",
       });
     } catch (err) {
-      console.log(err);
       next(err);
       t.rollback();
     }
@@ -429,7 +388,7 @@ class CrowdFundingController {
   static async detailCrowdFund(req, res, next) {
     try {
       const id = req.params.id;
-      const dataCF = await detailCrowdFunding.findOne({
+      const dataCF = await CrowdFunding.findOne({
         where: { id },
         attributes: {
           exclude: [
@@ -448,7 +407,7 @@ class CrowdFundingController {
 
   static async allCrowdFundAdmin(req, res, next) {
     try {
-      const listCF = await adminCrowdFunding.findAll({
+      const listCF = await CrowdFunding.findAll({
         attributes: {
           exclude: [
             "initialProductPrice",
@@ -548,7 +507,6 @@ class CrowdFundingController {
 
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

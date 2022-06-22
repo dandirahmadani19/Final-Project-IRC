@@ -142,7 +142,7 @@ describe("Auth Test", () => {
       .get("/user/user-login")
       .send(
         "accesstoken",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJhZG1pbjEwMDAwQGdtYWlsLmNvbSIsImlhdCI6MTY1MzA5ODI2OX0.rIRu5m9CHIwRVED6UV6TBD-tQ5jvRRSUa6ZOcbFekL0"
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZmlyc3ROYW1lIjoiSm9zdWEiLCJsYXN0TmFtZSI6IldpbGxpYW0iLCJlbWFpbCI6Impvc3VhQG1haWwuY29tIiwicGhvbmVOdW1iZXIiOiIwODEyMzQ1Njc4OTAiLCJhZGRyZXNzIjoiSmwuIEtlYm9uIEthY2FuZyIsImlhdCI6MTY1NTgzNTYzMX0.y2gYj2lj1mabOHUpTv28eh6Iyqz-nhO2LvbrpGEtO24"
       )
       .expect(401);
 

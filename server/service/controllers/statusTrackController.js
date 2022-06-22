@@ -19,7 +19,6 @@ class ControllerStatusTracking {
         data: newStatus,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -116,7 +115,6 @@ class ControllerStatusTracking {
         data: allUserId,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
