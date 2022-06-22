@@ -20,7 +20,7 @@ export default function AdminLogin() {
   }
 
   function submitLogin(e){
-    navigate('/dashboard')
+    navigate('/')
   }
 
   return (
