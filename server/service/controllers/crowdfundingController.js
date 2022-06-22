@@ -6,8 +6,7 @@ const {
   User,
   Balance,
 } = require("../models");
-const expiredDate = require("../helpers/expiredDate");
-const CronJob = require("node-cron");
+const {expiredDate, } = require("../helpers/expiredDate");
 const finalPrice = require("../helpers/helperFinalPrice");
 const { sendPushNotif } = require("../helpers/pushNotification");
 const { getRelevantToken } = require("../redisconfig/redismodel");
@@ -15,6 +14,25 @@ const { getRelevantToken } = require("../redisconfig/redismodel");
 class CrowdFundingController {
   static async getAllCrowdFunding(req, res, next) {
     try {
+      const dataJob = await CrowdFunding.findAll({});
+      const result = dataJob.map((item) => {
+        if (
+          item.expiredDay > 0 &&
+          item.status === "Open" &&
+          item.startDate !== null
+        ) {
+          const datadate = expiredDate(item.expiredDay, item.startDate);
+          const dateNow = new Date().toLocaleString().split(",")[0];
+          if (datadate === dateNow) {
+            CrowdFunding.update(
+              {
+                status: "Failed",
+              },
+              { where: { id: item.id } }
+            );
+          }
+        }
+      });
       const data = await CrowdFunding.findAll({
         where: {
           [Op.or]: [
@@ -44,65 +62,8 @@ class CrowdFundingController {
         ],
         order: [["startDate", "DESC"]],
       });
-      const dataJob = await CrowdFunding.findAll({});
-      const result = dataJob.map((item) => {
-        if (
-          item.expiredDay > 0 &&
-          item.status === "Open" &&
-          item.startDate !== null
-        ) {
-          const datadate = expiredDate(item.expiredDay, item.startDate);
-          const dateNow = new Date().toLocaleString().split(",")[0];
-          console.log(dateNow);
-          console.log(datadate);
-          if (datadate === dateNow) {
-            CrowdFunding.update(
-              {
-                status: "Failed",
-              },
-              { where: { id: item.id } }
-            );
-          }
-        }
-      });
-      //CRON JOB
-      CronJob.schedule(
-        "30 00 * * *",
-        async () => {
-          try {
-            const dataJob = await CrowdFunding.findAll({});
-            const result = dataJob.map((item) => {
-              if (
-                item.expiredDay > 0 &&
-                item.status === "Open" &&
-                item.startDate !== null
-              ) {
-                const datadate = expiredDate(item.expiredDay, item.startDate);
-                const dateNow = new Date().toLocaleString().split(",")[0];
-                console.log(dateNow);
-                console.log(datadate);
-                if (datadate === dateNow) {
-                  CrowdFunding.update(
-                    {
-                      status: "Failed",
-                    },
-                    { where: { id: item.id } }
-                  );
-                }
-              }
-            });
-          } catch (error) {
-            next(error);
-          }
-        },
-        {
-          scheduled: true,
-          timezone: "Asia/Jakarta",
-        }
-      );
       res.status(200).json(data);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -196,6 +157,7 @@ class CrowdFundingController {
         productName: dataSubmit.productName,
         targetQuantity: dataSubmit.targetQuantity,
         finalProductPrice: dataSubmit.finalProductPrice,
+        initialProductPrice: dataSubmit.initialProductPrice,
         productImage: dataSubmit.productImage,
         currentQuantity: dataSubmit.currentQuantity,
         expiredDay: dataSubmit.expiredDay,
@@ -272,7 +234,6 @@ class CrowdFundingController {
         message: "Crowd Funding success to open",
       });
     } catch (error) {
-      console.log(error);
       await t.rollback();
       next(error);
     }
@@ -284,16 +245,53 @@ class CrowdFundingController {
       const { id } = req.params;
       const { quantityToBuy, totalPrice } = req.body;
       const { currentQuantity } = await CrowdFunding.findByPk(id);
-      await CrowdFundingProduct.create(
+      const data = await CrowdFundingProduct.findOne(
         {
-          CrowdFundingId: id,
-          UserId: req.loginfo.id,
-          quantityToBuy,
-          totalPrice,
-          paymentStatus: "Success",
+          where: {
+            [Op.and]: [
+              {
+                CrowdFundingId: +id,
+              },
+              {
+                UserId: +req.loginfo.id,
+              },
+            ],
+          },
         },
         { transaction: t }
       );
+
+      if (data) {
+        await CrowdFundingProduct.update(
+          {
+            quantityToBuy: +data.quantityToBuy + +quantityToBuy,
+            totalPrice: +data.totalPrice + +totalPrice,
+          },
+          {
+            where: {
+              [Op.and]: [
+                {
+                  CrowdFundingId: +id,
+                },
+                {
+                  UserId: +req.loginfo.id,
+                },
+              ],
+            },
+          }
+        );
+      } else {
+        await CrowdFundingProduct.create(
+          {
+            CrowdFundingId: id,
+            UserId: req.loginfo.id,
+            quantityToBuy,
+            totalPrice,
+            paymentStatus: "Success",
+          },
+          { transaction: t }
+        );
+      }
 
       const { amount } = await Balance.findOne(
         {
@@ -356,14 +354,24 @@ class CrowdFundingController {
       const tokens = await getRelevantToken(UserId);
 
       const notifPayload = {
-        title: "Submission Accepted",
-        body: "Your submission crowd funding has been verified. Please complete your payment !",
-        data: { screen: "ConfirmationSubmit" },
+        title: "Notification",
+        body: "New User Has Joined",
+        data: { screen: "HistorySubmit", data: {} },
         priority: "high",
       };
 
       sendPushNotif(tokens, notifPayload);
 
+      const tokensSubmit = await getRelevantToken([req.loginfo.id]);
+
+      const notifPayloadSubmit = {
+        title: "Notification",
+        body: "New User Has Joined",
+        data: { screen: "HistoryJoin", data: {} },
+        priority: "high",
+      };
+
+      sendPushNotif(tokensSubmit, notifPayloadSubmit);
       // //update currentQuantity
       // //push notif ke admincms
       // //GW MAU KASIH PUSH NOTIF KE YANG JOIN
@@ -373,7 +381,6 @@ class CrowdFundingController {
         message: "success join crowdfunding",
       });
     } catch (err) {
-      console.log(err);
       next(err);
       t.rollback();
     }
@@ -385,10 +392,7 @@ class CrowdFundingController {
       const dataCF = await CrowdFunding.findOne({
         where: { id },
         attributes: {
-          exclude: [
-            "createdAt",
-            "updatedAt",
-          ],
+          exclude: ["createdAt", "updatedAt"],
         },
       });
       res.status(200).json(dataCF);
@@ -399,8 +403,8 @@ class CrowdFundingController {
 
   static async allCrowdFundAdmin(req, res, next) {
     try {
-      const {status} = req.query
-      console.log(status, "asdasd")
+      const { status } = req.query;
+      console.log(status, "asdasd");
       const listCF = await CrowdFunding.findAll({
 /*         where:{
           status : status
@@ -416,8 +420,7 @@ class CrowdFundingController {
       });
       res.status(200).json(listCF);
     } catch (error) {
-      console.log(error)
-      next(error)
+      next(error);
     }
   }
 
@@ -433,10 +436,12 @@ class CrowdFundingController {
           "productName",
           "targetQuantity",
           "finalProductPrice",
+          "initialProductPrice",
           "status",
           "currentQuantity",
           "productImage",
           "initialQuantity",
+          "startDate",
           "expiredDay",
           "hscode",
           "createdAt",
@@ -472,7 +477,6 @@ class CrowdFundingController {
         where: {
           UserId: id,
         },
-        attributes: ["UserId"],
         include: [
           {
             model: CrowdFunding,
@@ -485,58 +489,24 @@ class CrowdFundingController {
               "currentQuantity",
               "productImage",
               "initialQuantity",
+              "startDate",
               "expiredDay",
               "hscode",
               "createdAt",
             ],
-            include: [
-              {
-                model: CrowdFundingProduct,
-                attributes: ["totalPrice", "quantityToBuy"],
-                include: [
-                  {
-                    model: User,
-                    attributes: ["firstName", "lastName"],
-                  },
-                ],
-              },
-            ],
+            include: {
+              model: User,
+              attributes: ["firstName", "lastName"],
+            },
+          },
+          {
+            model: User,
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
         ],
       });
-      data = data.map((item) => {
-        return item.CrowdFunding;
-      });
-
-      // const data = await CrowdFunding.findAll({
-      //   attributes: [
-      //     "id",
-      //     "productName",
-      //     "targetQuantity",
-      //     "finalProductPrice",
-      //     "status",
-      //     "currentQuantity",
-      //     "productImage",
-      //     "initialQuantity",
-      //     "expiredDay",
-      //     "hscode",
-      //     "createdAt",
-      //   ],
-      //   include: [
-      //     {
-      //       model: CrowdFundingProduct,
-      //       where: {
-      //         UserId: id,
-      //       },
-      //       attributes: ["totalPrice", "quantityToBuy"],
-      //       include: [
-      //         {
-      //           model: User,
-      //           attributes: ["firstName", "lastName"],
-      //         },
-      //       ],
-      //     },
-      //   ],
+      // data = data.map((item) => {
+      //   return item.CrowdFunding;
       // });
 
       res.status(200).json(data);

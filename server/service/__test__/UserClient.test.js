@@ -3,6 +3,7 @@ const app = require("../app")
 const { User } = require('../models/index');
 const { tokenMakerFromPayload } = require("../helpers/helperJwt");
 const { passwordEncryptor } = require("../helpers/helperBcrypt");
+const authentication = require("../middlewares/Authentication");
 
 const userData = {
   firstName: "Jonna",
@@ -14,6 +15,7 @@ const userData = {
 };
 
 let access_token;
+let access_token1
 beforeAll(async () => {
   await User.bulkCreate([
     {
@@ -27,6 +29,13 @@ beforeAll(async () => {
   ])
   access_token = tokenMakerFromPayload({
     id: 1,
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'jhon@mail.com',
+    phoneNumber: '081234567890',
+    address: 'Jl. Kebon Kacang',
+  })
+  access_token1 = tokenMakerFromPayload({
     firstName: 'John',
     lastName: 'Doe',
     email: 'jhon@mail.com',
@@ -125,7 +134,6 @@ describe("should return data user after login", () => {
       .get("/user/user-login")
       .set("access_token", access_token)
       .expect(200)
-      console.log(res.body);
   })
 })
 
@@ -141,8 +149,8 @@ describe("Auth Test", () => {
     const res = await request(app)
       .get("/user/user-login")
       .send(
-        "accesstoken",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJhZG1pbjEwMDAwQGdtYWlsLmNvbSIsImlhdCI6MTY1MzA5ODI2OX0.rIRu5m9CHIwRVED6UV6TBD-tQ5jvRRSUa6ZOcbFekL0"
+        "access_token",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZmlyc3ROYW1lIjoiSm9zdWEiLCJsYXN0TmFtZSI6IldpbGxpYW0iLCJlbWFpbCI6Impvc3VhQG1haWwuY29tIiwicGhvbmVOdW1iZXIiOiIwODEyMzQ1Njc4OTAiLCJhZGRyZXNzIjoiSmwuIEtlYm9uIEthY2FuZyIsImlhdCI6MTY1NTg3NDQyN30.Aoj8Dk3ePNQV_UrwomqkaMU6TDtCYmDD_sBykxy6R7g"
       )
       .expect(401);
 

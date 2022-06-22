@@ -12,48 +12,71 @@ import { CHECK_BALANCE } from "../../query/crowdFunding";
 import * as SecureStore from "expo-secure-store";
 import { access_token, userProfile } from "../../query/global";
 import { useMutation } from "@apollo/client";
-import { USER_APPROVE_CROWDFUNDING } from "../../query/crowdFunding";
+import {
+  USER_APPROVE_CROWDFUNDING,
+  GET_CROWDFUNDING,
+} from "../../query/crowdFunding";
 import { ActivityIndicator } from "react-native";
 import moment from "moment";
 import NumberFormat from "react-number-format";
+import client from "../../config/apolloClient";
+import {
+  formatCurrency,
+  getSupportedCurrencies,
+} from "react-native-format-currency";
 
 export default function ConfirmationSubmit({ route, navigation }) {
   const data = route.params.data;
+  console.log(data);
   const totalPrice = data.currentQuantity * data.finalProductPrice;
-  // const {
-  //   loading,
-  //   error,
-  //   data: isEnough,
-  // } = useQuery(CHECK_BALANCE, {
-  //   variables: { totalPrice: +totalPrice, accessToken: access_token() },
-  // });
-
   const [
     userApprove,
     { loading: loadingApprove, error: errorAprrove, data: message },
   ] = useMutation(USER_APPROVE_CROWDFUNDING);
 
+  const [valueFormattedWithSymbol] = formatCurrency({
+    amount: totalPrice,
+    code: "IDR",
+  });
+
   const handlePayment = () => {
     const balance = userProfile().Balance?.amount;
     if (balance >= totalPrice) {
-      userApprove({
-        variables: { accessToken: access_token(), idCrowdFunding: +data.id },
-      });
+      Alert.alert(
+        "Konfirmasi Pembayaran ?",
+        `Saldo anda akan dikurangi sejumlah ${valueFormattedWithSymbol}`,
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "Make Payment",
+            onPress: () => {
+              userApprove({
+                variables: {
+                  accessToken: access_token(),
+                  idCrowdFunding: +data.id,
+                },
+              });
+              client.refetchQueries({
+                include: [GET_CROWDFUNDING],
+              });
+              navigation.navigate("LoadingScreen", {
+                title: "Your Payment Has Been Successfully",
+              });
+            },
+          },
+        ]
+      );
     } else {
       Alert.alert(
         "Warning",
         "Your saldo is not enough for make this payment, please top up"
       );
-      //   navigation.navigate("TopUp");
     }
   };
-
-  if (
-    message?.userApproveCrowdFunding.message === "Crowd Funding success to open"
-  ) {
-    Alert.alert("Success", "Crowd Funding success to open");
-    navigation.goBack();
-  }
 
   if (loadingApprove) {
     return (
@@ -92,11 +115,30 @@ export default function ConfirmationSubmit({ route, navigation }) {
             Crowd Funding has been verified by admin
           </Text>
         </View>
+        <View
+          style={[
+            styles.container,
+            { flexDirection: "row", justifyContent: "space-between" },
+          ]}
+        >
+          <Text style={{ fontWeight: "900" }}>Your Balance</Text>
+          <NumberFormat
+            value={userProfile().Balance.amount}
+            displayType="text"
+            thousandSeparator={true}
+            prefix="IDR "
+            renderText={(value) => (
+              <Text style={{ fontWeight: "900" }}>{value}</Text>
+            )}
+          />
+        </View>
         <View style={[styles.container, { flexDirection: "row" }]}>
           <View style={{ flex: 1 }}>
             <Text style={styles.textLeftSide}>Applicant`s Name</Text>
             <Text style={styles.textLeftSide}>Submission Date</Text>
-            <Text style={styles.textLeftSide}>Users Join</Text>
+            <Text style={styles.textLeftSide}>Initial Price</Text>
+            <Text style={styles.textLeftSide}>Final Price</Text>
+            <Text style={styles.textLeftSide}>Target Quantity</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.textRightSide}>
@@ -105,7 +147,25 @@ export default function ConfirmationSubmit({ route, navigation }) {
             <Text style={styles.textRightSide}>
               {moment(data.createdAt).format("dddd Do MMMM YYYY")}
             </Text>
-            <Text style={styles.textRightSide}></Text>
+            <NumberFormat
+              value={data.initialProductPrice}
+              displayType="text"
+              thousandSeparator={true}
+              prefix="IDR "
+              renderText={(value) => (
+                <Text style={styles.textRightSide}>{value}</Text>
+              )}
+            />
+            <NumberFormat
+              value={data.finalProductPrice}
+              displayType="text"
+              thousandSeparator={true}
+              prefix="IDR "
+              renderText={(value) => (
+                <Text style={styles.textRightSide}>{value}</Text>
+              )}
+            />
+            <Text style={styles.textRightSide}>{data.targetQuantity} pcs</Text>
           </View>
         </View>
         <View style={styles.container}>
@@ -137,59 +197,59 @@ export default function ConfirmationSubmit({ route, navigation }) {
             </View>
           </View>
         </View>
-        {data.status !== "Pending" && (
-          <View>
-            <View style={styles.container}>
-              <Text style={styles.headerSection}>Payment Detail</Text>
+        {/* {data.status !== "Pending" && ( */}
+        <View>
+          <View style={styles.container}>
+            <Text style={styles.headerSection}>Payment Detail</Text>
 
-              <View style={{ flexDirection: "row", marginTop: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.textLeftSide}>Product Price</Text>
-                  <Text style={styles.textLeftSide}>Quantity</Text>
-                  <Text
-                    style={
-                      ([styles.textLeftSide],
-                      { fontWeight: "700", marginTop: 10 })
-                    }
-                  >
-                    Total Price
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <NumberFormat
-                    value={data.finalProductPrice}
-                    displayType="text"
-                    thousandSeparator={true}
-                    prefix="IDR "
-                    renderText={(value) => (
-                      <Text style={styles.textRightSide}>{value}</Text>
-                    )}
-                  />
-                  <Text style={styles.textRightSide}>
-                    {data.currentQuantity} pcs
-                  </Text>
-                  <NumberFormat
-                    value={totalPrice}
-                    displayType="text"
-                    thousandSeparator={true}
-                    prefix="IDR "
-                    renderText={(value) => (
-                      <Text
-                        style={{
-                          fontWeight: "700",
-                          marginTop: 10,
-                          textAlign: "right",
-                        }}
-                      >
-                        {value}
-                      </Text>
-                    )}
-                  />
-                </View>
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.textLeftSide}>Product Price</Text>
+                <Text style={styles.textLeftSide}>Quantity</Text>
+                <Text
+                  style={
+                    ([styles.textLeftSide],
+                    { fontWeight: "700", marginTop: 10 })
+                  }
+                >
+                  Total Price
+                </Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <NumberFormat
+                  value={data.finalProductPrice}
+                  displayType="text"
+                  thousandSeparator={true}
+                  prefix="IDR "
+                  renderText={(value) => (
+                    <Text style={styles.textRightSide}>{value}</Text>
+                  )}
+                />
+                <Text style={styles.textRightSide}>
+                  {data.currentQuantity} pcs
+                </Text>
+                <NumberFormat
+                  value={totalPrice}
+                  displayType="text"
+                  thousandSeparator={true}
+                  prefix="IDR "
+                  renderText={(value) => (
+                    <Text
+                      style={{
+                        fontWeight: "700",
+                        marginTop: 10,
+                        textAlign: "right",
+                      }}
+                    >
+                      {value}
+                    </Text>
+                  )}
+                />
               </View>
             </View>
           </View>
-        )}
+        </View>
+        {/* )} */}
       </View>
       <TouchableOpacity onPress={handlePayment}>
         <View

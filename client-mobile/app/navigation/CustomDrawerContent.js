@@ -109,12 +109,13 @@ export default function CustomDrawerContent(props) {
         <DrawerItemList {...props} />
         <DrawerItem
           label="Logout"
-          onPress={async () => {
-            await SecureStore.deleteItemAsync("access_token");
-            props.navigation.replace("Home");
-            userProfile({});
-            access_token("");
-            isLogin(false);
+          onPress={() => {
+            SecureStore.deleteItemAsync("access_token").then(() => {
+              props.navigation.replace("Home");
+              userProfile({});
+              access_token("");
+              isLogin(false);
+            });
           }}
           style={{
             display: isLogin() ? "flex" : "none",

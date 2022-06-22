@@ -68,25 +68,26 @@ beforeAll(async () => {
 describe("Crowdfunding Test", () => {
     it("should return All data Crowdfunding", async () => {
         const res = await request(app).get("/crowdFund").expect(200);
-        expect(res.body).toEqual(expect.any(Array));
+        expect(res.body).toStrictEqual(expect.any(Array));
         expect(res.body[0].id).toBe(1);
-        expect(res.body[0].productName).toEqual("Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots");
+        expect(res.body[0].productName).toBe("Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots");
         expect(res.body[0].UserId).toBe(1);
-        expect(res.body[0].targetQuantity).toEqual(200);
-        expect(res.body[0].initialProductPrice).toEqual(100000);
-        expect(res.body[0].finalProductPrice).toEqual(125000);
-        expect(res.body[0].manufactureName).toEqual('Dongyang Huanyao Industry And Trade Co');
-        expect(res.body[0].linkProduct).toEqual('https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6');
-        expect(res.body[0].status).toEqual("Open");
-        expect(res.body[0].currentQuantity).toEqual(170);
-        expect(res.body[0].startDate).toEqual("2022-06-19T16:14:16.940Z");
-        expect(res.body[0].productImage).toEqual("https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg");
-        expect(res.body[0].initialQuantity).toEqual(100);
-        expect(res.body[0].expiredDay).toEqual(10);
-        expect(res.body[0].hscode).toEqual("62111100");
-        expect(res.body[0].CrowdFundingProducts).toEqual(expect.any(Array));
-        expect(res.body[0].User).toEqual(expect.any(Object));
+        expect(res.body[0].targetQuantity).toBe(200);
+        expect(res.body[0].initialProductPrice).toBe(100000);
+        expect(res.body[0].finalProductPrice).toBe(125000);
+        expect(res.body[0].manufactureName).toBe('Dongyang Huanyao Industry And Trade Co');
+        expect(res.body[0].linkProduct).toBe('https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6');
+        expect(res.body[0].status).toBe("Open");
+        expect(res.body[0].currentQuantity).toBe(170);
+        expect(res.body[0].startDate).toBe("2022-06-19T16:14:16.940Z");
+        expect(res.body[0].productImage).toBe("https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg");
+        expect(res.body[0].initialQuantity).toBe(100);
+        expect(res.body[0].expiredDay).toBe(10);
+        expect(res.body[0].hscode).toBe("62111100");
+        expect(res.body[0].CrowdFundingProducts).toStrictEqual(expect.any(Array));
+        expect(res.body[0].User).toStrictEqual(expect.any(Object));
     });
+    
     it("should return Balance is not enough", async () => {
         const res = await request(app).post("/crowdFund/add")
             .set("access_token", access_token)
@@ -98,8 +99,8 @@ describe("Crowdfunding Test", () => {
                 linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6"
             })
             .expect(400);
-        expect(res.body).toEqual(expect.any(Object));;
-        expect(res.body.message).toEqual('Balance is not enough');
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe('Balance is not enough');
         // expect(res.body[0].productName).toEqual("Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots");
     });
     it("should return Balance is enough", async () => {
@@ -113,15 +114,15 @@ describe("Crowdfunding Test", () => {
                 linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6"
             })
             .expect(201);
-        expect(res.body).toEqual(expect.any(Object));;
-        expect(res.body.message).toEqual('CrowdFunding created');
-        expect(res.body.data.targetQuantity).toEqual(null);
-        expect(res.body.data.finalProductPrice).toEqual(null);
-        expect(res.body.data.currentQuantity).toEqual(null);
-        expect(res.body.data.startDate).toEqual(null);
-        expect(res.body.data.productImage).toEqual(null);
-        expect(res.body.data.expiredDay).toEqual(null);
-        expect(res.body.data.hscode).toEqual(null);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe('CrowdFunding created');
+        expect(res.body.data.targetQuantity).toBe(null);
+        expect(res.body.data.finalProductPrice).toBe(null);
+        expect(res.body.data.currentQuantity).toBe(null);
+        expect(res.body.data.startDate).toBe(null);
+        expect(res.body.data.productImage).toBe(null);
+        expect(res.body.data.expiredDay).toBe(null);
+        expect(res.body.data.hscode).toBe(null);
     });
     it("should return data from get all history", async () => {
         const res = await request(app).get("/crowdFund/all-history-by-user-submit")
@@ -136,8 +137,16 @@ describe("Crowdfunding Test", () => {
             .set("access_token", access_token)
             .expect(200);
         expect(res.body).toStrictEqual(expect.any(Object));;
-        expect(res.body.message).toEqual("Crowd Funding success to open");
+        expect(res.body.message).toBe("Crowd Funding success to open");
     });
+
+    it("should return Error authentication, must login first", async () => {
+        const res = await request(app).patch(`/crowdFund/approve/${1}`)
+            .expect(401);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe("Error authentication, must login first");
+    });
+
     it("should return Crowd Funding verified, waiting approval from User", async () => {
         const res = await request(app).patch(`/crowdFund/verif/${1}`)
             .set("access_token", access_token)
@@ -149,12 +158,12 @@ describe("Crowdfunding Test", () => {
                 linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6",
                 productWeight: 10,
                 productImage: "https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg",
-                hscode: 656534,
+                hscode: "656534",
                 expiredDay: 10
             })
             .expect(200);
         expect(res.body).toStrictEqual(expect.any(Object));;
-        expect(res.body.message).toEqual("Crowd Funding verified, waiting approval from User");
+        expect(res.body.message).toBe("Crowd Funding verified, waiting approval from User");
         expect(res.body.data).toStrictEqual(expect.any(Object));
     });
     it("should return Internal Server Error From Verified Endpoint", async () => {
@@ -162,7 +171,7 @@ describe("Crowdfunding Test", () => {
             .set("access_token", access_token)
             .expect(500);
         expect(res.body).toStrictEqual(expect.any(Object));;
-        expect(res.body.message).toEqual("Internal Server Error");
+        expect(res.body.message).toBe("Internal Server Error");
     });
     it("should return Success Join Crowdfunding", async () => {
         const res = await request(app).post(`/crowdFund/join/${1}`)
@@ -170,10 +179,52 @@ describe("Crowdfunding Test", () => {
         .send({quantityToBuy : 10 , totalPrice : 10000 })
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Object));;
-        expect(res.body.status).toEqual(true);
-        expect(res.body.message).toEqual("success join crowdfunding");
+        expect(res.body.status).toBe(true);
+        expect(res.body.message).toBe("success join crowdfunding");
+    });
+    it("should return data detail by id", async () => {
+        const res = await request(app).get(`/crowdFund/detail/${1}`)
+        .expect(200);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.id).toBe(1);
+        expect(res.body.productName).toBe("Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots");
+        expect(res.body.UserId).toBe(1);
+        expect(res.body.targetQuantity).toBe(100);
+        expect(res.body.finalProductPrice).toBe(137000);
+        expect(res.body.manufactureName).toBe('Dongyang Huanyao Industry And Trade Co');
+        expect(res.body.linkProduct).toBe('https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6');
+        expect(res.body.status).toBe("Pending");
+        expect(res.body.currentQuantity).toBe(30);
+        expect(res.body.startDate).toBe("2022-06-19T16:14:16.940Z");
+        expect(res.body.productImage).toBe("https://s.alicdn.com/@sc04/kf/H8d66d54811d44603a199cfbcf6ac9439r.jpg_960x960.jpg");
+        expect(res.body.expiredDay).toBe(10);
+        expect(res.body.hscode).toBe("656534");
+    });
+
+    it("should return All data From CrowdFunding", async () => {
+        const res = await request(app).get(`/crowdFund/admin?status=Open`)
+        .expect(200);
+        expect(res.body).toStrictEqual(expect.any(Array));;
+    });
+
+    it("should return all data history join login user", async () => {
+        const res = await request(app).get(`/crowdFund/all-history-by-user-join`)
+        .set("access_token", access_token)
+        .expect(200);
+        expect(res.body).toStrictEqual(expect.any(Array));
+        expect(res.body[0]).toStrictEqual(expect.any(Object));
+        expect(res.body[0].CrowdFunding).toStrictEqual(expect.any(Object));
+        expect(res.body[0].User).toStrictEqual(expect.any(Object));
+    });
+    it("should return all data history join login user", async () => {
+        const res = await request(app).get(`/crowdFund/all-history-by-user-join`)
+        .expect(401);
+        expect(res.body).toStrictEqual(expect.any(Object));
+        expect(res.body.message).toBe("Error authentication, must login first");
     });
 })
+
+
 
 afterAll(async () => {
     await User.destroy({

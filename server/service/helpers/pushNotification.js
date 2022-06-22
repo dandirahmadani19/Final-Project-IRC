@@ -19,7 +19,7 @@ const sendPushNotif = (tokens, notifPayload) => {
         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
         tickets.push(...ticketChunk);
       } catch (error) {
-        console.log(error);
+        
       }
     }
   })();

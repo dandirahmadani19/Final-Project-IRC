@@ -17,7 +17,6 @@ import { isLogin } from "../../query/global";
 
 export default function DetailScreen({ route, navigation }) {
   const data = route.params.data;
-  console.log(data);
   const getDaysToGo = () => {
     const endDate = moment(data.startDate)
       .add(data.expiredDay, "days")

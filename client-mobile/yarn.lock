@@ -5853,6 +5853,11 @@
   "resolved" "https://registry.npmjs.org/react-native-form-component/-/react-native-form-component-2.4.0.tgz"
   "version" "2.4.0"
 
+"react-native-format-currency@^0.0.1":
+  "integrity" "sha512-brmNUhQ5To0uV+Ff/d/bLYcwXN9toy9yqUG0ceO1ZLX+iwRrKdrfxX08eufUz08xp7Smjy46IiTXdLFQt52I+Q=="
+  "resolved" "https://registry.npmjs.org/react-native-format-currency/-/react-native-format-currency-0.0.1.tgz"
+  "version" "0.0.1"
+
 "react-native-gesture-handler@>= 1.0.0", "react-native-gesture-handler@~2.2.1":
   "integrity" "sha512-P4kAPbSY8VFAjvFNzfePgFsbZEldfEnEfNqOJw6MlpcdXrPGwRbvMqWMVkA9lifdKTZ3XifvAgJ8+R+uEZN0zA=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.2.1.tgz"

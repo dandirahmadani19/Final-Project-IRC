@@ -3,18 +3,21 @@ import React from "react";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 
-export default function DetailHistorySubmit({ route }) {
+export default function DetailHistoryJoin({ route }) {
   const data = route.params.data;
+  console.log(data);
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.headerSection}>Crowd Funding {data.status}</Text>
+        <Text style={styles.headerSection}>
+          Crowd Funding {data.CrowdFunding.status}
+        </Text>
       </View>
       <View style={[styles.container, { flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.textLeftSide}>Applicant`s Name</Text>
+          <Text style={styles.textLeftSide}>Name</Text>
           <Text style={styles.textLeftSide}>Submission Date</Text>
-          <Text style={styles.textLeftSide}>Users Join</Text>
+          {/* <Text style={styles.textLeftSide}>Users Join</Text> */}
           <Text style={styles.textLeftSide}>Quantity Funded</Text>
           <Text style={styles.textLeftSide}>Total Price Funded</Text>
         </View>
@@ -25,12 +28,17 @@ export default function DetailHistorySubmit({ route }) {
           <Text style={styles.textRightSide}>
             {moment(data.createdAt).format("dddd Do MMMM YYYY")}
           </Text>
-          <Text style={styles.textRightSide}>
+          {/* <Text style={styles.textRightSide}>
             {data.CrowdFundingProducts.length + 1} People
+          </Text> */}
+          <Text style={styles.textRightSide}>
+            {data.CrowdFunding.currentQuantity} Pcs
           </Text>
-          <Text style={styles.textRightSide}>{data.currentQuantity} Pcs</Text>
           <NumberFormat
-            value={data.finalProductPrice * data.currentQuantity}
+            value={
+              data.CrowdFunding.finalProductPrice *
+              data.CrowdFunding.currentQuantity
+            }
             displayType="text"
             thousandSeparator={true}
             prefix="IDR "
@@ -49,7 +57,7 @@ export default function DetailHistorySubmit({ route }) {
           }}
         >
           <Image
-            source={{ uri: data.productImage }}
+            source={{ uri: data.CrowdFunding.productImage }}
             style={{
               width: 80,
               height: 80,
@@ -61,10 +69,10 @@ export default function DetailHistorySubmit({ route }) {
             <Text
               style={{ fontSize: 11, marginBottom: 5, textAlign: "justify" }}
             >
-              {data.productName}
+              {data.CrowdFunding.productName}
             </Text>
             <Text style={{ fontSize: 11, color: "#64748b" }}>
-              {data.initialQuantity} x IDR {data.finalProductPrice}
+              {data.quantityToBuy} x IDR {data.CrowdFunding.finalProductPrice}
             </Text>
           </View>
         </View>
@@ -89,7 +97,7 @@ export default function DetailHistorySubmit({ route }) {
               </View>
               <View style={{ flex: 1 }}>
                 <NumberFormat
-                  value={data.finalProductPrice}
+                  value={data.CrowdFunding.finalProductPrice}
                   displayType="text"
                   thousandSeparator={true}
                   prefix="IDR "
@@ -98,10 +106,12 @@ export default function DetailHistorySubmit({ route }) {
                   )}
                 />
                 <Text style={styles.textRightSide}>
-                  {data.initialQuantity} pcs
+                  {data.quantityToBuy} pcs
                 </Text>
                 <NumberFormat
-                  value={data.finalProductPrice * data.initialQuantity}
+                  value={
+                    data.CrowdFunding.finalProductPrice * data.quantityToBuy
+                  }
                   displayType="text"
                   thousandSeparator={true}
                   prefix="IDR "
