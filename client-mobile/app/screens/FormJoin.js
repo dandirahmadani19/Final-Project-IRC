@@ -4,13 +4,16 @@ import { Form, FormItem } from "react-native-form-component";
 import { useState } from "react";
 import { access_token, userProfile } from "../../query/global";
 import { useMutation, useQuery } from "@apollo/client";
-import { USER_JOIN_CROWDFUNDING } from "../../query/crowdFunding";
+import { HISTORY_JOIN, USER_JOIN_CROWDFUNDING } from "../../query/crowdFunding";
+import client from "../../config/apolloClient";
+import { GET_USER_PROFILE } from "../../query/user";
 
 export default function FormJoin({ route, navigation }) {
   const data = route.params.data;
-  const [userJoinCrowdFunding, { loading, error, data: response }] =
-    useMutation(USER_JOIN_CROWDFUNDING);
-  console.log(data);
+  const { data: dataUserProfile } = useQuery(GET_USER_PROFILE, {
+    variables: { accessToken: access_token() },
+  });
+  const [userJoinCrowdFunding, {}] = useMutation(USER_JOIN_CROWDFUNDING);
 
   const [quantity, setQuantity] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
@@ -18,7 +21,6 @@ export default function FormJoin({ route, navigation }) {
   const handleOnSubmit = () => {
     const totalPrice = data.finalProductPrice * +quantity;
     const saldo = userProfile().Balance?.amount;
-    console.log(saldo);
 
     const maxQuantity = data.targetQuantity - data.currentQuantity;
 
@@ -46,7 +48,14 @@ export default function FormJoin({ route, navigation }) {
                     accessToken: access_token(),
                   },
                 });
-                navigation.navigate("JoinSuccess");
+                client.refetchQueries({
+                  include: [HISTORY_JOIN, GET_USER_PROFILE],
+                });
+
+                userProfile(dataUserProfile.getUserProfile);
+                navigation.navigate("LoadingScreen", {
+                  title: "Your Payment Has Been Successfully",
+                });
               },
             },
           ]

@@ -9,14 +9,24 @@ import {
 import React, { useState } from "react";
 import { Form, FormItem } from "react-native-form-component";
 import { WebView } from "react-native-webview";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GETURL, TOPUPBALANCE } from "../../query/payment";
 import * as SecureStore from "expo-secure-store";
+import client from "../../config/apolloClient";
+import { GET_USER_PROFILE } from "../../query/user";
+import { userProfile, access_token } from "../../query/global";
 
 export default function TopUpBalance({ navigation }) {
   const [amount, setAmount] = useState();
   const [openWebView, setOpenWebView] = useState(false);
   const [url, setUrl] = useState();
+  const {
+    loading: getUserProfileLoading,
+    error: getUserError,
+    data: dataUserProfile,
+  } = useQuery(GET_USER_PROFILE, {
+    variables: { accessToken: access_token() },
+  });
   const [
     geturl,
     { loading: loadingGetUrl, error: errorGetUrl, data: dataGetUrl },
@@ -45,7 +55,6 @@ export default function TopUpBalance({ navigation }) {
 
   const handleWebViewNavigationStateChange = (e) => {
     if (e.url.includes("&status_code=200&transaction_status=capture")) {
-      Alert.alert("Success", "Topup Success");
       SecureStore.getItemAsync("access_token").then((result) => {
         if (result) {
           topup({
@@ -55,7 +64,13 @@ export default function TopUpBalance({ navigation }) {
           });
           setAmount("");
           setOpenWebView(false);
-          navigation.navigate("JoinSuccess");
+          client.refetchQueries({
+            include: [GET_USER_PROFILE],
+          });
+          userProfile(dataUserProfile.getUserProfile);
+          navigation.navigate("LoadingScreen", {
+            title: "Your Payment Has Been Succesfully",
+          });
         }
       });
     }

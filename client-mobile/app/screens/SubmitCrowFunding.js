@@ -8,9 +8,15 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { Form, FormItem } from "react-native-form-component";
-import { SUBMIT_CROWDFUNDING } from "../../query/crowdFunding";
+import {
+  GET_CROWDFUNDING,
+  SUBMIT_CROWDFUNDING,
+  HISTORY_SUBMIT,
+} from "../../query/crowdFunding";
 import { useMutation } from "@apollo/client";
 import * as SecureStore from "expo-secure-store";
+import client from "../../config/apolloClient";
+import { userProfile } from "../../query/global";
 
 export default function SubmitCrowFunding({ navigation }) {
   const [dataSubmit, setDataSubmit] = useState({
@@ -22,7 +28,7 @@ export default function SubmitCrowFunding({ navigation }) {
   });
   const [submitCrowdFunding, { loading, error, data }] =
     useMutation(SUBMIT_CROWDFUNDING);
-  console.log(data);
+
   const handleSubmitCrowdFunding = () => {
     if (
       !dataSubmit.productName ||
@@ -33,36 +39,45 @@ export default function SubmitCrowFunding({ navigation }) {
     ) {
       Alert.alert("Warning", "Please Fill All Field");
     } else {
-      SecureStore.getItemAsync("access_token").then((result) => {
-        if (result) {
-          const newDataSubmit = {
-            initialProductPrice: +dataSubmit.initialProductPrice,
-            initialQuantity: +dataSubmit.initialQuantity,
-            productName: dataSubmit.productName,
-            manufactureName: dataSubmit.manufactureName,
-            linkProduct: dataSubmit.linkProduct,
-            access_token: result,
-          };
+      const minimumBalance =
+        +dataSubmit.initialProductPrice * dataSubmit.initialQuantity * 0.2;
+      if (userProfile().Balance.amount < minimumBalance) {
+        Alert.alert(
+          "Warning",
+          "Minimum balance must be above 20% of the total price"
+        );
+      } else {
+        SecureStore.getItemAsync("access_token").then((result) => {
+          if (result) {
+            const newDataSubmit = {
+              initialProductPrice: +dataSubmit.initialProductPrice,
+              initialQuantity: +dataSubmit.initialQuantity,
+              productName: dataSubmit.productName,
+              manufactureName: dataSubmit.manufactureName,
+              linkProduct: dataSubmit.linkProduct,
+              access_token: result,
+            };
 
-          submitCrowdFunding({
-            variables: { dataSubmitCrowFunding: newDataSubmit },
-          });
-          setDataSubmit({
-            productName: "",
-            initialProductPrice: "",
-            initialQuantity: "",
-            manufactureName: "",
-            linkProduct: "",
-          });
-          if (data) {
-            Alert.alert(
-              "Success",
-              "Your Submission is being accepted and under verification"
-            );
-            navigation.jumpTo("HomeScreen");
+            submitCrowdFunding({
+              variables: { dataSubmitCrowFunding: newDataSubmit },
+            });
+            setDataSubmit({
+              productName: "",
+              initialProductPrice: "",
+              initialQuantity: "",
+              manufactureName: "",
+              linkProduct: "",
+            });
+
+            client.refetchQueries({
+              include: [HISTORY_SUBMIT],
+            });
+            navigation.navigate("LoadingScreen", {
+              title: "Your Submission is being accepted and under verification",
+            });
           }
-        }
-      });
+        });
+      }
     }
   };
 

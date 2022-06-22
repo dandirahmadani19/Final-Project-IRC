@@ -3,8 +3,7 @@ import React from "react";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 
-export default function CardHistoryCrowdFunding({ data, onPress, route }) {
-  console.log(route);
+export default function CardHistoryCrowdFunding({ data, onPress }) {
   const getColorStatus = (status) => {
     switch (status) {
       case "Open":
@@ -89,7 +88,7 @@ export default function CardHistoryCrowdFunding({ data, onPress, route }) {
             <View style={{ marginEnd: 20 }}>
               <Text
                 style={{
-                  fontSize: 10,
+                  fontSize: 12,
                   color: "#94a3b8",
                 }}
               >
@@ -104,7 +103,7 @@ export default function CardHistoryCrowdFunding({ data, onPress, route }) {
                   return (
                     <Text
                       style={{
-                        fontSize: 10,
+                        fontSize: 12,
                       }}
                     >
                       {value ? value : "Under Review"}
@@ -116,7 +115,7 @@ export default function CardHistoryCrowdFunding({ data, onPress, route }) {
             <View>
               <Text
                 style={{
-                  fontSize: 10,
+                  fontSize: 12,
                   color: "#94a3b8",
                 }}
               >
@@ -124,39 +123,14 @@ export default function CardHistoryCrowdFunding({ data, onPress, route }) {
               </Text>
               <Text
                 style={{
-                  fontSize: 10,
+                  fontSize: 12,
                 }}
               >
                 {data.status === "Pending"
-                  ? moment(new Date(data.createdAt)).format("Do MMMM YYYY")
-                  : moment(new Date(data.startDate)).format("Do MMMM YYYY")}
+                  ? moment(data.createdAt).format("Do MMMM YYYY")
+                  : moment(data.startDate).format("Do MMMM YYYY")}
               </Text>
             </View>
-            {/* <View>
-              <Text
-                style={{
-                  fontSize: 10,
-                  color: "#94a3b8",
-                }}
-              >
-                Total Price
-              </Text>
-              <NumberFormat
-                value={data.finalProductPrice * data.initialQuantity}
-                displayType="text"
-                thousandSeparator={true}
-                prefix="IDR "
-                renderText={(value) => (
-                  <Text
-                    style={{
-                      fontSize: 10,
-                    }}
-                  >
-                    {value}
-                  </Text>
-                )}
-              />
-            </View> */}
           </View>
         </View>
         <View

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import React from "react";
 
-export default function LoadingScreen({ navigation }) {
+export default function LoadingScreen({ navigation, route }) {
   setTimeout(() => {
-    navigation.navigate("JoinSuccess");
+    navigation.navigate("JoinSuccess", { title: route.params.title });
   }, 2000);
   return (
     <View
