@@ -1,14 +1,22 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 
-export default function DetailHistorySubmit({ route }) {
+export default function DetailHistorySubmit({ route, navigation }) {
   const data = route.params.data;
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { flexDirection: "row", justifyContent: "space-between" },
+        ]}
+      >
         <Text style={styles.headerSection}>Crowd Funding {data.status}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("TrackingStatus")}>
+          <Text>See Detail</Text>
+        </TouchableOpacity>
       </View>
       <View style={[styles.container, { flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>
