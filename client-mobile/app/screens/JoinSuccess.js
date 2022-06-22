@@ -12,6 +12,7 @@ export default function JoinSuccess({ navigation, route }) {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        padding: 10,
       }}
     >
       <Image
@@ -25,9 +26,10 @@ export default function JoinSuccess({ navigation, route }) {
       />
       <Text
         style={{
-          fontSize: 25,
+          fontSize: 20,
           fontWeight: "900",
           marginVertical: 20,
+          textAlign: "center",
         }}
       >
         {route.params.title}

@@ -54,6 +54,7 @@ export const HISTORY_SUBMIT = gql`
       productName
       targetQuantity
       finalProductPrice
+      initialProductPrice
       status
       currentQuantity
       startDate

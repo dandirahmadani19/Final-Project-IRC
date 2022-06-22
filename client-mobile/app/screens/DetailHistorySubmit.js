@@ -5,21 +5,22 @@ import moment from "moment";
 
 export default function DetailHistorySubmit({ route }) {
   const data = route.params.data;
-  console.log(data);
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.headerSection}>Crowd Funding Success</Text>
+        <Text style={styles.headerSection}>Crowd Funding {data.status}</Text>
       </View>
       <View style={[styles.container, { flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>
           <Text style={styles.textLeftSide}>Applicant`s Name</Text>
           <Text style={styles.textLeftSide}>Submission Date</Text>
           <Text style={styles.textLeftSide}>Users Join</Text>
+          <Text style={styles.textLeftSide}>Quantity Funded</Text>
+          <Text style={styles.textLeftSide}>Total Price Funded</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.textRightSide}>
-            {data.firstName} {data.lastName}
+            {data.User.firstName} {data.User.lastName}
           </Text>
           <Text style={styles.textRightSide}>
             {moment(data.createdAt).format("dddd Do MMMM YYYY")}
@@ -27,6 +28,16 @@ export default function DetailHistorySubmit({ route }) {
           <Text style={styles.textRightSide}>
             {data.CrowdFundingProducts.length + 1} People
           </Text>
+          <Text style={styles.textRightSide}>{data.currentQuantity} Pcs</Text>
+          <NumberFormat
+            value={data.finalProductPrice * data.currentQuantity}
+            displayType="text"
+            thousandSeparator={true}
+            prefix="IDR "
+            renderText={(value) => (
+              <Text style={styles.textRightSide}>{value}</Text>
+            )}
+          />
         </View>
       </View>
       <View style={styles.container}>

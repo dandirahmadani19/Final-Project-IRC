@@ -196,6 +196,7 @@ class CrowdFundingController {
         productName: dataSubmit.productName,
         targetQuantity: dataSubmit.targetQuantity,
         finalProductPrice: dataSubmit.finalProductPrice,
+        initialProductPrice: dataSubmit.initialProductPrice,
         productImage: dataSubmit.productImage,
         currentQuantity: dataSubmit.currentQuantity,
         expiredDay: dataSubmit.expiredDay,
@@ -432,10 +433,7 @@ class CrowdFundingController {
       const dataCF = await CrowdFunding.findOne({
         where: { id },
         attributes: {
-          exclude: [
-            "createdAt",
-            "updatedAt",
-          ],
+          exclude: ["createdAt", "updatedAt"],
         },
       });
       res.status(200).json(dataCF);
@@ -446,11 +444,11 @@ class CrowdFundingController {
 
   static async allCrowdFundAdmin(req, res, next) {
     try {
-      const {status} = req.query
-      console.log(status, "asdasd")
+      const { status } = req.query;
+      console.log(status, "asdasd");
       const listCF = await CrowdFunding.findAll({
-        where:{
-          status : status
+        where: {
+          status: status,
         },
         attributes: {
           exclude: [
@@ -479,6 +477,7 @@ class CrowdFundingController {
           "productName",
           "targetQuantity",
           "finalProductPrice",
+          "initialProductPrice",
           "status",
           "currentQuantity",
           "productImage",

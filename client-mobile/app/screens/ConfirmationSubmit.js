@@ -20,21 +20,31 @@ import { ActivityIndicator } from "react-native";
 import moment from "moment";
 import NumberFormat from "react-number-format";
 import client from "../../config/apolloClient";
+import {
+  formatCurrency,
+  getSupportedCurrencies,
+} from "react-native-format-currency";
 
 export default function ConfirmationSubmit({ route, navigation }) {
   const data = route.params.data;
+  console.log(data);
   const totalPrice = data.currentQuantity * data.finalProductPrice;
   const [
     userApprove,
     { loading: loadingApprove, error: errorAprrove, data: message },
   ] = useMutation(USER_APPROVE_CROWDFUNDING);
 
+  const [valueFormattedWithSymbol] = formatCurrency({
+    amount: totalPrice,
+    code: "IDR",
+  });
+
   const handlePayment = () => {
     const balance = userProfile().Balance?.amount;
     if (balance >= totalPrice) {
       Alert.alert(
-        "Confirmation ?",
-        "Are you sure you want to make payment ? Your balance will be reduced automatically",
+        "Konfirmasi Pembayaran ?",
+        `Saldo anda akan dikurangi sejumlah ${valueFormattedWithSymbol}`,
         [
           {
             text: "Cancel",
@@ -105,11 +115,30 @@ export default function ConfirmationSubmit({ route, navigation }) {
             Crowd Funding has been verified by admin
           </Text>
         </View>
+        <View
+          style={[
+            styles.container,
+            { flexDirection: "row", justifyContent: "space-between" },
+          ]}
+        >
+          <Text style={{ fontWeight: "900" }}>Your Balance</Text>
+          <NumberFormat
+            value={userProfile().Balance.amount}
+            displayType="text"
+            thousandSeparator={true}
+            prefix="IDR "
+            renderText={(value) => (
+              <Text style={{ fontWeight: "900" }}>{value}</Text>
+            )}
+          />
+        </View>
         <View style={[styles.container, { flexDirection: "row" }]}>
           <View style={{ flex: 1 }}>
             <Text style={styles.textLeftSide}>Applicant`s Name</Text>
             <Text style={styles.textLeftSide}>Submission Date</Text>
-            <Text style={styles.textLeftSide}>Users Join</Text>
+            <Text style={styles.textLeftSide}>Initial Price</Text>
+            <Text style={styles.textLeftSide}>Final Price</Text>
+            <Text style={styles.textLeftSide}>Target Quantity</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.textRightSide}>
@@ -118,7 +147,25 @@ export default function ConfirmationSubmit({ route, navigation }) {
             <Text style={styles.textRightSide}>
               {moment(data.createdAt).format("dddd Do MMMM YYYY")}
             </Text>
-            <Text style={styles.textRightSide}></Text>
+            <NumberFormat
+              value={data.initialProductPrice}
+              displayType="text"
+              thousandSeparator={true}
+              prefix="IDR "
+              renderText={(value) => (
+                <Text style={styles.textRightSide}>{value}</Text>
+              )}
+            />
+            <NumberFormat
+              value={data.finalProductPrice}
+              displayType="text"
+              thousandSeparator={true}
+              prefix="IDR "
+              renderText={(value) => (
+                <Text style={styles.textRightSide}>{value}</Text>
+              )}
+            />
+            <Text style={styles.textRightSide}>{data.targetQuantity} pcs</Text>
           </View>
         </View>
         <View style={styles.container}>

@@ -99,7 +99,7 @@ const HomeScreen = ({ navigation }) => {
     setRefreshing(true);
     wait(2000).then(() => {
       client.refetchQueries({
-        include: [GET_CROWDFUNDING],
+        include: [GET_CROWDFUNDING, GET_USER_PROFILE],
       });
       setRefreshing(false);
     });

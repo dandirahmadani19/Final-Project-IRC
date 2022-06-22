@@ -9,13 +9,17 @@ export default function DetailHistoryJoin({ route }) {
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.headerSection}>Crowd Funding Success</Text>
+        <Text style={styles.headerSection}>
+          Crowd Funding {data.CrowdFunding.status}
+        </Text>
       </View>
       <View style={[styles.container, { flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>
           <Text style={styles.textLeftSide}>Name</Text>
           <Text style={styles.textLeftSide}>Submission Date</Text>
           {/* <Text style={styles.textLeftSide}>Users Join</Text> */}
+          <Text style={styles.textLeftSide}>Quantity Funded</Text>
+          <Text style={styles.textLeftSide}>Total Price Funded</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.textRightSide}>
@@ -27,6 +31,21 @@ export default function DetailHistoryJoin({ route }) {
           {/* <Text style={styles.textRightSide}>
             {data.CrowdFundingProducts.length + 1} People
           </Text> */}
+          <Text style={styles.textRightSide}>
+            {data.CrowdFunding.currentQuantity} Pcs
+          </Text>
+          <NumberFormat
+            value={
+              data.CrowdFunding.finalProductPrice *
+              data.CrowdFunding.currentQuantity
+            }
+            displayType="text"
+            thousandSeparator={true}
+            prefix="IDR "
+            renderText={(value) => (
+              <Text style={styles.textRightSide}>{value}</Text>
+            )}
+          />
         </View>
       </View>
       <View style={styles.container}>
