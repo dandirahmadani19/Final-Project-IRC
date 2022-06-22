@@ -14,7 +14,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
 import { isLogin, access_token, userProfile } from "../../query/global";
 import { useQuery, useMutation } from "@apollo/client";
-import { CHECK_BALANCE, GET_CROWDFUNDING } from "../../query/crowdFunding";
+import {
+  CHECK_BALANCE,
+  GET_CROWDFUNDING,
+  HISTORY_SUBMIT,
+} from "../../query/crowdFunding";
 import client from "../../config/apolloClient";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
@@ -42,8 +46,14 @@ const HomeScreen = ({ navigation }) => {
   } = useQuery(GET_USER_PROFILE, {
     variables: { accessToken: access_token() },
   });
-  const [postToken, {}] = useMutation(POST_EXPO_TOKEN);
-  if (dataUserProfile) {
+  const { loading, error, data } = useQuery(GET_CROWDFUNDING);
+  console.log(error);
+  const [
+    postToken,
+    { loading: loadingPostToken, error: errorPostToken, data: dataPostToken },
+  ] = useMutation(POST_EXPO_TOKEN);
+
+  if (dataUserProfile && isLogin()) {
     userProfile(dataUserProfile.getUserProfile);
   }
   const [notification, setNotification] = useState(false);
@@ -89,17 +99,13 @@ const HomeScreen = ({ navigation }) => {
     setRefreshing(true);
     wait(2000).then(() => {
       client.refetchQueries({
-        include: "active",
+        include: [GET_CROWDFUNDING, GET_USER_PROFILE],
       });
-      // client.refetchQueries({
-      //   include: [CHECK_BALANCE],
-      // });
       setRefreshing(false);
     });
   }, []);
-  const { loading, error, data } = useQuery(GET_CROWDFUNDING);
 
-  if (loading)
+  if (loading && !data)
     return (
       <View
         style={{
@@ -113,7 +119,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
     );
 
-  const DATA = data.getCrowdFunding;
+  const DATA = data?.getCrowdFunding;
 
   const handleOnPress = (id, data) => {
     navigation.navigate("Detail", { id, data });

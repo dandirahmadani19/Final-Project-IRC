@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   FlatList,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 
 import React from "react";
@@ -13,8 +14,25 @@ import { useQuery } from "@apollo/client";
 import { HISTORY_JOIN } from "../../query/crowdFunding";
 import { access_token } from "../../query/global";
 import CardHistoryJoin from "../components/CardHistoryJoin";
+import client from "../../config/apolloClient";
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 export default function HistoryJoin({ navigation }) {
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => {
+      client.refetchQueries({
+        include: [HISTORY_JOIN],
+      });
+      setRefreshing(false);
+    });
+  }, []);
+
   const { loading, error, data } = useQuery(HISTORY_JOIN, {
     variables: { accessToken: access_token() },
   });
@@ -50,6 +68,9 @@ export default function HistoryJoin({ navigation }) {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </SafeAreaView>
   );

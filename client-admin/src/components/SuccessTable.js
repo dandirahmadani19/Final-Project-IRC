@@ -2,12 +2,13 @@ import TableRow from "./TableRow";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState,us } from "react";
 import { fetchCrowdFundings } from "../store/actions/crowdFundAction";
-export default function Table() {
+import SuccessTrow from "./SuccessTrow";
+export default function SuccessTable() {
   const [localCf, setLocalCf] = useState([])
   const dispatch = useDispatch()
   const cfStore = useSelector((state)=> state.crowdfunding.crowdFunds)
   useEffect(()=>{
-    dispatch(fetchCrowdFundings("Pending"))
+    dispatch(fetchCrowdFundings("Success"))
   },[])
 
   useEffect(()=>{
@@ -51,7 +52,7 @@ export default function Table() {
       <tbody>
         {/* <TableRow/> */}
         {localCf.map((el, i) => {
-          return <TableRow cf={el} index={i + 1} key={el.id} />;
+          return <SuccessTrow cf={el} index={i + 1} key={el.id} />;
         })}
       </tbody>
     </table>

@@ -1,14 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import React from "react";
+import client from "../../config/apolloClient";
 
-export default function JoinSuccess({ navigation }) {
-  console.log(navigation);
+export default function JoinSuccess({ navigation, route }) {
+  client.refetchQueries({
+    include: "active",
+  });
   return (
     <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        padding: 10,
       }}
     >
       <Image
@@ -22,14 +26,15 @@ export default function JoinSuccess({ navigation }) {
       />
       <Text
         style={{
-          fontSize: 25,
+          fontSize: 20,
           fontWeight: "900",
           marginVertical: 20,
+          textAlign: "center",
         }}
       >
-        Your Payment Has Been Successfully
+        {route.params.title}
       </Text>
-      <TouchableOpacity onPress={() => navigation.popToTop()}>
+      <TouchableOpacity onPress={() => navigation.replace("Home")}>
         <View
           style={{
             paddingHorizontal: 20,
