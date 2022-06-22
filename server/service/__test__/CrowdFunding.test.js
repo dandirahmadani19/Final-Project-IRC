@@ -245,6 +245,12 @@ describe("Crowdfunding Test", () => {
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Array));;
     });
+    it("should return success deny crowdfunding", async () => {
+        const res = await request(app).patch(`/crowdFund/deny/${1}`)
+        .expect(200);
+        expect(res.body).toStrictEqual(expect.any(Object));
+        expect(res.body.message).toBe("success deny crowdfunding");
+    });
 
     it("should return all data history join login user", async () => {
         const res = await request(app).get(`/crowdFund/all-history-by-user-join`)
