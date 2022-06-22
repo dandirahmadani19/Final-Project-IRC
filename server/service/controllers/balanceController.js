@@ -35,6 +35,7 @@ class BalanceController {
       res.status(500).json(error);
     }
   }
+  
   static async refundBalance(req, res) {
     const t = await sequelize.transaction();
     try {
@@ -79,7 +80,6 @@ class BalanceController {
 
       const amountJoinCF = failedCF.dataValues.CrowdFundingProducts.map((e) => e.totalPrice);
 
-      console.log(userJoinCF, amountJoinCF);
       const preBalance = await Balance.findAll(
         {
           where: { id: userJoinCF },
@@ -92,11 +92,10 @@ class BalanceController {
       const pascaAmountJoinCF = preBalance.map(
         (e, i) => e.dataValues.amount + amountJoinCF[i]
       );
-      console.log(pascaAmountJoinCF);
 
       for (let i = 0; i < userJoinCF.length; i++) {
         await Balance.update(
-          { amount: preAmountJoinCF[i] },
+          { amount: pascaAmountJoinCF[i] },
           { where: { UserId: userJoinCF[i] } },
           { transaction: t }
         );
@@ -118,7 +117,6 @@ class BalanceController {
         message: "Successfully refund balance to each user",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json(error);
       t.rollback();
     }

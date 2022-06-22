@@ -261,6 +261,28 @@ describe("Crowdfunding Test", () => {
         expect(res.body).toStrictEqual(expect.any(Object));
         expect(res.body.message).toBe("Error authentication, must login first");
     });
+
+    it("should return Successfully refund balance to each user", async () => {
+        const res = await request(app).get(`/balance/refund/${1}`)
+        .expect(200);
+        expect(res.body).toEqual(expect.any(Object));
+        expect(res.body.message).toEqual("Successfully refund balance to each user");
+    });
+
+    it('Should handle error when hit findOne', async () => {
+        jest.spyOn(CrowdFunding, 'findOne').mockRejectedValue('Internal Server Error')
+        jest.spyOn(Balance, 'findAll').mockRejectedValue('Internal Server Error')
+        jest.spyOn(Balance, 'update').mockRejectedValue('Internal Server Error')
+        return request(app)
+          .get(`/balance/refund/1`)
+          .then((res) => {
+            expect(res.status).toBe(500)
+            expect(res.text).toBe('Internal Server Error')
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      })
 })
 
 

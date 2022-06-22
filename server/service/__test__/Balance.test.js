@@ -60,6 +60,7 @@ describe("Balance Test", () => {
         .expect(200);
         expect(res.body).toEqual(expect.any(Array));
     });
+    
 })
 
 afterAll(async () => {
