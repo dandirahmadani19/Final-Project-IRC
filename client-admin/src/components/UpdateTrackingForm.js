@@ -66,11 +66,12 @@ export default function UpdateTrackingForm() {
   },[])
 
   useEffect(()=>{
+    //console.log(tracking, "ererer")
     setTrackingStat(tracking)
-    const {status, description} = trackingStat
+    //console.log(trackingStat,"asderrr")
     setFormData({
-      status : status? status:"",
-      description: description? description:""
+      status : tracking? tracking.status:"",
+      description: tracking? tracking.description:""
     })
   },[tracking])
   return (
@@ -92,7 +93,7 @@ export default function UpdateTrackingForm() {
             type="text"
             class="border border-grey-light w-full p-1 rounded mb-4 flex justify-center"
           >
-            <p>current status : {trackingStat.status? trackingStat.status : "unnassigned"}</p>
+            <p>current status : { trackingStat? trackingStat.status : "unassigned" }</p>
 
           </div>
           <select
@@ -102,10 +103,10 @@ export default function UpdateTrackingForm() {
             onChange={(event) => changeVal(event)}
           >
             <option selected>Tracking Status</option>
-              <option value={"on Delivery"}>on process</option>
-              <option value={"on Delivery"}>on shipping</option>
-              <option value={"on Delivery"}>arrived</option>
-              <option value={"on Delivery"}>on delivery</option>
+              <option value={"onProcess"}>on process</option>
+              <option value={"onShipping"}>on shipping</option>
+              <option value={"arrived"}>arrived</option>
+              <option value={"onDelivery"}>on delivery</option>
           </select>
           <textarea
             type="text"
