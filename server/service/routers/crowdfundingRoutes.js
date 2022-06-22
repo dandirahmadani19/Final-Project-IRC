@@ -14,6 +14,7 @@ routesCrowdFunding.get("/all-history-by-user-join",authentication,Controller.get
 
 routesCrowdFunding.patch("/verif/:id", Controller.verifCrowdFunding); //test
 routesCrowdFunding.patch("/approve/:id",authentication,Controller.approvalCrowdFunding);  //test
+routesCrowdFunding.patch("/deny/:id",Controller.denyCrowdFunding); //test
 routesCrowdFunding.get("/detail/:id", Controller.detailCrowdFund ); //  test
 routesCrowdFunding.post("/join/:id",authentication,Controller.joincrowdfunding); //test
 

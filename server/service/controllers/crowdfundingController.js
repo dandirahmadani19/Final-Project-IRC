@@ -235,8 +235,8 @@ class CrowdFundingController {
         message: "Crowd Funding success to open",
       });
     } catch (error) {
-      await t.rollback();
       next(error);
+      await t.rollback();
     }
   }
 
@@ -426,14 +426,13 @@ class CrowdFundingController {
       });
       res.status(200).json(dataCF);
     } catch (error) {
-      next(error);
+     
     }
   }
 
   static async allCrowdFundAdmin(req, res, next) {
     try {
       const { status } = req.query;
-      console.log(status, "asdasd");
       const listCF = await CrowdFunding.findAll({
         /*         where:{
           status : status
@@ -448,8 +447,9 @@ class CrowdFundingController {
         },
       });
       res.status(200).json(listCF);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      console.log(err, "<<<<<<<<<<<<<<<<<<khgisdhafghsdk");
+      next(err)
     }
   }
 
@@ -539,6 +539,23 @@ class CrowdFundingController {
       // });
 
       res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async denyCrowdFunding(req, res, next) {
+    try {
+      const id = req.params.id;
+      const data = await CrowdFunding.update({
+        status: "Deny",
+      },
+      {
+      where : {id},
+      returning: true});
+        
+      res.status(200).json({
+        message : "success deny crowdfunding",
+      });
     } catch (error) {
       next(error);
     }

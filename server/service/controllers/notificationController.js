@@ -9,7 +9,6 @@ class NotificationController {
 
       res.status(201).json(respon)
     } catch (err) {
-      next(err)
     }
   }
 

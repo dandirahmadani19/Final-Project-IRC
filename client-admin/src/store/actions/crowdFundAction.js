@@ -57,7 +57,6 @@ export function fetchCFtrackingStatusById(id) {
     fetch(api + `status-tracking/` + id)
       .then((res) => {
         return res.json();
-      })
       .then((data) => {
         const sortTrackingStatus = data.data.sort(
           (b, a) => b.createdAt - a.createdAt
@@ -92,6 +91,12 @@ export function updateStatus(data) {
       body: JSON.stringify(data),
     });
   };
+}
+
+export function refundDeposit(id){
+  return(dispatch, getState) => {
+    
+  }
 }
 
 export function rejectCrowdFund() {
