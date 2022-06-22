@@ -5,14 +5,6 @@ const errorsHandler = (err, req, res, next) => {
       code = 400;
       msg = err.errors.map((e) => e.message).join(', ');
       break;
-    case "SequelizeUniqueConstraintError":
-      code = 400;
-      msg = "Email has been registered";
-      break;
-    case "QTY_EXCEEDED":
-      code = 400;
-      msg = "QTY_EXCEEDED";
-      break;
     case "EMAIL_ALREADY_EXIST":
       code = 400;
       msg = "Email has been registered";

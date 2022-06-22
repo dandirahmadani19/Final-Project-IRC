@@ -7,7 +7,6 @@ class BalanceController {
       const balance = await Balance.findAll();
       res.status(200).json(balance);
     } catch (error) {
-      console.log(error);
       res.status(500).json(error);
     }
   }

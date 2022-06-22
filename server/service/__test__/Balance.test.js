@@ -49,6 +49,12 @@ describe("Balance Test", () => {
         expect(res.body).toEqual(expect.any(Object));
         expect(res.body.isEnough).toBe(false);
     });
+    it("should return Error authentication", async () => {
+        const res = await request(app).get(`/balance/check-balance/${1200000}`)
+        .expect(401);
+        expect(res.body).toEqual(expect.any(Object));
+        expect(res.body.message).toBe("Error authentication, must login first");
+    });
     it("should return All data balance", async () => {
         const res = await request(app).get(`/balance`)
         .expect(200);
