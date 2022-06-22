@@ -3,7 +3,7 @@ const {
   CrowdFunding,
   User,
   CrowdFundingProduct,
-} = require('../models');
+} = require("../models");
 
 class ControllerStatusTracking {
   static async postStatusTracking(req, res, next) {
@@ -15,7 +15,7 @@ class ControllerStatusTracking {
         description,
       });
       res.status(201).json({
-        message: 'Status Tracking created successfully',
+        message: "Status Tracking created successfully",
         data: newStatus,
       });
     } catch (error) {
@@ -28,7 +28,7 @@ class ControllerStatusTracking {
     try {
       const allStatus = await StatusTracking.findAll();
       res.status(200).json({
-        message: 'All Status Tracking',
+        message: "All Status Tracking",
         data: allStatus,
       });
     } catch (error) {
@@ -43,9 +43,10 @@ class ControllerStatusTracking {
         where: {
           CrowdFundingId: id,
         },
+        order: [["createdAt", "ASC"]],
       });
       res.status(200).json({
-        message: 'Status Tracking',
+        message: "Status Tracking",
         data: status,
       });
     } catch (error) {
@@ -64,11 +65,11 @@ class ControllerStatusTracking {
         include: [
           {
             model: CrowdFunding,
-            attributes: ['id'],
+            attributes: ["id"],
             include: [
               {
                 model: User,
-                attributes: ['id'],
+                attributes: ["id"],
               },
             ],
           },
@@ -76,23 +77,23 @@ class ControllerStatusTracking {
       });
 
       const statusParticipant = await StatusTracking.findAll({
-        attributes: ['id'],
+        attributes: ["id"],
         where: {
           CrowdFundingId: id,
         },
         include: [
           {
             model: CrowdFunding,
-            attributes: ['id'],
+            attributes: ["id"],
             include: [
               {
                 model: CrowdFundingProduct,
-                attributes: ['id'],
+                attributes: ["id"],
                 where: { CrowdFundingId: id },
                 include: [
                   {
                     model: User,
-                    attributes: ['id'],
+                    attributes: ["id"],
                   },
                 ],
               },
@@ -112,7 +113,7 @@ class ControllerStatusTracking {
       //   console.log(getAllUserIdParticipant);
 
       res.status(200).json({
-        message: 'All Status Tracking',
+        message: "All Status Tracking",
         data: allUserId,
       });
     } catch (error) {

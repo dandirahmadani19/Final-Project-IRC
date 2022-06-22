@@ -1,23 +1,34 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 
-export default function DetailHistoryJoin({ route }) {
+export default function DetailHistoryJoin({ route, navigation }) {
   const data = route.params.data;
   console.log(data);
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { flexDirection: "row", justifyContent: "space-between" },
+        ]}
+      >
         <Text style={styles.headerSection}>
           Crowd Funding {data.CrowdFunding.status}
         </Text>
+        {data.CrowdFunding.status === "Success" && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("TrackingStatus")}
+          >
+            <Text>See Detail</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={[styles.container, { flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>
           <Text style={styles.textLeftSide}>Name</Text>
           <Text style={styles.textLeftSide}>Submission Date</Text>
-          {/* <Text style={styles.textLeftSide}>Users Join</Text> */}
           <Text style={styles.textLeftSide}>Quantity Funded</Text>
           <Text style={styles.textLeftSide}>Total Price Funded</Text>
         </View>
@@ -28,9 +39,6 @@ export default function DetailHistoryJoin({ route }) {
           <Text style={styles.textRightSide}>
             {moment(data.createdAt).format("dddd Do MMMM YYYY")}
           </Text>
-          {/* <Text style={styles.textRightSide}>
-            {data.CrowdFundingProducts.length + 1} People
-          </Text> */}
           <Text style={styles.textRightSide}>
             {data.CrowdFunding.currentQuantity} Pcs
           </Text>

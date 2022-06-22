@@ -13,6 +13,6 @@ router.use("/payment", payment);
 router.use("/crowdFund", crowdfund);
 router.use("/notification", notif);
 router.use("/balance", balance);
-router.use("/status", track);
+router.use("/status-tracking", track);
 
 module.exports = router;
