@@ -17,6 +17,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   CHECK_BALANCE,
   GET_CROWDFUNDING,
+  HISTORY_JOIN,
   HISTORY_SUBMIT,
 } from "../../query/crowdFunding";
 import client from "../../config/apolloClient";
@@ -81,6 +82,9 @@ const HomeScreen = ({ navigation }) => {
         const { screen, data } = response.notification.request.content.data;
 
         if (screen) {
+          client.refetchQueries({
+            include: [HISTORY_SUBMIT, HISTORY_JOIN],
+          });
           navigation.navigate(screen, { data });
         }
       });

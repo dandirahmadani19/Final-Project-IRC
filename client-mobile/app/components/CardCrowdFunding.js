@@ -246,7 +246,9 @@ export default function CardCrowdFunding({ data, onPress }) {
                   marginBottom: 5,
                 }}
               >
-                {isEndDate() ? "Has Finished " : "Will End "}
+                {data.status === "Success" || data.status === "Failed"
+                  ? "Has Finished "
+                  : "Will End "}
               </Text>
               <View
                 style={{
@@ -263,7 +265,9 @@ export default function CardCrowdFunding({ data, onPress }) {
                     marginEnd: 5,
                   }}
                 >
-                  {getDaysToGo()}
+                  {data.status === "Success" || data.status === "Failed"
+                    ? moment(data.updatedAt).endOf("hour").fromNow()
+                    : getDaysToGo()}
                 </Text>
               </View>
             </View>

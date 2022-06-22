@@ -31,7 +31,7 @@ class ControllerStatusTracking {
         data: allStatus,
       });
     } catch (error) {
-      // next(error);
+      next(error);
     }
   }
 
@@ -42,7 +42,7 @@ class ControllerStatusTracking {
         where: {
           CrowdFundingId: id,
         },
-        order: [["createdAt", "ASC"]],
+        order: [["createdAt", "desc"]],
       });
       res.status(200).json({
         message: "Status Tracking",

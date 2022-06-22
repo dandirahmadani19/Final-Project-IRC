@@ -5,7 +5,6 @@ import moment from "moment";
 
 export default function DetailHistoryJoin({ route, navigation }) {
   const data = route.params.data;
-  console.log(data);
   return (
     <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View
@@ -19,7 +18,11 @@ export default function DetailHistoryJoin({ route, navigation }) {
         </Text>
         {data.CrowdFunding.status === "Success" && (
           <TouchableOpacity
-            onPress={() => navigation.navigate("TrackingStatus")}
+            onPress={() =>
+              navigation.navigate("TrackingStatus", {
+                id: data.CrowdFunding.id,
+              })
+            }
           >
             <Text>See Detail</Text>
           </TouchableOpacity>

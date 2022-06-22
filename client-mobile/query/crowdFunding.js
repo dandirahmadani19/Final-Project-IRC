@@ -14,6 +14,7 @@ export const GET_CROWDFUNDING = gql`
       status
       currentQuantity
       startDate
+      updatedAt
       productImage
       initialQuantity
       expiredDay
@@ -142,6 +143,37 @@ export const HISTORY_JOIN = gql`
         firstName
         lastName
       }
+    }
+  }
+`;
+
+export const GET_STATUS_TRACKING = gql`
+  query GetStatusTracking($idCrowdFunding: Int) {
+    getStatusTracking(idCrowdFunding: $idCrowdFunding) {
+      id
+      status
+      description
+      createdAt
+      message
+    }
+  }
+`;
+
+export const DENY_CROWDFUNDING = gql`
+  mutation UserJoinCrowdFunding(
+    $accessToken: String
+    $totalPrice: Int
+    $quantityToBuy: Int
+    $idCrowdFunding: Int
+  ) {
+    userJoinCrowdFunding(
+      access_token: $accessToken
+      totalPrice: $totalPrice
+      quantityToBuy: $quantityToBuy
+      idCrowdFunding: $idCrowdFunding
+    ) {
+      message
+      status
     }
   }
 `;
