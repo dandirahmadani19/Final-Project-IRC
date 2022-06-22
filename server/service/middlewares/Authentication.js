@@ -7,7 +7,7 @@ const authentication = async (req, res, next) => {
     const payload = payloadReaderFromToken(access_token);
     const findTheUser = await User.findByPk(payload.id);
     if (!findTheUser) {
-      throw { name: "Unauthorized" };
+      throw { name: "USER_NOT_FOUND" };
     } else {
       req.loginfo = {
         id: findTheUser.id,

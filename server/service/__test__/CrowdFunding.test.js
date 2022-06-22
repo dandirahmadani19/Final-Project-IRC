@@ -277,7 +277,7 @@ describe("Crowdfunding Test", () => {
           .get(`/balance/refund/1`)
           .then((res) => {
             expect(res.status).toBe(500)
-            expect(res.text).toBe('Internal Server Error')
+            expect(res.body).toBe('Internal Server Error')
           })
           .catch((err) => {
             console.log(err)

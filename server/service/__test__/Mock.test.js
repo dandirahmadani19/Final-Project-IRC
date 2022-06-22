@@ -1,4 +1,4 @@
-const { Balance, User, CrowdFunding } = require('../models')
+const { Balance, User, CrowdFunding, CrowdFundingProduct } = require('../models')
 const app = require('../app')
 const request = require('supertest')
 const { tokenMakerFromPayload } = require("../helpers/helperJwt");
@@ -20,6 +20,14 @@ beforeAll(async () => {
             password: passwordEncryptor('123456'),
             phoneNumber: '081234567890',
             address: 'Jl. Kebon Kacang',
+        },
+        {
+            firstName: 'jojo',
+            lastName: 'Doe',
+            email: 'jojo@mail.com',
+            password: passwordEncryptor('123456'),
+            phoneNumber: '0812344567890',
+            address: 'Jl. Kebon Kacang Sebelah',
         }
     ])
     await Balance.bulkCreate([
@@ -50,7 +58,17 @@ beforeAll(async () => {
             createdAt: "2022-06-18T16:14:16.940Z",
             updatedAt: "2022-06-18T16:14:16.940Z",
         }
+        
 
+    ])
+    await CrowdFundingProduct.bulkCreate([
+        {
+            CrowdFundingId: 1,
+            UserId: 2,
+            quantityToBuy : 10,
+            totalPrice : 40000,
+            paymentStatus : "Paid",
+        }
     ])
     access_token = tokenMakerFromPayload({
         id: 1,
@@ -69,7 +87,7 @@ describe("Balance End Point Test", () => {
             .get('/balance')
             .then((res) => {
                 expect(res.status).toBe(500)
-                expect(res.text).toBe('Internal Server Error')
+                expect(res.body).toBe('Internal Server Error')
             })
             .catch((err) => {
                 console.log(err)
@@ -82,7 +100,7 @@ describe("Balance End Point Test", () => {
             .set("access_token", access_token)
             .then((res) => {
                 expect(res.status).toBe(500)
-                expect(res.text).toBe('Internal Server Error')
+                expect(res.body).toBe('Internal Server Error')
             })
             .catch((err) => {
                 console.log(err)
@@ -102,7 +120,7 @@ describe("Balance End Point Test", () => {
             })
             .then((res) => {
                 expect(res.status).toBe(500)
-                expect(res.text).tobe("error")
+                expect(res.body.error).tobe("error")
             })
             .catch((err) => {
                 console.log(err)
@@ -111,6 +129,75 @@ describe("Balance End Point Test", () => {
 
 })
 
+describe("Crowd Funding End Point Test", () => {
+    it('Should handle error when hit findOne', async () => {
+        jest.spyOn(CrowdFunding, 'findAll').mockRejectedValue('Internal Server Error')
+        return request(app)
+            .get("/crowdFund/admin")
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body.message).toBe('Internal Server Error')  
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+
+    it('Should handle error when hit findOne', async () => {
+        jest.spyOn(CrowdFunding, 'findOne').mockRejectedValue('Internal Server Error')
+        return request(app)
+            .patch("/crowdFund/approve/1")
+            .set("access_token", access_token)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body.message).toBe('Internal Server Error')  
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+    it('Should handle error when hit findOne', async () => {
+        jest.spyOn(CrowdFundingProduct, 'findOne').mockRejectedValue('Internal Server Error')
+        return request(app)
+            .post("/crowdFund/join/1")
+            .set("access_token", access_token)
+            .send({quantityToBuy : 10 , totalPrice : 10000 })
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body.message).toBe('Internal Server Error')  
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+    it('Should handle error when hit findAll', async () => {
+        jest.spyOn(CrowdFundingProduct, 'findAll').mockRejectedValue('Internal Server Error')
+        return request(app)
+            .get("/crowdFund/all-history-by-user-join")
+            .set("access_token", access_token)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body.message).toBe('Internal Server Error')  
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+    it('Should handle error when hit findAll', async () => {
+        jest.spyOn(CrowdFunding, 'findAll').mockRejectedValue('Internal Server Error')
+        return request(app)
+            .get("/crowdFund/all-history-by-user-submit")
+            .set("access_token", access_token)
+            .then((res) => {
+                expect(res.status).toBe(500)
+                expect(res.body.message).toBe('Internal Server Error')  
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
+    
+})
 
 afterAll(async () => {
     await User.destroy({
@@ -124,6 +211,11 @@ afterAll(async () => {
         restartIdentity: true
     })
     await Balance.destroy({
+        truncate: true,
+        cascade: true,
+        restartIdentity: true
+    })
+    await CrowdFundingProduct.destroy({
         truncate: true,
         cascade: true,
         restartIdentity: true

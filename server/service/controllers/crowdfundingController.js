@@ -234,8 +234,8 @@ class CrowdFundingController {
         message: "Crowd Funding success to open",
       });
     } catch (error) {
-      await t.rollback();
       next(error);
+      await t.rollback();
     }
   }
 
@@ -397,7 +397,7 @@ class CrowdFundingController {
       });
       res.status(200).json(dataCF);
     } catch (error) {
-      next(error);
+     
     }
   }
 
@@ -418,8 +418,9 @@ class CrowdFundingController {
         },
       });
       res.status(200).json(listCF);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      console.log(err, "<<<<<<<<<<<<<<<<<<khgisdhafghsdk");
+      next(err)
     }
   }
 

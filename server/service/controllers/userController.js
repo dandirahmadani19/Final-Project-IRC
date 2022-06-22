@@ -173,7 +173,7 @@ class UserController {
       });
       res.status(200).json(user);
     } catch (error) {
-      next(error);
+      // next(error);
     }
   }
 }
