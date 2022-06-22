@@ -35,6 +35,7 @@ export default function UpdateTrackingForm() {
     
     dispatch(updateStatus(payload))
       .then((res)=>{
+        console.log(res, "ini dari form")
         return res.json()
       })
       .then((data)=>{
@@ -53,7 +54,7 @@ export default function UpdateTrackingForm() {
 
   function goBack(e){
     e.preventDefault()
-    navigate('/on-progress')
+    navigate('/')
   }
 
   function handleReject(e){

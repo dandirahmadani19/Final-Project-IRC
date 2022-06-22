@@ -56,6 +56,7 @@ export function fetchCFtrackingStatusById(id) {
   return (dispatch, getState) => {
     fetch(api+`status/`+id)
       .then((res)=>{
+        console.log(res)
         return res.json()
       })
       .then((data)=>{
