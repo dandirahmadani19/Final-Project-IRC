@@ -137,7 +137,6 @@ class BalanceController {
         message: "Successfully refund balance to each user",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json(error);
       t.rollback();
     }

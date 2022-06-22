@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import {
   MaterialCommunityIcons,
@@ -38,8 +45,14 @@ export default function TrackingStatus({ route }) {
     );
   }
 
+  const check = (status) => {
+    return trackStatus.some((e) => {
+      return e.status === status;
+    });
+  };
+
   return (
-    <View style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
+    <ScrollView style={{ backgroundColor: "#e2e8f0", flex: 1 }}>
       <View
         style={{
           paddingHorizontal: "15%",
@@ -51,10 +64,7 @@ export default function TrackingStatus({ route }) {
         <View
           style={{
             borderBottomWidth: 2,
-            borderBottomColor:
-              trackStatus[trackStatus.length - 1].status === "On Shipping"
-                ? "green"
-                : "#94a3b8",
+            borderBottomColor: check("On Shipping") ? "green" : "#94a3b8",
             paddingBottom: 30,
             width: "33%",
           }}
@@ -92,10 +102,7 @@ export default function TrackingStatus({ route }) {
         <View
           style={{
             borderBottomWidth: 2,
-            borderBottomColor:
-              trackStatus[trackStatus.length - 1].status === "On Shipping"
-                ? "green"
-                : "#94a3b8",
+            borderBottomColor: check("Arrived") ? "green" : "#94a3b8",
             paddingBottom: 30,
             width: "33%",
           }}
@@ -104,7 +111,7 @@ export default function TrackingStatus({ route }) {
             style={{
               left: -31,
               position: "absolute",
-              backgroundColor: "#94a3b8",
+              backgroundColor: check("On Shipping") ? "green" : "#94a3b8",
               borderRadius: 50,
               height: 60,
               width: 60,
@@ -119,10 +126,7 @@ export default function TrackingStatus({ route }) {
             style={{
               height: 22,
               width: 22,
-              backgroundColor:
-                trackStatus[trackStatus.length - 1].status === "On Shipping"
-                  ? "green"
-                  : "#94a3b8",
+              backgroundColor: check("On Shipping") ? "green" : "#94a3b8",
               borderRadius: 50,
               position: "absolute",
               bottom: -11,
@@ -133,7 +137,7 @@ export default function TrackingStatus({ route }) {
         <View
           style={{
             borderBottomWidth: 2,
-            borderBottomColor: "#94a3b8",
+            borderBottomColor: check("On Delivery") ? "green" : "#94a3b8",
             paddingBottom: 30,
             flexDirection: "row",
             width: "33%",
@@ -143,7 +147,7 @@ export default function TrackingStatus({ route }) {
             style={{
               left: -32,
               position: "absolute",
-              backgroundColor: "green",
+              backgroundColor: check("Arrived") ? "green" : "#94a3b8",
               borderRadius: 50,
               height: 60,
               width: 60,
@@ -157,7 +161,7 @@ export default function TrackingStatus({ route }) {
           <View
             style={{
               right: -63,
-              backgroundColor: "green",
+              backgroundColor: check("On Delivery") ? "green" : "#94a3b8",
               borderRadius: 50,
               height: 60,
               width: 60,
@@ -172,7 +176,7 @@ export default function TrackingStatus({ route }) {
             style={{
               height: 22,
               width: 22,
-              backgroundColor: "#94a3b8",
+              backgroundColor: check("Arrived") ? "green" : "#94a3b8",
               borderRadius: 50,
               position: "absolute",
               bottom: -11,
@@ -183,7 +187,7 @@ export default function TrackingStatus({ route }) {
             style={{
               height: 22,
               width: 22,
-              backgroundColor: "#94a3b8",
+              backgroundColor: check("On Delivery") ? "green" : "#94a3b8",
               borderRadius: 50,
               position: "absolute",
               bottom: -11,
@@ -276,7 +280,7 @@ export default function TrackingStatus({ route }) {
         })}
       </View>
       <View></View>
-    </View>
+    </ScrollView>
   );
 }
 

@@ -17,6 +17,8 @@ export default function TableRow({ index, cf }) {
 
   function refund(e, id) {
     e.preventDefault();
+<<<<<<< HEAD
+=======
     dispatch(refundDeposit(id))
       .then((res) => {
         return res.json();
@@ -28,10 +30,15 @@ export default function TableRow({ index, cf }) {
           icon: 'success'
         })
       })
+>>>>>>> 39b94051268a102affa1d52757bb99a760dd8e7a
     /* Swal("Refund Money to Crowdfunding participant ?", {
       icon: "info",
       buttons: ["Refund", "No"],
     }); */
+<<<<<<< HEAD
+    
+=======
+>>>>>>> 39b94051268a102affa1d52757bb99a760dd8e7a
   }
   return (
     <tr class="bg-white border-b text-gray-900 text-center">

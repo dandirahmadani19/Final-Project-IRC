@@ -56,7 +56,7 @@ export function fetchCFtrackingStatusById(id) {
   return (dispatch, getState) => {
     fetch(api + `status-tracking/` + id)
       .then((res) => {
-        return res.json()
+        return res.json();
       })
       .then((data) => {
         const sortTrackingStatus = data.data.sort(
@@ -66,9 +66,8 @@ export function fetchCFtrackingStatusById(id) {
       })
       .catch((err) => {
         console.log(err);
-      })
-  }
-
+      });
+  };
 }
 
 export function verifyCrowdFund(id, data) {
@@ -103,7 +102,7 @@ export function refundDeposit(id) {
         "Content-Type": "application/json",
       },
     });
-  }
+  };
 }
 
 export function rejectCrowdFund(id) {
@@ -112,8 +111,7 @@ export function rejectCrowdFund(id) {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-      }
-    })
+      },
+    });
   };
-
 }
