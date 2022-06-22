@@ -20,6 +20,7 @@ import TopUpBalance from "./app/screens/TopUpBalance";
 import JoinSuccess from "./app/screens/JoinSuccess";
 import DetailHistoryJoin from "./app/screens/DetailHistoryJoin";
 import LoadingScreen from "./app/screens/LoadingScreen";
+import TrackingStatus from "./app/screens/TrackingStatus";
 
 const Stack = createNativeStackNavigator();
 
@@ -113,6 +114,13 @@ export default function App() {
             component={LoadingScreen}
             options={{
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="TrackingStatus"
+            component={TrackingStatus}
+            options={{
+              title: "Status Tracking",
             }}
           />
         </Stack.Navigator>
