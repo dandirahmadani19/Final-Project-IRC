@@ -28,8 +28,6 @@ export default function HistorySubmit({ navigation }) {
   const { loading, error, data } = useQuery(HISTORY_SUBMIT, {
     variables: { accessToken: access_token() },
   });
-  console.log(access_token());
-  console.log(userProfile());
 
   if (loading && !data) {
     return (
