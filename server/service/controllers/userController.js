@@ -12,7 +12,7 @@ class UserController {
       });
       res.status(200).json(users);
     } catch (error) {
-      next(error);
+      // next(error);
     }
   }
 
@@ -171,12 +171,9 @@ class UserController {
           exclude: ["password"],
         },
       });
-      if (!user) {
-        throw { name: "USER_NOT_FOUND" };
-      }
       res.status(200).json(user);
     } catch (error) {
-      next(error);
+      // next(error);
     }
   }
 }

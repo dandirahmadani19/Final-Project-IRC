@@ -1,19 +1,19 @@
 const redis = require("./redisconfig");
 class ExpoToken {
-  static async getTokenByUserId(userid) {
-    try {
-      const expotokens = JSON.parse(await redis.get("expoTokens"));
-      console.log(expotokens);
-      let userIdToken = [];
-      if (expotokens.length > 0) {
-        userIdToken = expotokens.filter((el) => el.UserId == userid);
-      }
+  // static async getTokenByUserId(userid) {
+  //   try {
+  //     const expotokens = JSON.parse(await redis.get("expoTokens"));
+  //     console.log(expotokens);
+  //     let userIdToken = [];
+  //     if (expotokens.length > 0) {
+  //       userIdToken = expotokens.filter((el) => el.UserId == userid);
+  //     }
 
-      return userIdToken;
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  //     return userIdToken;
+  //   } catch (err) {
+  //     return err
+  //   }
+  // }
 
   static async getRelevantToken(arrayofuserid) {
     try {
@@ -31,7 +31,6 @@ class ExpoToken {
       //return filtered token tanpa user id
       return filteredTokens;
     } catch (err) {
-      console.log(err);
     }
   }
 
@@ -76,59 +75,59 @@ class ExpoToken {
     }
   }
 
-  static async updateToken(userid, newToken) {
-    try {
-      //get
-      const existingTokens = JSON.parse(await redis.get("expoTokens"));
+  // static async updateToken(userid, newToken) {
+  //   try {
+  //     //get
+  //     const existingTokens = JSON.parse(await redis.get("expoTokens"));
 
-      //hapus token lama
-      let newSetTokens = [];
+  //     //hapus token lama
+  //     let newSetTokens = [];
 
-      existingTokens.forEach((el) => {
-        if (el.UserId != userid) {
-          newSetTokens.push(el);
-        }
-      });
+  //     existingTokens.forEach((el) => {
+  //       if (el.UserId != userid) {
+  //         newSetTokens.push(el);
+  //       }
+  //     });
 
-      //push token baru
-      const newData = {
-        UserId: +userid,
-        expoToken: newToken,
-      };
+  //     //push token baru
+  //     const newData = {
+  //       UserId: +userid,
+  //       expoToken: newToken,
+  //     };
 
-      newSetTokens.push(newData);
-      //set tokens
-      const updatedToken = await redis.set(
-        "expoTokens",
-        JSON.stringify(newSetTokens)
-      );
+  //     newSetTokens.push(newData);
+  //     //set tokens
+  //     const updatedToken = await redis.set(
+  //       "expoTokens",
+  //       JSON.stringify(newSetTokens)
+  //     );
 
-      const freshSet = JSON.parse(await redis.get("expoTokens"));
-      return freshSet;
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  //     const freshSet = JSON.parse(await redis.get("expoTokens"));
+  //     return freshSet;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
-  static async deleteUserToken(userid) {
-    try {
-      const expoTokens = JSON.parse(await redis.get("expoTokens"));
+  // static async deleteUserToken(userid) {
+  //   try {
+  //     const expoTokens = JSON.parse(await redis.get("expoTokens"));
 
-      const afterDelete = [];
+  //     const afterDelete = [];
 
-      expoTokens.forEach((el) => {
-        if (el.UserId != userid) {
-          afterDelete.push(el);
-        }
-      });
+  //     expoTokens.forEach((el) => {
+  //       if (el.UserId != userid) {
+  //         afterDelete.push(el);
+  //       }
+  //     });
 
-      await redis.set("expoTokens", JSON.stringify(afterDelete));
+  //     await redis.set("expoTokens", JSON.stringify(afterDelete));
 
-      return afterDelete;
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  //     return afterDelete;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 }
 
 module.exports = ExpoToken;

@@ -38,8 +38,10 @@ export default function UpdateTrackingForm() {
     };
 
     dispatch(updateStatus(payload))
-      .then((res) => {
-        return res.json();
+
+      .then((res)=>{
+        console.log(res, "ini dari form")
+        return res.json()
       })
       .then((data) => {
         Swal({
@@ -54,9 +56,9 @@ export default function UpdateTrackingForm() {
       });
   }
 
-  function goBack(e) {
-    e.preventDefault();
-    navigate("/on-progress");
+  function goBack(e){
+    e.preventDefault()
+    navigate('/')
   }
 
   function handleReject(e) {

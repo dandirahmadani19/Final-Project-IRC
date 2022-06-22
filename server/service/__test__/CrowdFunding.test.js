@@ -6,6 +6,7 @@ const { passwordEncryptor } = require("../helpers/helperBcrypt");
 
 
 let access_token;
+let access_token1q;
 beforeAll(async () => {
     await User.bulkCreate([
         {
@@ -63,6 +64,14 @@ beforeAll(async () => {
         phoneNumber: '081234567890',
         address: 'Jl. Kebon Kacang',
     })
+    access_token1 = tokenMakerFromPayload({
+        id: 2,
+        firstName: 'Johnoo',
+        lastName: 'Doeoo',
+        email: 'jhono@mail.com',
+        phoneNumber: '081234567890o',
+        address: 'Jl. Kebon Kacang bulat',
+    })
 })
 
 describe("Crowdfunding Test", () => {
@@ -101,9 +110,39 @@ describe("Crowdfunding Test", () => {
             .expect(400);
         expect(res.body).toStrictEqual(expect.any(Object));;
         expect(res.body.message).toBe('Balance is not enough');
-        // expect(res.body[0].productName).toEqual("Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots");
     });
-    it("should return Balance is enough", async () => {
+    it("should return Balance is not enough", async () => {
+        const res = await request(app).post("/crowdFund/add")
+            .set("access_token", access_token)
+            .send({
+                productName: "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
+                initialProductPrice: 100000,
+                initialQuantity: 2000,
+                manufactureName: "Dongyang Huanyao Industry And Trade Co",
+                linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6"
+            })
+            .expect(400);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe('Balance is not enough');
+    });
+
+    it("should return Balance is not enough", async () => {
+        const res = await request(app).post("/crowdFund/add")
+            .set("access_token", access_token1)
+            .send({
+                productName: "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
+                initialProductPrice: 100000,
+                initialQuantity: 2000,
+                manufactureName: "Dongyang Huanyao Industry And Trade Co",
+                linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6"
+            })
+            .expect(400);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe('Balance is not enough');
+    });
+
+
+    it("should return CrowdFunding created", async () => {
         const res = await request(app).post("/crowdFund/add")
             .set("access_token", access_token)
             .send({
@@ -206,6 +245,12 @@ describe("Crowdfunding Test", () => {
         .expect(200);
         expect(res.body).toStrictEqual(expect.any(Array));;
     });
+    it("should return success deny crowdfunding", async () => {
+        const res = await request(app).patch(`/crowdFund/deny/${1}`)
+        .expect(200);
+        expect(res.body).toStrictEqual(expect.any(Object));
+        expect(res.body.message).toBe("success deny crowdfunding");
+    });
 
     it("should return all data history join login user", async () => {
         const res = await request(app).get(`/crowdFund/all-history-by-user-join`)
@@ -222,6 +267,28 @@ describe("Crowdfunding Test", () => {
         expect(res.body).toStrictEqual(expect.any(Object));
         expect(res.body.message).toBe("Error authentication, must login first");
     });
+
+    it("should return Successfully refund balance to each user", async () => {
+        const res = await request(app).get(`/balance/refund/${1}`)
+        .expect(200);
+        expect(res.body).toEqual(expect.any(Object));
+        expect(res.body.message).toEqual("Successfully refund balance to each user");
+    });
+
+    it('Should handle error when hit findOne', async () => {
+        jest.spyOn(CrowdFunding, 'findOne').mockRejectedValue('Internal Server Error')
+        jest.spyOn(Balance, 'findAll').mockRejectedValue('Internal Server Error')
+        jest.spyOn(Balance, 'update').mockRejectedValue('Internal Server Error')
+        return request(app)
+          .get(`/balance/refund/1`)
+          .then((res) => {
+            expect(res.status).toBe(500)
+            expect(res.body).toBe('Internal Server Error')
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      })
 })
 
 
