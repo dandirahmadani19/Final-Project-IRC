@@ -15,7 +15,8 @@ const userData = {
 };
 
 let access_token;
-let access_token1
+let access_token1;
+let access_token2;
 beforeAll(async () => {
   await User.bulkCreate([
     {
@@ -36,9 +37,18 @@ beforeAll(async () => {
     address: 'Jl. Kebon Kacang',
   })
   access_token1 = tokenMakerFromPayload({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'jhon@mail.com',
+    id : 10,
+    firstName: 'Johnnn',
+    email : "sawdidap@mail.com",
+    lastName: 'Doenn',
+    phoneNumber: '081234567890',
+    address: 'Jl. Kebon Kacang',
+  })
+  access_token2 = tokenMakerFromPayload({
+    id : 100,
+    firstName: 'Johnnn',
+    email : "sawdidddssaaap@mail.com",
+    lastName: 'Doenn',
     phoneNumber: '081234567890',
     address: 'Jl. Kebon Kacang',
   })
@@ -157,6 +167,7 @@ describe("Auth Test", () => {
     expect(res.body).toEqual(expect.any(Object));
     expect(res.body.message).toBe(`Error authentication, must login first`);
   });
+  
 })
 
 

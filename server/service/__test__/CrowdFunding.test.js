@@ -6,6 +6,7 @@ const { passwordEncryptor } = require("../helpers/helperBcrypt");
 
 
 let access_token;
+let access_token1q;
 beforeAll(async () => {
     await User.bulkCreate([
         {
@@ -63,6 +64,14 @@ beforeAll(async () => {
         phoneNumber: '081234567890',
         address: 'Jl. Kebon Kacang',
     })
+    access_token1 = tokenMakerFromPayload({
+        id: 2,
+        firstName: 'Johnoo',
+        lastName: 'Doeoo',
+        email: 'jhono@mail.com',
+        phoneNumber: '081234567890o',
+        address: 'Jl. Kebon Kacang bulat',
+    })
 })
 
 describe("Crowdfunding Test", () => {
@@ -101,9 +110,39 @@ describe("Crowdfunding Test", () => {
             .expect(400);
         expect(res.body).toStrictEqual(expect.any(Object));;
         expect(res.body.message).toBe('Balance is not enough');
-        // expect(res.body[0].productName).toEqual("Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots");
     });
-    it("should return Balance is enough", async () => {
+    it("should return Balance is not enough", async () => {
+        const res = await request(app).post("/crowdFund/add")
+            .set("access_token", access_token)
+            .send({
+                productName: "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
+                initialProductPrice: 100000,
+                initialQuantity: 2000,
+                manufactureName: "Dongyang Huanyao Industry And Trade Co",
+                linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6"
+            })
+            .expect(400);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe('Balance is not enough');
+    });
+
+    it("should return Balance is not enough", async () => {
+        const res = await request(app).post("/crowdFund/add")
+            .set("access_token", access_token1)
+            .send({
+                productName: "Hot Sale Industrial Shoes Anti Puncture anti Slip Men security boots Steel Toe sneakers Safety shoes Boots",
+                initialProductPrice: 100000,
+                initialQuantity: 2000,
+                manufactureName: "Dongyang Huanyao Industry And Trade Co",
+                linkProduct: "https://indonesian.alibaba.com/p-detail/Fitness-1600249994724.html?spm=a27aq.14175334.4.1.c0817df4ll96H6"
+            })
+            .expect(400);
+        expect(res.body).toStrictEqual(expect.any(Object));;
+        expect(res.body.message).toBe('Balance is not enough');
+    });
+
+
+    it("should return CrowdFunding created", async () => {
         const res = await request(app).post("/crowdFund/add")
             .set("access_token", access_token)
             .send({

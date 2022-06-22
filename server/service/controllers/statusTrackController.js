@@ -19,7 +19,7 @@ class ControllerStatusTracking {
         data: newStatus,
       });
     } catch (error) {
-      next(error);
+      // next(error);
     }
   }
 
@@ -31,7 +31,7 @@ class ControllerStatusTracking {
         data: allStatus,
       });
     } catch (error) {
-      next(error);
+      // next(error);
     }
   }
 
@@ -48,7 +48,7 @@ class ControllerStatusTracking {
         data: status,
       });
     } catch (error) {
-      next(error);
+      // next(error);
     }
   }
 

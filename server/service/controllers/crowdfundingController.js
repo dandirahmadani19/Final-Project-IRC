@@ -404,7 +404,6 @@ class CrowdFundingController {
   static async allCrowdFundAdmin(req, res, next) {
     try {
       const { status } = req.query;
-      console.log(status, "asdasd");
       const listCF = await CrowdFunding.findAll({
         where: {
           status: status,
