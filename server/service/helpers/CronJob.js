@@ -4,7 +4,7 @@ const CronJob = require('node-cron');
 
 function ScheduleJob() {
     CronJob.schedule(
-        "13 11 * * *",
+        "30 00 * * *",
         async () => {
             try {
                 const dataJob = await CrowdFunding.findAll({});
