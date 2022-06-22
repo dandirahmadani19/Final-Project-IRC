@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert";
+import { useDispatch } from "react-redux";
+import { refundDeposit } from "../store/actions/crowdFundAction";
 export default function TableRow({ index, cf }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   function goToVerifyForm(e, id) {
     e.preventDefault();
@@ -14,11 +17,21 @@ export default function TableRow({ index, cf }) {
 
   function refund(e, id) {
     e.preventDefault();
+    dispatch(refundDeposit(id))
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        Swal({
+          title: 'Refund Success',
+          text: data.message,
+          icon: 'success'
+        })
+      })
     /* Swal("Refund Money to Crowdfunding participant ?", {
       icon: "info",
       buttons: ["Refund", "No"],
     }); */
-    
   }
   return (
     <tr class="bg-white border-b text-gray-900 text-center">

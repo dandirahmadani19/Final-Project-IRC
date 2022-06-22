@@ -56,7 +56,8 @@ export function fetchCFtrackingStatusById(id) {
   return (dispatch, getState) => {
     fetch(api + `status-tracking/` + id)
       .then((res) => {
-        return res.json();
+        return res.json()
+      })
       .then((data) => {
         const sortTrackingStatus = data.data.sort(
           (b, a) => b.createdAt - a.createdAt
@@ -65,8 +66,9 @@ export function fetchCFtrackingStatusById(id) {
       })
       .catch((err) => {
         console.log(err);
-      });
-  };
+      })
+  }
+
 }
 
 export function verifyCrowdFund(id, data) {
@@ -93,12 +95,25 @@ export function updateStatus(data) {
   };
 }
 
-export function refundDeposit(id){
-  return(dispatch, getState) => {
-    
+export function refundDeposit(id) {
+  return (dispatch, getState) => {
+    return fetch(api + "balance/refund/" + id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
 
-export function rejectCrowdFund() {
-  return (dispatch, getState) => {};
+export function rejectCrowdFund(id) {
+  return (dispatch, getState) => {
+    return fetch(api + `crowdFund/deny/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+  };
+
 }

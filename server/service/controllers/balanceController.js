@@ -5,6 +5,8 @@ const {
   User,
   sequelize,
 } = require("../models");
+const {getRelevantToken} = require("../redisconfig/redismodel");
+const { sendPushNotif } = require("../helpers/pushNotification");
 
 class BalanceController {
   static async getBalance(req, res) {
@@ -135,6 +137,7 @@ class BalanceController {
         message: "Successfully refund balance to each user",
       });
     } catch (error) {
+      console.log(error);
       res.status(500).json(error);
       t.rollback();
     }
