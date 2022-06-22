@@ -402,9 +402,9 @@ class CrowdFundingController {
       const {status} = req.query
       console.log(status, "asdasd")
       const listCF = await CrowdFunding.findAll({
-        where:{
+/*         where:{
           status : status
-        },
+        }, */
         attributes: {
           exclude: [
             "initialProductPrice",
