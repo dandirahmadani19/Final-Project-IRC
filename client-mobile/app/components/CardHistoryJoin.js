@@ -115,12 +115,8 @@ export default function CardHistoryJoin({ data, onPress, route }) {
                 }}
               >
                 {data.status === "Pending"
-                  ? moment(new Date(data.CrowdFunding.createdAt)).format(
-                      "Do MMMM YYYY"
-                    )
-                  : moment(new Date(data.CrowdFunding.startDate)).format(
-                      "Do MMMM YYYY"
-                    )}
+                  ? moment(data?.CrowdFunding.createdAt).format("Do MMMM YYYY")
+                  : moment(data?.CrowdFunding.startDate).format("Do MMMM YYYY")}
               </Text>
             </View>
           </View>

@@ -23,17 +23,16 @@ import LoadingScreen from "./app/screens/LoadingScreen";
 
 const Stack = createNativeStackNavigator();
 
-SecureStore.getItemAsync("access_token").then((result) => {
-  if (result) {
-    isLogin(true);
-    access_token(result);
-  } else {
-    isLogin(false);
-    access_token("");
-  }
-});
-
 export default function App() {
+  SecureStore.getItemAsync("access_token").then((result) => {
+    if (result) {
+      isLogin(true);
+      access_token(result);
+    } else {
+      isLogin(false);
+      access_token("");
+    }
+  });
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>

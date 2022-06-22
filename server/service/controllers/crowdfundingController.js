@@ -463,8 +463,7 @@ class CrowdFundingController {
       });
       res.status(200).json(listCF);
     } catch (error) {
-      console.log(error)
-      next(error)
+      next(error);
     }
   }
 
@@ -484,6 +483,7 @@ class CrowdFundingController {
           "currentQuantity",
           "productImage",
           "initialQuantity",
+          "startDate",
           "expiredDay",
           "hscode",
           "createdAt",
@@ -531,6 +531,7 @@ class CrowdFundingController {
               "currentQuantity",
               "productImage",
               "initialQuantity",
+              "startDate",
               "expiredDay",
               "hscode",
               "createdAt",
