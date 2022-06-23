@@ -59,13 +59,13 @@ export default function TrackingStatus({ route }) {
           flexDirection: "row",
           backgroundColor: "#fff",
           paddingTop: 50,
+          height: 150,
         }}
       >
         <View
           style={{
             borderBottomWidth: 2,
             borderBottomColor: check("On Shipping") ? "green" : "#94a3b8",
-            paddingBottom: 30,
             width: "33%",
           }}
         >
@@ -103,7 +103,6 @@ export default function TrackingStatus({ route }) {
           style={{
             borderBottomWidth: 2,
             borderBottomColor: check("Arrived") ? "green" : "#94a3b8",
-            paddingBottom: 30,
             width: "33%",
           }}
         >
@@ -138,8 +137,6 @@ export default function TrackingStatus({ route }) {
           style={{
             borderBottomWidth: 2,
             borderBottomColor: check("On Delivery") ? "green" : "#94a3b8",
-            paddingBottom: 30,
-            flexDirection: "row",
             width: "33%",
           }}
         >
@@ -160,7 +157,21 @@ export default function TrackingStatus({ route }) {
 
           <View
             style={{
-              right: -63,
+              height: 22,
+              width: 22,
+              backgroundColor: check("Arrived") ? "green" : "#94a3b8",
+              borderRadius: 50,
+              position: "absolute",
+              bottom: -11,
+              left: -11,
+            }}
+          />
+        </View>
+        <View>
+          <View
+            style={{
+              position: "absolute",
+              left: -32,
               backgroundColor: check("On Delivery") ? "green" : "#94a3b8",
               borderRadius: 50,
               height: 60,
@@ -171,18 +182,6 @@ export default function TrackingStatus({ route }) {
           >
             <MaterialIcons name="delivery-dining" size={38} color="#fff" />
           </View>
-
-          <View
-            style={{
-              height: 22,
-              width: 22,
-              backgroundColor: check("Arrived") ? "green" : "#94a3b8",
-              borderRadius: 50,
-              position: "absolute",
-              bottom: -11,
-              left: -11,
-            }}
-          />
           <View
             style={{
               height: 22,
@@ -191,7 +190,7 @@ export default function TrackingStatus({ route }) {
               borderRadius: 50,
               position: "absolute",
               bottom: -11,
-              right: -11,
+              left: -11,
             }}
           />
         </View>
@@ -279,7 +278,6 @@ export default function TrackingStatus({ route }) {
           );
         })}
       </View>
-      <View></View>
     </ScrollView>
   );
 }

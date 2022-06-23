@@ -33,6 +33,7 @@ export default function DetailHistoryJoin({ route, navigation }) {
           <Text style={styles.textLeftSide}>Name</Text>
           <Text style={styles.textLeftSide}>Submission Date</Text>
           <Text style={styles.textLeftSide}>Quantity Funded</Text>
+          <Text style={styles.textLeftSide}>Target Quantity</Text>
           <Text style={styles.textLeftSide}>Total Price Funded</Text>
         </View>
         <View style={{ flex: 1 }}>
@@ -44,6 +45,9 @@ export default function DetailHistoryJoin({ route, navigation }) {
           </Text>
           <Text style={styles.textRightSide}>
             {data.CrowdFunding.currentQuantity} Pcs
+          </Text>
+          <Text style={styles.textRightSide}>
+            {data.CrowdFunding.targetQuantity} Pcs
           </Text>
           <NumberFormat
             value={

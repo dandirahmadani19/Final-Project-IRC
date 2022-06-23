@@ -27,8 +27,20 @@ export default function RegisterScreen({ navigation }) {
     address: "",
   });
   const handleRegister = () => {
-    register({ variables: { dataUser: dataRegister } });
-    setFlag(true);
+    if (
+      !dataRegister.firstName ||
+      !dataRegister.lastName ||
+      !dataRegister.email ||
+      !dataRegister.password ||
+      !dataRegister.address ||
+      !dataRegister.phoneNumber
+    ) {
+      setModalVisible(true);
+      setMessage("All Field is Required");
+    } else {
+      register({ variables: { dataUser: dataRegister } });
+      setFlag(true);
+    }
   };
   if (data?.register.message === "Email has been registered" && flag) {
     setFlag(false);
@@ -36,9 +48,9 @@ export default function RegisterScreen({ navigation }) {
     setModalVisible(true);
   }
   if (data?.register.message === "User created successfully" && flag) {
+    setFlag(false);
     setMessage("Add New Account Successfully");
     setModalVisible(true);
-    setFlag(false);
   }
 
   if (loading && !data) {

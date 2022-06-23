@@ -52,6 +52,21 @@ export default function HistoryJoin({ navigation }) {
     );
   }
 
+  if (!data?.length) {
+    return (
+      <Text
+        style={{
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: 15,
+          marginTop: 30,
+        }}
+      >
+        You've never joined crowdfunding
+      </Text>
+    );
+  }
+
   const handleOnPress = (data) => {
     navigation.navigate("DetailHistoryJoin", { data });
   };

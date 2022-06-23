@@ -44,6 +44,21 @@ export default function HistorySubmit({ navigation }) {
     );
   }
 
+  if (!data?.length) {
+    return (
+      <Text
+        style={{
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: 15,
+          marginTop: 30,
+        }}
+      >
+        You have never applied for crowdfunding
+      </Text>
+    );
+  }
+
   const handleOnPress = (data) => {
     if (data.status === "Pending") {
       navigation.navigate("ConfirmationSubmit", { data });

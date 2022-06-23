@@ -30,6 +30,7 @@ export default function DetailHistorySubmit({ route, navigation }) {
           <Text style={styles.textLeftSide}>Submission Date</Text>
           <Text style={styles.textLeftSide}>Users Join</Text>
           <Text style={styles.textLeftSide}>Quantity Funded</Text>
+          <Text style={styles.textLeftSide}>Target Quantity</Text>
           <Text style={styles.textLeftSide}>Total Price Funded</Text>
         </View>
         <View style={{ flex: 1 }}>
@@ -43,6 +44,7 @@ export default function DetailHistorySubmit({ route, navigation }) {
             {data.CrowdFundingProducts.length + 1} People
           </Text>
           <Text style={styles.textRightSide}>{data.currentQuantity} Pcs</Text>
+          <Text style={styles.textRightSide}>{data.targetQuantity} Pcs</Text>
           <NumberFormat
             value={data.finalProductPrice * data.currentQuantity}
             displayType="text"
