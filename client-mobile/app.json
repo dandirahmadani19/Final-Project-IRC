@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Logo_IRC.png",
+      "image": "./assets/splash-irc.png",
       "resizeMode": "contain",
       "backgroundColor": "#15803d"
     },
