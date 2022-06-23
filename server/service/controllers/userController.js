@@ -7,7 +7,7 @@ class UserController {
     try {
       const users = await User.findAll({
         attributes: {
-            exclude: ["password"],
+          exclude: ["password"],
         },
       });
       res.status(200).json(users);
@@ -28,6 +28,7 @@ class UserController {
       if (findUser) {
         throw { name: "EMAIL_ALREADY_EXIST" };
       }
+
       const user = await User.create({
         firstName,
         lastName,
@@ -35,6 +36,10 @@ class UserController {
         password,
         phoneNumber,
         address,
+      });
+      await Balance.create({
+        amount: 0,
+        UserId: user.id,
       });
       res.status(201).json({
         id: user.id,

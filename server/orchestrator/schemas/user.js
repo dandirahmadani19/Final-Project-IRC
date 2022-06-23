@@ -34,6 +34,7 @@ const typeDefUser = gql`
 
   type Mutation {
     login(dataUser: dataUser): User
+    register(dataUser: dataUser): User
   }
 `;
 
@@ -63,6 +64,24 @@ const resolverUser = {
           {
             email: dataUser.email,
             password: dataUser.password,
+          }
+        );
+        return data;
+      } catch ({ response }) {
+        return response.data;
+      }
+    },
+    register: async (_, { dataUser }) => {
+      try {
+        const { data } = await axios.post(
+          `${process.env.BASE_URL}/user/register`,
+          {
+            email: dataUser.email,
+            password: dataUser.password,
+            firstName: dataUser.firstName,
+            lastName: dataUser.lastName,
+            address: dataUser.address,
+            phoneNumber: dataUser.phoneNumber,
           }
         );
         return data;

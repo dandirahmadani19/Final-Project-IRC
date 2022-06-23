@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Pressable,
+  Modal,
 } from "react-native";
 import React from "react";
 import { access_token, userProfile } from "../../query/global";
@@ -22,10 +24,13 @@ import {
   formatCurrency,
   getSupportedCurrencies,
 } from "react-native-format-currency";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 
 export default function ConfirmationSubmit({ route, navigation }) {
   const data = route.params.data;
-  console.log(data);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const totalPrice = data.currentQuantity * data.finalProductPrice;
   const [
     userApprove,
@@ -81,10 +86,15 @@ export default function ConfirmationSubmit({ route, navigation }) {
 
   const handleDeny = () => {
     denyCrowdFunding({ variables: { idCrowdFunding: +data.id } });
+  };
+  if (
+    messageDenyCrowdFunding?.denyCrowdFunding.message ===
+    "success deny crowdfunding"
+  ) {
     navigation.navigate("LoadingScreen", {
       title: "Crowd Funding Has Been Deny",
     });
-  };
+  }
 
   if (loadingApprove) {
     return (
@@ -115,6 +125,28 @@ export default function ConfirmationSubmit({ route, navigation }) {
   }
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              How do we get the final product price ?
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Ionicons name="close-circle-outline" size={25} />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       <View
         style={{ backgroundColor: "#e2e8f0", marginBottom: 30, width: "100%" }}
       >
@@ -164,15 +196,26 @@ export default function ConfirmationSubmit({ route, navigation }) {
                 <Text style={styles.textRightSide}>{value}</Text>
               )}
             />
-            <NumberFormat
-              value={data.finalProductPrice}
-              displayType="text"
-              thousandSeparator={true}
-              prefix="IDR "
-              renderText={(value) => (
-                <Text style={styles.textRightSide}>{value}</Text>
-              )}
-            />
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <Pressable onPress={() => setModalVisible(true)}>
+                <Ionicons name="help-circle-outline" size={18} color="black" />
+              </Pressable>
+              <NumberFormat
+                value={data.finalProductPrice}
+                displayType="text"
+                thousandSeparator={true}
+                prefix="IDR "
+                renderText={(value) => (
+                  <Text style={styles.textRightSide}>{value}</Text>
+                )}
+              />
+            </View>
             <Text style={styles.textRightSide}>{data.targetQuantity} pcs</Text>
           </View>
         </View>
@@ -321,5 +364,39 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     fontSize: 12,
     color: "#64748b",
+  },
+  centeredView: {
+    flex: 1,
+    marginTop: 50,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonClose: {
+    position: "absolute",
+    right: 5,
+    top: 5,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "800",
   },
 });
