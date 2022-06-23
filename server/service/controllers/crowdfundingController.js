@@ -162,6 +162,7 @@ class CrowdFundingController {
         productImage: dataSubmit.productImage,
         currentQuantity: dataSubmit.currentQuantity,
         expiredDay: dataSubmit.expiredDay,
+        id: CrowdFundingId,
       };
 
       const notifPayload = {
@@ -425,9 +426,7 @@ class CrowdFundingController {
         },
       });
       res.status(200).json(dataCF);
-    } catch (error) {
-     
-    }
+    } catch (error) {}
   }
 
   static async allCrowdFundAdmin(req, res, next) {
@@ -449,7 +448,7 @@ class CrowdFundingController {
       res.status(200).json(listCF);
     } catch (err) {
       console.log(err, "<<<<<<<<<<<<<<<<<<khgisdhafghsdk");
-      next(err)
+      next(err);
     }
   }
 
@@ -546,15 +545,29 @@ class CrowdFundingController {
   static async denyCrowdFunding(req, res, next) {
     try {
       const id = req.params.id;
-      const data = await CrowdFunding.update({
-        status: "Deny",
-      },
-      {
-      where : {id},
-      returning: true});
-        
+      const data = await CrowdFunding.update(
+        {
+          status: "Deny",
+        },
+        {
+          where: { id },
+          returning: true,
+        }
+      );
+
+      if (data[0]) {
+        const tokensSubmit = await getRelevantToken([data[1][0].UserId]);
+        const notifPayload = {
+          title: "Submission Rejected",
+          body: "Your Submission Is Rejected. Because the product is invalid",
+          data: { screen: "HistorySubmit", data: {} },
+          priority: "high",
+        };
+        sendPushNotif(tokensSubmit, notifPayload);
+      }
+
       res.status(200).json({
-        message : "success deny crowdfunding",
+        message: "success deny crowdfunding",
       });
     } catch (error) {
       next(error);

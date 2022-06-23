@@ -44,21 +44,6 @@ export default function HistorySubmit({ navigation }) {
     );
   }
 
-  if (!data?.length) {
-    return (
-      <Text
-        style={{
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: 15,
-          marginTop: 30,
-        }}
-      >
-        You have never applied for crowdfunding
-      </Text>
-    );
-  }
-
   const handleOnPress = (data) => {
     if (data.status === "Pending") {
       navigation.navigate("ConfirmationSubmit", { data });
@@ -76,15 +61,29 @@ export default function HistorySubmit({ navigation }) {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={data?.getHistorySubmitCrowdFunding}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
+      {data?.length && (
+        <Text
+          style={{
+            textAlign: "center",
+            fontWeight: "700",
+            fontSize: 15,
+            marginTop: 30,
+          }}
+        >
+          You have never applied for crowdfunding
+        </Text>
+      )}
+      {!data?.length && (
+        <FlatList
+          data={data?.getHistorySubmitCrowdFunding}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }
