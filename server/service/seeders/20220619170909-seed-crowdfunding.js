@@ -88,27 +88,27 @@ module.exports = {
         createdAt: "2022-06-18T16:14:16.940Z",
         updatedAt: "2022-06-18T16:14:16.940Z",
       },
-      {
-        productName:
-          "Anti-Slip Baby Crawling Knee brace / Unisex Baby Toddlers Knee pads crawling support protector knee pads",
-        UserId: 3,
-        targetQuantity: 2000,
-        initialProductPrice: 5000,
-        finalProductPrice: 6500,
-        manufactureName: "Manufacturer,Trading Company",
-        linkProduct:
-          "https://www.alibaba.com/product-detail/Anti-Slip-Baby-Crawling-Knee-brace_1600155438230.html?spm=a27aq.14175334.139.1.c0817df4ll96H6",
-        status: "Success",
-        currentQuantity: 2000,
-        startDate: "2022-06-02T16:14:16.940Z",
-        productImage:
-          "https://sc04.alicdn.com/kf/H1512f77d70b64e42903c3ffa882abf72u.jpg",
-        initialQuantity: 900,
-        expiredDay: 15,
-        hscode: "61119090",
-        createdAt: "2022-06-01T16:14:16.940Z",
-        updatedAt: "2022-06-02T16:14:16.940Z",
-      },
+      // {
+      //   productName:
+      //     "Anti-Slip Baby Crawling Knee brace / Unisex Baby Toddlers Knee pads crawling support protector knee pads",
+      //   UserId: 3,
+      //   targetQuantity: 2000,
+      //   initialProductPrice: 5000,
+      //   finalProductPrice: 6500,
+      //   manufactureName: "Manufacturer,Trading Company",
+      //   linkProduct:
+      //     "https://www.alibaba.com/product-detail/Anti-Slip-Baby-Crawling-Knee-brace_1600155438230.html?spm=a27aq.14175334.139.1.c0817df4ll96H6",
+      //   status: "Success",
+      //   currentQuantity: 2000,
+      //   startDate: "2022-06-02T16:14:16.940Z",
+      //   productImage:
+      //     "https://sc04.alicdn.com/kf/H1512f77d70b64e42903c3ffa882abf72u.jpg",
+      //   initialQuantity: 900,
+      //   expiredDay: 15,
+      //   hscode: "61119090",
+      //   createdAt: "2022-06-01T16:14:16.940Z",
+      //   updatedAt: "2022-06-02T16:14:16.940Z",
+      // },
     ];
     await queryInterface.bulkInsert("CrowdFundings", crowdfunding, {});
   },
