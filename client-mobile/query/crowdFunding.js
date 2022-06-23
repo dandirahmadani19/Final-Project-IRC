@@ -160,18 +160,8 @@ export const GET_STATUS_TRACKING = gql`
 `;
 
 export const DENY_CROWDFUNDING = gql`
-  mutation UserJoinCrowdFunding(
-    $accessToken: String
-    $totalPrice: Int
-    $quantityToBuy: Int
-    $idCrowdFunding: Int
-  ) {
-    userJoinCrowdFunding(
-      access_token: $accessToken
-      totalPrice: $totalPrice
-      quantityToBuy: $quantityToBuy
-      idCrowdFunding: $idCrowdFunding
-    ) {
+  mutation DenyCrowdFunding($idCrowdFunding: Int) {
+    denyCrowdFunding(idCrowdFunding: $idCrowdFunding) {
       message
       status
     }

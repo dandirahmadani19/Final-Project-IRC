@@ -128,7 +128,7 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
                   fontSize: 12,
                 }}
               >
-                {data.status === "Pending"
+                {data.status === "Pending" || data.status === "Deny"
                   ? moment(data.createdAt).format("Do MMMM YYYY")
                   : moment(data.startDate).format("Do MMMM YYYY")}
               </Text>

@@ -5,6 +5,8 @@ import {
   View,
   ActivityIndicator,
   Alert,
+  Modal,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { Form, FormItem } from "react-native-form-component";
@@ -17,8 +19,11 @@ import { useMutation } from "@apollo/client";
 import * as SecureStore from "expo-secure-store";
 import client from "../../config/apolloClient";
 import { userProfile } from "../../query/global";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SubmitCrowFunding({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [message, setMessage] = useState("");
   const [dataSubmit, setDataSubmit] = useState({
     productName: "",
     initialProductPrice: "",
@@ -103,6 +108,26 @@ export default function SubmitCrowFunding({ navigation }) {
         backgroundColor: "#fff",
       }}
     >
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{message}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Ionicons name="close-circle-outline" size={25} />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       <View
         style={{
           paddingVertical: 20,
@@ -119,68 +144,150 @@ export default function SubmitCrowFunding({ navigation }) {
           }}
           buttonText="Submit"
         >
-          <FormItem
-            label="Product Name"
-            isRequired
-            value={dataSubmit.productName}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, productName: e })
-            }
-            keyboardType="default"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <FormItem
+              label="Product Name"
+              isRequired
+              value={dataSubmit.productName}
+              onChangeText={(e) =>
+                setDataSubmit({ ...dataSubmit, productName: e })
+              }
+              keyboardType="default"
+              floatingLabel={true}
+              errorBorderColor="#dc2626"
+              style={styles.inputStyle}
+            />
+            <Pressable
+              onPress={() => {
+                setMessage(
+                  "Name of the product you want to import, based on the name on the alibaba website"
+                );
+                setModalVisible(true);
+              }}
+            >
+              <Ionicons name="help-circle-outline" size={22} color="black" />
+            </Pressable>
+          </View>
 
-          <FormItem
-            label="Product Price"
-            isRequired
-            value={dataSubmit.initialProductPrice}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, initialProductPrice: e })
-            }
-            keyboardType="numeric"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
-          <FormItem
-            label="Quantity To buy"
-            isRequired
-            value={dataSubmit.initialQuantity}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, initialQuantity: e })
-            }
-            keyboardType="numeric"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <FormItem
+              label="Product Price"
+              isRequired
+              value={dataSubmit.initialProductPrice}
+              onChangeText={(e) =>
+                setDataSubmit({ ...dataSubmit, initialProductPrice: e })
+              }
+              keyboardType="numeric"
+              floatingLabel={true}
+              errorBorderColor="#dc2626"
+              style={styles.inputStyle}
+            />
+            <Pressable
+              onPress={() => {
+                setMessage(
+                  "The price range of the product you want to import is based on the product range on the alibaba website"
+                );
+                setModalVisible(true);
+              }}
+            >
+              <Ionicons name="help-circle-outline" size={22} color="black" />
+            </Pressable>
+          </View>
 
-          <FormItem
-            label="Manufacture Name"
-            isRequired
-            value={dataSubmit.manufactureName}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, manufactureName: e })
-            }
-            keyboardType="default"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
-          <FormItem
-            label="Link Product In Alibaba"
-            isRequired
-            value={dataSubmit.linkProduct}
-            onChangeText={(e) =>
-              setDataSubmit({ ...dataSubmit, linkProduct: e })
-            }
-            keyboardType="default"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
-            style={styles.inputStyle}
-          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <FormItem
+              label="Quantity To buy"
+              isRequired
+              value={dataSubmit.initialQuantity}
+              onChangeText={(e) =>
+                setDataSubmit({ ...dataSubmit, initialQuantity: e })
+              }
+              keyboardType="numeric"
+              floatingLabel={true}
+              errorBorderColor="#dc2626"
+              style={styles.inputStyle}
+            />
+            <Pressable
+              onPress={() => {
+                setMessage("Number of products you want to import");
+                setModalVisible(true);
+              }}
+            >
+              <Ionicons name="help-circle-outline" size={22} color="black" />
+            </Pressable>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <FormItem
+              label="Manufacture Name"
+              isRequired
+              value={dataSubmit.manufactureName}
+              onChangeText={(e) =>
+                setDataSubmit({ ...dataSubmit, manufactureName: e })
+              }
+              keyboardType="default"
+              floatingLabel={true}
+              errorBorderColor="#dc2626"
+              style={styles.inputStyle}
+            />
+            <Pressable
+              onPress={() => {
+                setMessage(
+                  "Manufacture name of the product according to the alibaba website"
+                );
+                setModalVisible(true);
+              }}
+            >
+              <Ionicons name="help-circle-outline" size={22} color="black" />
+            </Pressable>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+            }}
+          >
+            <FormItem
+              label="Link Product In Alibaba"
+              isRequired
+              value={dataSubmit.linkProduct}
+              onChangeText={(e) =>
+                setDataSubmit({ ...dataSubmit, linkProduct: e })
+              }
+              keyboardType="default"
+              floatingLabel={true}
+              errorBorderColor="#dc2626"
+              style={styles.inputStyle}
+            />
+            <Pressable
+              onPress={() => {
+                setMessage("Product link on alibaba website");
+                setModalVisible(true);
+              }}
+            >
+              <Ionicons name="help-circle-outline" size={22} color="black" />
+            </Pressable>
+          </View>
         </Form>
       </View>
     </ScrollView>
@@ -191,5 +298,40 @@ const styles = StyleSheet.create({
   inputStyle: {
     borderColor: "#000",
     borderWidth: 0.5,
+    flex: 1,
+    marginEnd: 5,
+  },
+  centeredView: {
+    flex: 1,
+    marginTop: 50,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonClose: {
+    position: "absolute",
+    right: 5,
+    top: 5,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });

@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, Modal, Pressable } from "react-native";
 import React from "react";
 import { Form, FormItem } from "react-native-form-component";
 import { useState } from "react";
@@ -12,9 +12,11 @@ import {
   getSupportedCurrencies,
 } from "react-native-format-currency";
 import NumberFormat from "react-number-format";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function FormJoin({ route, navigation }) {
   const data = route.params.data;
+  const [modalVisible, setModalVisible] = useState(false);
   const { data: dataUserProfile } = useQuery(GET_USER_PROFILE, {
     variables: { accessToken: access_token() },
   });
@@ -81,171 +83,172 @@ export default function FormJoin({ route, navigation }) {
   return (
     <View
       style={{
-        paddingHorizontal: 20,
-        paddingVertical: 20,
+        backgroundColor: "#e2e8f0",
+        flex: 1,
+        marginTop: 5,
       }}
     >
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              The number of products you want to buy. Max to buy{" "}
+              {data.targetQuantity - data.currentQuantity} Pcs
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Ionicons name="close-circle-outline" size={25} />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      <View style={[styles.container, { flexDirection: "row" }]}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.textLeftSide}>Your Balance</Text>
+          <Text style={styles.textLeftSide}>Product Price</Text>
+          <Text style={styles.textLeftSide}>Max Quantity To Buy</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <NumberFormat
+            value={userProfile().Balance.amount}
+            displayType="text"
+            thousandSeparator={true}
+            prefix="IDR "
+            renderText={(value) => (
+              <Text style={styles.textRightSide}>{value}</Text>
+            )}
+          />
+          <NumberFormat
+            value={data.finalProductPrice}
+            displayType="text"
+            thousandSeparator={true}
+            prefix="IDR "
+            renderText={(value) => (
+              <Text style={styles.textRightSide}>{value}</Text>
+            )}
+          />
+          <Text style={styles.textRightSide}>
+            {data.targetQuantity - data.currentQuantity} Pcs
+          </Text>
+        </View>
+      </View>
       <View
         style={{
-          paddingHorizontal: 20,
-          paddingVertical: 20,
+          paddingHorizontal: 30,
+          paddingVertical: 40,
           backgroundColor: "#fff",
-          marginTop: 20,
+          marginTop: 10,
           borderRadius: 10,
         }}
       >
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "60%",
-              marginBottom: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "900",
-              }}
-            >
-              Your Balance
-            </Text>
-            <NumberFormat
-              value={userProfile().Balance.amount}
-              displayType="text"
-              thousandSeparator={true}
-              prefix="IDR "
-              renderText={(value) => (
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "900",
-                  }}
-                >
-                  {value}
-                </Text>
-              )}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "60%",
-              marginBottom: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "900",
-              }}
-            >
-              Product Price
-            </Text>
-            <NumberFormat
-              value={data.finalProductPrice}
-              displayType="text"
-              thousandSeparator={true}
-              prefix="IDR "
-              renderText={(value) => (
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "900",
-                  }}
-                >
-                  {value}
-                </Text>
-              )}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "60%",
-              marginBottom: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "900",
-              }}
-            >
-              Max Quantity To Buy
-            </Text>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "900",
-              }}
-            >
-              {data.targetQuantity - data.currentQuantity} pcs
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "60%",
-              marginBottom: 40,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "900",
-              }}
-            >
-              Total Price
-            </Text>
-            <NumberFormat
-              value={totalPrice}
-              displayType="text"
-              thousandSeparator={true}
-              prefix="IDR "
-              renderText={(value) => (
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "900",
-                    maxWidth: "50%",
-                  }}
-                >
-                  {value}
-                </Text>
-              )}
-            />
-          </View>
-        </View>
         <Form
           onButtonPress={handleOnSubmit}
-          buttonStyle={{ backgroundColor: "#15803d" }}
+          style={{
+            alignItems: "center",
+          }}
+          buttonStyle={{
+            backgroundColor: "#15803d",
+            width: "50%",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 0,
+          }}
         >
-          <FormItem
-            label="Quantity To Buy"
-            isRequired
-            value={quantity}
-            onChangeText={(quantity) => {
-              setTotalPrice(quantity * data.finalProductPrice);
-              setQuantity(quantity);
-            }}
-            keyboardType="numeric"
-            floatingLabel={true}
-            errorBorderColor="#dc2626"
+          <View
             style={{
-              borderColor: "#000",
-              borderWidth: 0.5,
-              marginBottom: 5,
+              width: "80%",
+              flexDirection: "row",
+              alignItems: "flex-start",
             }}
-          />
+          >
+            <FormItem
+              label="Quantity To Buy"
+              isRequired
+              value={quantity}
+              onChangeText={(quantity) => {
+                setTotalPrice(quantity * data.finalProductPrice);
+                setQuantity(quantity);
+              }}
+              keyboardType="numeric"
+              floatingLabel={true}
+              errorBorderColor="#dc2626"
+              style={{
+                borderColor: "#000",
+                borderWidth: 0.5,
+                marginBottom: -5,
+                marginEnd: 5,
+                width: "100%",
+              }}
+            />
+            <Pressable onPress={() => setModalVisible(true)}>
+              <Ionicons name="help-circle-outline" size={22} color="black" />
+            </Pressable>
+          </View>
         </Form>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "#fff",
+  },
+  textRightSide: {
+    textAlign: "right",
+    paddingVertical: 5,
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  textLeftSide: {
+    textAlign: "left",
+    paddingVertical: 5,
+    fontSize: 13,
+    color: "#64748b",
+  },
+  centeredView: {
+    flex: 1,
+    marginTop: 50,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonClose: {
+    position: "absolute",
+    right: 5,
+    top: 5,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});

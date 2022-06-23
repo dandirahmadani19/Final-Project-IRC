@@ -32,3 +32,11 @@ export const GET_USER_PROFILE = gql`
     }
   }
 `;
+
+export const REGISTER = gql`
+  mutation Register($dataUser: dataUser) {
+    register(dataUser: $dataUser) {
+      message
+    }
+  }
+`;
