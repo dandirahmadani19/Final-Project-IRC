@@ -211,7 +211,7 @@ export default function SubmitCrowFunding({ navigation }) {
             }}
           >
             <FormItem
-              label="Quantity To buy"
+              label="Quantity To Buy"
               isRequired
               value={dataSubmit.initialQuantity}
               onChangeText={(e) =>
