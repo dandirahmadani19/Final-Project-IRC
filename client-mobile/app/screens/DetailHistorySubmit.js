@@ -32,7 +32,7 @@ export default function DetailHistorySubmit({ route, navigation }) {
           <Text style={styles.textLeftSide}>Quantity Funded</Text>
           <Text style={styles.textLeftSide}>Target Quantity</Text>
           <Text style={styles.textLeftSide}>Total Price Funded</Text>
-          <Text style={styles.textLeftSide}>hscode</Text>
+          <Text style={styles.textLeftSide}>HS Code</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.textRightSide}>

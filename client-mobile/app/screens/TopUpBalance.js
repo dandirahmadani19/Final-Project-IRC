@@ -134,7 +134,7 @@ export default function TopUpBalance({ navigation }) {
               fontStyle: "italic",
             }}
           >
-            Note : Biaya Admin Sebesar Rp. 3000
+            Administration Fee : Rp. 3000
           </Text>
         </Form>
       </View>

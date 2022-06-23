@@ -21,6 +21,7 @@ import JoinSuccess from "./app/screens/JoinSuccess";
 import DetailHistoryJoin from "./app/screens/DetailHistoryJoin";
 import LoadingScreen from "./app/screens/LoadingScreen";
 import TrackingStatus from "./app/screens/TrackingStatus";
+import { StatusBar } from 'expo-status-bar';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
+      <StatusBar style="light" />
         <Stack.Navigator
           screenOptions={{
             headerTintColor: "#fff",
