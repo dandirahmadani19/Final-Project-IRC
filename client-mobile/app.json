@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "client-mobile",
-    "slug": "client-mobile",
+    "name": "Import Require Community",
+    "slug": "Import-Require-Comminity",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/splash-irc.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-irc.png",

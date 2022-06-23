@@ -49,7 +49,12 @@ export default function DetailScreen({ route, navigation }) {
     }
   };
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{
+        backgroundColor: "#fff",
+        flex: 1,
+      }}
+    >
       <Image
         source={{
           uri: data.productImage,
