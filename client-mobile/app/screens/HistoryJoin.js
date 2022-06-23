@@ -52,21 +52,6 @@ export default function HistoryJoin({ navigation }) {
     );
   }
 
-  if (!data?.length) {
-    return (
-      <Text
-        style={{
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: 15,
-          marginTop: 30,
-        }}
-      >
-        You've never joined crowdfunding
-      </Text>
-    );
-  }
-
   const handleOnPress = (data) => {
     navigation.navigate("DetailHistoryJoin", { data });
   };
@@ -78,15 +63,29 @@ export default function HistoryJoin({ navigation }) {
   );
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={data?.getHistoryJoinCrowdFunding}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
+      {data?.length && (
+        <Text
+          style={{
+            textAlign: "center",
+            fontWeight: "700",
+            fontSize: 15,
+            marginTop: 30,
+          }}
+        >
+          You've never joined crowdfunding
+        </Text>
+      )}
+      {!data?.length && (
+        <FlatList
+          data={data?.getHistoryJoinCrowdFunding}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }

@@ -59,7 +59,9 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
                 width: "100%",
               }}
             >
-              Under review by admin
+              {data.status === "Pending"
+                ? "Under review by admin"
+                : "Rejected by Admin"}
             </Text>
           </View>
         )}
@@ -108,7 +110,11 @@ export default function CardHistoryCrowdFunding({ data, onPress }) {
                         fontSize: 12,
                       }}
                     >
-                      {value ? value : "Under Review"}
+                      {value
+                        ? value
+                        : data.status === "Pending"
+                        ? "Under Review"
+                        : "Rejected by Admin"}
                     </Text>
                   );
                 }}

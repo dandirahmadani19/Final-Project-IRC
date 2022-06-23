@@ -29,6 +29,7 @@ import { useState } from "react";
 
 export default function ConfirmationSubmit({ route, navigation }) {
   const data = route.params.data;
+  console.log(data);
   const [modalVisible, setModalVisible] = useState(false);
 
   const totalPrice = data.currentQuantity * data.finalProductPrice;
@@ -179,6 +180,7 @@ export default function ConfirmationSubmit({ route, navigation }) {
             <Text style={styles.textLeftSide}>Initial Price</Text>
             <Text style={styles.textLeftSide}>Final Price</Text>
             <Text style={styles.textLeftSide}>Target Quantity</Text>
+            <Text style={styles.textLeftSide}>hscode</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.textRightSide}>
@@ -217,6 +219,7 @@ export default function ConfirmationSubmit({ route, navigation }) {
               />
             </View>
             <Text style={styles.textRightSide}>{data.targetQuantity} pcs</Text>
+            <Text style={styles.textRightSide}>{data.hscode}</Text>
           </View>
         </View>
         <View style={styles.container}>
