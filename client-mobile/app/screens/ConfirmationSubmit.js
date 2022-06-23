@@ -139,6 +139,17 @@ export default function ConfirmationSubmit({ route, navigation }) {
             <Text style={styles.modalText}>
               How do we get the final product price ?
             </Text>
+            <Text style={styles.modalBody}>
+              Shipping + Insurance (From China To Indonesia)
+            </Text>
+            <Text style={styles.modalBody}>
+              Import Tax for HS Code : {data.hscode}
+            </Text>
+            <Text style={styles.modalBody}>
+              Please check on https://insw.go.id/intr
+            </Text>
+
+            <Text style={styles.modalBody}>Delivery Cost to Your Address</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
@@ -401,5 +412,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     fontWeight: "800",
+  },
+  modalBody: {
+    fontSize: 11,
+    textAlign: "left",
   },
 });
